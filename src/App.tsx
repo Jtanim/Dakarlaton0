@@ -18,6 +18,7 @@ import { ApplyModal } from './components/ApplyModal';
 import { ProfileModal } from './components/ProfileModal';
 import { EmailVerificationBanner } from './components/EmailVerificationBanner';
 import { EmailVerificationModal } from './components/EmailVerificationModal';
+import { LegalModal } from './components/LegalModal';
 import { JobListing } from './types';
 
 function MainApp() {
@@ -32,7 +33,14 @@ function MainApp() {
   const [isPostJobOpen, setIsPostJobOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isVerifyOpen, setIsVerifyOpen] = useState(false);
+  const [isLegalOpen, setIsLegalOpen] = useState(false);
+  const [legalTab, setLegalTab] = useState<'privacy' | 'terms'>('privacy');
   const [applyingJob, setApplyingJob] = useState<JobListing | null>(null);
+
+  const handleOpenLegal = (tab: 'privacy' | 'terms' = 'privacy') => {
+    setLegalTab(tab);
+    setIsLegalOpen(true);
+  };
 
   const handleNavigate = (tab: 'home' | 'about' | 'jobs' | 'contact' | 'designers') => {
     setCurrentTab(tab);
@@ -112,6 +120,7 @@ function MainApp() {
       <Footer
         onNavigate={handleNavigate}
         onOpenPostJob={() => setIsPostJobOpen(true)}
+        onOpenLegal={handleOpenLegal}
       />
 
       {/* Modals & Overlays */}
@@ -120,6 +129,7 @@ function MainApp() {
         onClose={() => setIsAuthOpen(false)}
         initialMode={authMode}
         onVerificationTrigger={() => setIsVerifyOpen(true)}
+        onOpenLegal={handleOpenLegal}
       />
 
       <PostJobModal
@@ -151,6 +161,12 @@ function MainApp() {
       <EmailVerificationModal
         isOpen={isVerifyOpen}
         onClose={() => setIsVerifyOpen(false)}
+      />
+
+      <LegalModal
+        isOpen={isLegalOpen}
+        onClose={() => setIsLegalOpen(false)}
+        initialTab={legalTab}
       />
     </div>
   );

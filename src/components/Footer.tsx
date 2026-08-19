@@ -5,9 +5,10 @@ import { useAuth } from '../context/AuthContext';
 interface FooterProps {
   onNavigate: (tab: 'home' | 'about' | 'jobs' | 'contact' | 'designers') => void;
   onOpenPostJob: () => void;
+  onOpenLegal?: (type: 'privacy' | 'terms') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenPostJob }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenPostJob, onOpenLegal }) => {
   const { subscribeToAlerts } = useAuth();
   const [email, setEmail] = useState('');
   const [category, setCategory] = useState('All');
@@ -271,18 +272,44 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenPostJob }) => 
                 </button>
               </li>
               <li>
-                <span className="text-stone-400">Privacy Policy</span>
+                <button
+                  onClick={() => onOpenLegal && onOpenLegal('privacy')}
+                  className="hover:text-[#E25B38] transition-colors py-1 cursor-pointer text-left"
+                >
+                  Privacy Policy
+                </button>
               </li>
               <li>
-                <span className="text-stone-400">Terms of Service</span>
+                <button
+                  onClick={() => onOpenLegal && onOpenLegal('terms')}
+                  className="hover:text-[#E25B38] transition-colors py-1 cursor-pointer text-left"
+                >
+                  Terms of Service
+                </button>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
-          <p>© 2026 Dakarlaton. All rights reserved.</p>
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4 border-t border-stone-100 mt-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <p>© 2026 Dakarlaton (dakarlaton.com). All rights reserved.</p>
+            <span className="text-stone-300">•</span>
+            <button
+              onClick={() => onOpenLegal && onOpenLegal('privacy')}
+              className="hover:text-[#E25B38] transition-colors cursor-pointer"
+            >
+              Privacy
+            </button>
+            <span className="text-stone-300">•</span>
+            <button
+              onClick={() => onOpenLegal && onOpenLegal('terms')}
+              className="hover:text-[#E25B38] transition-colors cursor-pointer"
+            >
+              Terms
+            </button>
+          </div>
           <p className="font-medium text-stone-600">Built for ambition in the GCC.</p>
         </div>
       </div>

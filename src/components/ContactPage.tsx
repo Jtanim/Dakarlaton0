@@ -195,6 +195,7 @@ export const ContactPage: React.FC = () => {
                     <option value="Job Seeker Support">Job Seeker Support</option>
                     <option value="Employer / Posting a Job">Employer / Posting a Job</option>
                     <option value="Designer Portfolio Verification">Designer Portfolio Verification</option>
+                    <option value="Privacy & Terms Inquiry">Privacy & Terms Inquiry</option>
                     <option value="Partnership & Press">Partnership & Press</option>
                     <option value="General Question">General Question</option>
                   </select>

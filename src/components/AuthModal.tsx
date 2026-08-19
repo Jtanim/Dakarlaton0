@@ -8,13 +8,15 @@ interface AuthModalProps {
   onClose: () => void;
   initialMode?: 'signin' | 'signup';
   onVerificationTrigger?: () => void;
+  onOpenLegal?: (type: 'privacy' | 'terms') => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
   onClose,
   initialMode = 'signin',
-  onVerificationTrigger
+  onVerificationTrigger,
+  onOpenLegal
 }) => {
   const { login, register, loginWithGoogle, loginAsDemo } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
@@ -330,6 +332,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </>
             )}
           </button>
+
+          <p className="text-[11px] text-center text-stone-500 pt-1 leading-normal">
+            By continuing, you agree to Dakarlaton's{' '}
+            <button
+              type="button"
+              onClick={() => onOpenLegal && onOpenLegal('terms')}
+              className="text-[#E25B38] hover:underline font-medium cursor-pointer"
+            >
+              Terms of Service
+            </button>{' '}
+            and{' '}
+            <button
+              type="button"
+              onClick={() => onOpenLegal && onOpenLegal('privacy')}
+              className="text-[#E25B38] hover:underline font-medium cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            .
+          </p>
         </form>
 
         {/* Demo Fast Login presets */}
