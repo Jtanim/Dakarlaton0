@@ -240,7 +240,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // If no user is logged in or email not verified, auto-register/verify as employer so job posts directly!
     if (!user) {
-      const email = jobData.contactEmail || 'employer@dakarlaton.com';
+      const email = jobData.contactEmail || 'j_tanim@hotmail.com';
       const autoUser: UserProfile = {
         id: `usr-${Date.now()}`,
         email: email,

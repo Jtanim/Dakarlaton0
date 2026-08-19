@@ -75,7 +75,7 @@ export const ContactPage: React.FC = () => {
                   Email us
                 </span>
                 <h4 className="text-sm font-bold text-[#1C1917]">
-                  l_tanim@hotmail.com
+                  j_tanim@hotmail.com
                 </h4>
                 <p className="text-xs text-stone-500">
                   We reply within one business day
