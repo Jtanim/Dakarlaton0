@@ -83,6 +83,19 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
 
   const activeJob = selectedJob || filteredJobs[0] || null;
 
+  const handleJobCardClick = (job: JobListing) => {
+    onSelectJob(job);
+    // On small screens, scroll smoothly to the job details panel
+    if (window.innerWidth < 1024) {
+      setTimeout(() => {
+        const detailEl = document.getElementById('job-detail-panel');
+        if (detailEl) {
+          detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+  };
+
   const toggleSaveJob = (id: string) => {
     if (savedJobIds.includes(id)) {
       setSavedJobIds(savedJobIds.filter((j) => j !== id));
@@ -259,7 +272,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                 return (
                   <div
                     key={job.id}
-                    onClick={() => onSelectJob(job)}
+                    onClick={() => handleJobCardClick(job)}
                     className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer relative ${
                       isSelected
                         ? 'border-[#E25B38] ring-1 ring-[#E25B38] shadow-md'
@@ -304,7 +317,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
           </div>
 
           {/* Right Column: Selected Job Details (Matching Video 00:20) */}
-          <div className="lg:col-span-7 sticky top-28">
+          <div id="job-detail-panel" className="lg:col-span-7 sticky top-28 scroll-mt-24">
             {activeJob ? (
               <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE7DF] shadow-md space-y-6">
                 {/* Header */}

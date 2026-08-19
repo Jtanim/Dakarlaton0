@@ -217,34 +217,54 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Mobile Navigation bar */}
-        <div className="flex md:hidden items-center justify-around py-2.5 border-t border-[#EBE7DF] text-xs font-medium text-stone-600">
+        <div className="flex md:hidden items-center justify-between py-2 border-t border-[#EBE7DF] text-xs font-semibold overflow-x-auto gap-1 px-1">
           <button
             onClick={() => setCurrentTab('home')}
-            className={`px-2 py-1 ${currentTab === 'home' ? 'text-[#E25B38] font-bold' : ''}`}
+            className={`min-h-[44px] px-3 py-2 rounded-full transition-all flex items-center justify-center whitespace-nowrap cursor-pointer ${
+              currentTab === 'home'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:bg-stone-100'
+            }`}
           >
             Home
           </button>
           <button
             onClick={() => setCurrentTab('about')}
-            className={`px-2 py-1 ${currentTab === 'about' ? 'text-[#E25B38] font-bold' : ''}`}
+            className={`min-h-[44px] px-3 py-2 rounded-full transition-all flex items-center justify-center whitespace-nowrap cursor-pointer ${
+              currentTab === 'about'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:bg-stone-100'
+            }`}
           >
             About
           </button>
           <button
             onClick={() => setCurrentTab('jobs')}
-            className={`px-2 py-1 ${currentTab === 'jobs' ? 'text-[#E25B38] font-bold' : ''}`}
+            className={`min-h-[44px] px-3 py-2 rounded-full transition-all flex items-center justify-center whitespace-nowrap cursor-pointer ${
+              currentTab === 'jobs'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:bg-stone-100'
+            }`}
           >
             Find Jobs
           </button>
           <button
             onClick={() => setCurrentTab('designers')}
-            className={`px-2 py-1 ${currentTab === 'designers' ? 'text-[#E25B38] font-bold' : ''}`}
+            className={`min-h-[44px] px-3 py-2 rounded-full transition-all flex items-center justify-center whitespace-nowrap cursor-pointer ${
+              currentTab === 'designers'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:bg-stone-100'
+            }`}
           >
             Portfolios
           </button>
           <button
             onClick={() => setCurrentTab('contact')}
-            className={`px-2 py-1 ${currentTab === 'contact' ? 'text-[#E25B38] font-bold' : ''}`}
+            className={`min-h-[44px] px-3 py-2 rounded-full transition-all flex items-center justify-center whitespace-nowrap cursor-pointer ${
+              currentTab === 'contact'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:bg-stone-100'
+            }`}
           >
             Contact
           </button>
