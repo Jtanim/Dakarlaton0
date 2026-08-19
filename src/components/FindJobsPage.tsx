@@ -159,12 +159,14 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
                 >
                   <option value="All">All Categories</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Architecture & 3D">Architecture & 3D</option>
                   <option value="Design">Design</option>
                   <option value="Marketing">Marketing</option>
-                  <option value="Engineering">Engineering</option>
                   <option value="Operations">Operations</option>
                   <option value="Content">Content</option>
                   <option value="Data">Data</option>
+                  <option value="Finance">Finance</option>
                 </select>
               </div>
 

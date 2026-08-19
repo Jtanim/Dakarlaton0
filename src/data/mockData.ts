@@ -2,6 +2,44 @@ import { JobListing, UserProfile, FAQItem } from '../types';
 
 export const INITIAL_JOBS: JobListing[] = [
   {
+    id: 'job-autocad-riyadh',
+    title: 'AutoCAD Draftsman / Draftswoman | Riyadh',
+    company: 'MAS Future Group',
+    companyLogo: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=150&auto=format&fit=crop&q=80',
+    category: 'Engineering',
+    type: 'Full-time',
+    location: 'Riyadh, Saudi Arabia',
+    workplaceType: 'On-site',
+    salary: 'SAR 8,500 - SAR 12,000 / month',
+    postedAt: 'Just now',
+    postedDate: '2026-08-19',
+    featured: true,
+    description: 'MAS Future Group is looking for a skilled AutoCAD Draftsman/Draftswoman based in Riyadh to produce technical, architectural, and structural shop drawings for ongoing construction and infrastructure projects.',
+    aboutRole: 'MAS Future Group is seeking an experienced AutoCAD Draftsman/Draftswoman in Riyadh. You will collaborate closely with structural engineers, site managers, and consultants to generate accurate, code-compliant as-built and detailed construction drawings.',
+    responsibilities: [
+      'Strong proficiency in AutoCAD 2D/3D and technical drafting',
+      'Experience in construction drawings, shop drawings, and as-built documentation',
+      'Ability to read, coordinate, and understand architectural and structural drawings',
+      'Liaise with engineering teams and project managers on site specifications'
+    ],
+    requirements: [
+      'Relevant diploma or degree in Civil/Architectural Engineering or Drafting',
+      '3+ years hands-on experience in construction or engineering drafting in KSA/GCC',
+      'Proficiency with AutoCAD, Revit, and BIM software is an advantage',
+      'Strong attention to detail, accuracy, and adherence to Saudi building codes'
+    ],
+    benefits: [
+      'Competitive monthly salary with annual increments',
+      'Medical insurance and standard Saudi labor law benefits',
+      'Professional project environment with major infrastructure developments',
+      'Annual paid leave with return flight allowance'
+    ],
+    tags: ['AutoCAD', 'Revit', 'Drafting', 'Shop Drawings', 'BIM Modeling', 'Construction'],
+    employerId: 'emp-mas-future',
+    contactEmail: 'career@mascofuture.com',
+    applicantCount: 5
+  },
+  {
     id: 'job-1',
     title: 'Senior Product Designer',
     company: 'Brightwave Studio',
