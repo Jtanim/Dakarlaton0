@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, CheckCircle2, BellRing, Sparkles, Send, ShieldCheck, MapPin } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 interface FooterProps {
   onNavigate: (tab: 'home' | 'about' | 'jobs' | 'contact' | 'designers') => void;
@@ -7,35 +8,21 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenPostJob }) => {
+  const { subscribeToAlerts } = useAuth();
   const [email, setEmail] = useState('');
   const [category, setCategory] = useState('All');
   const [region, setRegion] = useState('GCC');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
 
     setLoading(true);
-    setTimeout(() => {
-      // Save subscription in localStorage
-      try {
-        const existing = JSON.parse(localStorage.getItem('dakarlaton_subscribers') || '[]');
-        existing.push({
-          email,
-          category,
-          region,
-          subscribedAt: new Date().toISOString()
-        });
-        localStorage.setItem('dakarlaton_subscribers', JSON.stringify(existing));
-      } catch (err) {
-        // Fallback
-      }
-
-      setLoading(false);
-      setIsSubscribed(true);
-    }, 600);
+    await subscribeToAlerts(email, `${region} - ${category}`);
+    setLoading(false);
+    setIsSubscribed(true);
   };
 
   return (

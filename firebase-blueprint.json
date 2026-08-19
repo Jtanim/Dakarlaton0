@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Registered user or employer profile on Dakarlaton",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["designer", "employer", "admin"] },
+        "emailVerified": { "type": "boolean" },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "headline": { "type": "string", "maxLength": 150 },
+        "bio": { "type": "string", "maxLength": 2000 },
+        "location": { "type": "string", "maxLength": 100 },
+        "hourlyRate": { "type": "string", "maxLength": 50 },
+        "availableForWork": { "type": "boolean" },
+        "website": { "type": "string", "maxLength": 300 },
+        "dribbble": { "type": "string", "maxLength": 300 },
+        "behance": { "type": "string", "maxLength": 300 },
+        "figma": { "type": "string", "maxLength": 300 },
+        "github": { "type": "string", "maxLength": 300 },
+        "skills": { "type": "array" },
+        "portfolioProjects": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "companyName": { "type": "string", "maxLength": 100 },
+        "companyWebsite": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["id", "email", "fullName", "role"]
+    },
+    "JobListing": {
+      "title": "JobListing",
+      "description": "Job and freelance opportunity listing in GCC & worldwide",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "company": { "type": "string", "maxLength": 100 },
+        "companyLogo": { "type": "string", "maxLength": 500 },
+        "category": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship"] },
+        "location": { "type": "string", "maxLength": 100 },
+        "workplaceType": { "type": "string", "enum": ["Remote", "Hybrid", "On-site"] },
+        "salary": { "type": "string", "maxLength": 100 },
+        "postedAt": { "type": "string", "maxLength": 50 },
+        "postedDate": { "type": "string", "maxLength": 50 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "aboutRole": { "type": "string", "maxLength": 5000 },
+        "responsibilities": { "type": "array" },
+        "requirements": { "type": "array" },
+        "benefits": { "type": "array" },
+        "featured": { "type": "boolean" },
+        "tags": { "type": "array" },
+        "employerId": { "type": "string", "maxLength": 128 },
+        "contactEmail": { "type": "string", "format": "email", "maxLength": 150 },
+        "applicantCount": { "type": "number" }
+      },
+      "required": ["id", "title", "company", "category", "type", "location", "salary", "employerId", "contactEmail"]
+    },
+    "JobApplication": {
+      "title": "JobApplication",
+      "description": "Application submitted by a designer for a job listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "jobId": { "type": "string", "maxLength": 128 },
+        "jobTitle": { "type": "string", "maxLength": 150 },
+        "company": { "type": "string", "maxLength": 100 },
+        "applicantId": { "type": "string", "maxLength": 128 },
+        "applicantName": { "type": "string", "maxLength": 100 },
+        "applicantEmail": { "type": "string", "format": "email", "maxLength": 150 },
+        "applicantAvatar": { "type": "string", "maxLength": 500 },
+        "applicantHeadline": { "type": "string", "maxLength": 150 },
+        "portfolioUrl": { "type": "string", "maxLength": 300 },
+        "selectedProjects": { "type": "array" },
+        "coverLetter": { "type": "string", "maxLength": 5000 },
+        "proposedRate": { "type": "string", "maxLength": 100 },
+        "appliedAt": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "interviewing", "accepted", "declined"] }
+      },
+      "required": ["id", "jobId", "applicantId", "applicantEmail", "coverLetter"]
+    },
+    "JobSubscription": {
+      "title": "JobSubscription",
+      "description": "Email alert subscription for new GCC job opportunities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "region": { "type": "string", "maxLength": 100 },
+        "subscribedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "email", "subscribedAt"]
+    },
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "Inquiry or message sent through the contact form",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "topic": { "type": "string", "maxLength": 100 },
+        "message": { "type": "string", "maxLength": 4000 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "fullName", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles for designers and employers"
+    },
+    "/jobs/{jobId}": {
+      "schema": { "$ref": "#/entities/JobListing" },
+      "description": "Active job listings"
+    },
+    "/applications/{applicationId}": {
+      "schema": { "$ref": "#/entities/JobApplication" },
+      "description": "Applications submitted to job listings"
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": { "$ref": "#/entities/JobSubscription" },
+      "description": "Email newsletter and job alerts"
+    },
+    "/contact_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ContactMessage" },
+      "description": "Direct contact inquiries"
+    }
+  }
+}
