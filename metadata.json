@@ -1,6 +1,6 @@
 {
   "name": "Freelance Designer Job Board",
-  "description": "Job board and portfolio showcase platform for freelance designers with secure authentication, email verification, and job postings.",
+  "description": "Premier job board and talent platform across Saudi Arabia, UAE, Qatar, Oman, Bahrain, and the GCC for Engineering, AutoCAD, Architecture, Design & Tech roles.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

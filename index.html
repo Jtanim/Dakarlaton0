@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Fetch compatibility fix -->
     <script>
       (function() {
         try {
@@ -19,25 +21,84 @@
             enumerable: true
           });
         } catch (e) {
-          // Ignore if already locked by environment
+          // Ignore if locked
         }
       })();
     </script>
-    <title>Dakarlaton — Connecting Ambition with Opportunity</title>
-    <meta name="description" content="Dakarlaton is where careers take off and great companies find freelance designers and talent to grow." />
+
+    <!-- Primary SEO Meta Tags -->
+    <title>Dakarlaton — Best Jobs in Saudi Arabia, UAE, Qatar, Oman & GCC | Engineering, CAD & Design Careers</title>
+    <meta name="title" content="Dakarlaton — Best Jobs in Saudi Arabia, UAE, Qatar, Oman & GCC | Engineering, CAD & Design Careers" />
+    <meta name="description" content="Discover top career opportunities and verified jobs across Saudi Arabia (Riyadh, Jeddah), UAE (Dubai, Abu Dhabi), Qatar, Oman, Bahrain & Kuwait. Find AutoCAD drafting, BIM engineering, product design, marketing and tech jobs." />
+    <meta name="keywords" content="jobs in saudi arabia, jobs in riyadh, jobs in dubai, jobs in uae, qatar jobs, oman jobs, bahrain jobs, kuwait jobs, gcc jobs portal, autocad draftsman jobs riyadh, bim engineering jobs gcc, freelance designers middle east, dakarlaton jobs" />
+    <meta name="author" content="Dakarlaton" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://dakarlaton.com/" />
+
+    <!-- Geo & Regional Meta Tags for GCC Ranking -->
+    <meta name="geo.region" content="SA;AE;QA;OM;BH;KW" />
+    <meta name="geo.placename" content="Riyadh, Dubai, Doha, Muscat, Manama, Kuwait City" />
+    <meta name="geo.position" content="24.7136;46.6753" />
+    <meta name="ICBM" content="24.7136, 46.6753" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dakarlaton.com/" />
+    <meta property="og:title" content="Dakarlaton — Best Jobs in Saudi Arabia, UAE, Qatar, Oman & GCC" />
+    <meta property="og:description" content="Discover top careers and verified talent across the GCC. Browse jobs in Engineering, AutoCAD Drafting, UI/UX Design, Tech, and Marketing." />
+    <meta property="og:site_name" content="Dakarlaton" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dakarlaton.com/" />
+    <meta name="twitter:title" content="Dakarlaton — Best Jobs in Saudi Arabia, UAE, Qatar, Oman & GCC" />
+    <meta name="twitter:description" content="Explore verified careers and top talent across Saudi Arabia, UAE, Qatar, Oman, and Bahrain on Dakarlaton." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <meta property="og:title" content="Dakarlaton — Connecting Ambition with Opportunity" />
-    <meta property="og:description" content="Dakarlaton is where careers take off and great companies find freelance designers and talent to grow." />
-    <meta property="og:url" content="https://dakarlaton.com/" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Schema.org Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://dakarlaton.com/#website",
+          "url": "https://dakarlaton.com/",
+          "name": "Dakarlaton",
+          "description": "Connecting Ambition with Opportunity across Saudi Arabia, UAE, Qatar, Oman, Bahrain and the GCC.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://dakarlaton.com/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://dakarlaton.com/#organization",
+          "name": "Dakarlaton",
+          "url": "https://dakarlaton.com/",
+          "logo": "https://dakarlaton.com/icon.svg",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "j_tanim@hotmail.com",
+            "contactType": "customer service",
+            "areaServed": ["SA", "AE", "QA", "OM", "BH", "KW"],
+            "availableLanguage": ["English", "Arabic"]
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-[#FAF8F5] text-[#1C1917] antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
