@@ -167,22 +167,14 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   );
   const [customSalaryText, setCustomSalaryText] = useState('');
 
-  // Skills / Tags State
-  const [selectedTags, setSelectedTags] = useState<string[]>([
-    'AutoCAD',
-    'Revit',
-    'Drafting',
-  ]);
+  // Skills / Tags State (Starts completely clear for poster)
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
 
   const [description, setDescription] = useState('');
-  const [responsibilitiesText, setResponsibilitiesText] = useState(
-    'Strong proficiency in AutoCAD / BIM drafting software\nExperience in preparing technical and shop drawings\nAbility to coordinate architectural and structural plans\nCollaborate closely with project and site engineers'
-  );
-  const [requirementsText, setRequirementsText] = useState(
-    'Proven experience as a draftsman/draftswoman or engineer in GCC\nStrong portfolio showcasing relevant drawings and projects\nExcellent attention to detail and construction codes'
-  );
+  const [responsibilitiesText, setResponsibilitiesText] = useState('');
+  const [requirementsText, setRequirementsText] = useState('');
 
   const [contactEmail, setContactEmail] = useState(user?.email || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -322,7 +314,12 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   const handleReset = () => {
     setTitle('');
     setDescription('');
+    setResponsibilitiesText('');
+    setRequirementsText('');
+    setSelectedTags([]);
+    setSkillSearchQuery('');
     setCreatedJob(null);
+    setError('');
   };
 
   return (
@@ -613,38 +610,73 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                    Key Responsibilities (One per line)
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
+                      Key Responsibilities (One per line)
+                    </label>
+                    {responsibilitiesText && (
+                      <button
+                        type="button"
+                        onClick={() => setResponsibilitiesText('')}
+                        className="text-[11px] text-stone-400 hover:text-stone-700 underline cursor-pointer"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                   <textarea
-                    rows={3}
+                    rows={4}
+                    placeholder={`e.g. Lead AutoCAD / Revit drafting and 3D modeling\nPrepare shop drawings and submittals\nCoordinate with site and project engineers\nReview project architectural specifications`}
                     value={responsibilitiesText}
                     onChange={(e) => setResponsibilitiesText(e.target.value)}
-                    className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] leading-relaxed"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                    Requirements & Skills (One per line)
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
+                      Requirements & Skills (One per line)
+                    </label>
+                    {requirementsText && (
+                      <button
+                        type="button"
+                        onClick={() => setRequirementsText('')}
+                        className="text-[11px] text-stone-400 hover:text-stone-700 underline cursor-pointer"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                   <textarea
-                    rows={3}
+                    rows={4}
+                    placeholder={`e.g. 3+ years experience with AutoCAD / BIM software\nProven experience on GCC construction or design projects\nStrong portfolio of completed technical drawings\nDiploma or Bachelor's in Engineering / Architecture`}
                     value={requirementsText}
                     onChange={(e) => setRequirementsText(e.target.value)}
-                    className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] leading-relaxed"
                   />
                 </div>
               </div>
 
               {/* Skills / Tags Dropdown & Multi-Select */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
-                  Skills & Technical Tags (Select from dropdown or add custom)
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
+                    Skills & Technical Tags (Select from dropdown or add custom)
+                  </label>
+                  {selectedTags.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTags([])}
+                      className="text-[11px] text-stone-400 hover:text-red-500 underline cursor-pointer"
+                    >
+                      Clear all tags
+                    </button>
+                  )}
+                </div>
 
                 {/* Selected Tags Chips */}
-                <div className="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-stone-50 border border-stone-200 rounded-xl">
+                <div className="flex flex-wrap items-center gap-1.5 min-h-[38px] p-2 bg-stone-50 border border-stone-200 rounded-xl">
                   {selectedTags.length > 0 ? (
                     selectedTags.map((tag) => (
                       <span
@@ -656,14 +688,15 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                           type="button"
                           onClick={() => removeTag(tag)}
                           className="text-stone-400 hover:text-red-500 rounded-full cursor-pointer ml-0.5"
+                          aria-label={`Remove tag ${tag}`}
                         >
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     ))
                   ) : (
-                    <span className="text-xs text-stone-400 py-1 px-1">
-                      No tags selected. Choose from dropdown below.
+                    <span className="text-xs text-stone-400 py-0.5 px-1">
+                      No tags added yet. Choose from popular skills below or type a custom tag.
                     </span>
                   )}
                 </div>
@@ -756,21 +789,30 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 </div>
               )}
 
-              <div className="pt-2 flex items-center justify-end gap-3 border-t border-stone-100">
+              <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-stone-100">
                 <button
                   type="button"
-                  onClick={onClose}
-                  className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors cursor-pointer"
+                  onClick={handleReset}
+                  className="text-xs text-stone-500 hover:text-stone-800 underline transition-colors cursor-pointer"
                 >
-                  Cancel
+                  Clear all fields
                 </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
-                >
-                  {isSubmitting ? 'Publishing...' : 'Publish Job Listing'}
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                  >
+                    {isSubmitting ? 'Publishing...' : 'Publish Job Listing'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
