@@ -428,15 +428,16 @@ export const INITIAL_DESIGNERS: UserProfile[] = [
 ];
 
 export const CATEGORIES = [
-  { name: 'Design', count: '1,240+ jobs', iconName: 'Palette', color: 'bg-orange-50 text-orange-600 border-orange-200' },
-  { name: 'Marketing', count: '890+ jobs', iconName: 'TrendingUp', color: 'bg-amber-50 text-amber-600 border-amber-200' },
   { name: 'Engineering', count: '2,450+ jobs', iconName: 'Code', color: 'bg-blue-50 text-blue-600 border-blue-200' },
-  { name: 'Operations', count: '650+ jobs', iconName: 'Settings', color: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
-  { name: 'Content', count: '420+ jobs', iconName: 'FileText', color: 'bg-purple-50 text-purple-600 border-purple-200' },
+  { name: 'Architecture & 3D', count: '1,580+ jobs', iconName: 'Building', color: 'bg-stone-100 text-stone-700 border-stone-200' },
+  { name: 'Design', count: '1,240+ jobs', iconName: 'Palette', color: 'bg-orange-50 text-orange-600 border-orange-200' },
+  { name: 'Technology & Software', count: '3,100+ jobs', iconName: 'Code', color: 'bg-indigo-50 text-indigo-600 border-indigo-200' },
+  { name: 'Marketing', count: '890+ jobs', iconName: 'TrendingUp', color: 'bg-amber-50 text-amber-600 border-amber-200' },
   { name: 'Data', count: '740+ jobs', iconName: 'BarChart3', color: 'bg-cyan-50 text-cyan-600 border-cyan-200' },
+  { name: 'Operations', count: '650+ jobs', iconName: 'Settings', color: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
   { name: 'Finance', count: '650+ jobs', iconName: 'DollarSign', color: 'bg-green-50 text-green-600 border-green-200' },
-  { name: 'Sales', count: '1,100+ jobs', iconName: 'Users', color: 'bg-rose-50 text-rose-600 border-rose-200' },
-  { name: 'Customer Success', count: '560+ jobs', iconName: 'HeartHandshake', color: 'bg-indigo-50 text-indigo-600 border-indigo-200' }
+  { name: 'Content', count: '420+ jobs', iconName: 'FileText', color: 'bg-purple-50 text-purple-600 border-purple-200' },
+  { name: 'Sales', count: '1,100+ jobs', iconName: 'Users', color: 'bg-rose-50 text-rose-600 border-rose-200' }
 ];
 
 export const STATS = [

@@ -11,6 +11,7 @@ import {
   Palette,
   TrendingUp,
   Code,
+  Building,
   Settings,
   FileText,
   BarChart3,
@@ -47,9 +48,11 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   const getCategoryIcon = (name: string) => {
     switch (name) {
-      case 'Design': return <Palette className="w-5 h-5" />;
-      case 'Marketing': return <TrendingUp className="w-5 h-5" />;
       case 'Engineering': return <Code className="w-5 h-5" />;
+      case 'Architecture & 3D': return <Building className="w-5 h-5" />;
+      case 'Design': return <Palette className="w-5 h-5" />;
+      case 'Technology & Software': return <Code className="w-5 h-5" />;
+      case 'Marketing': return <TrendingUp className="w-5 h-5" />;
       case 'Operations': return <Settings className="w-5 h-5" />;
       case 'Content': return <FileText className="w-5 h-5" />;
       case 'Data': return <BarChart3 className="w-5 h-5" />;

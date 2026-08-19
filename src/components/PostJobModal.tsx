@@ -103,39 +103,7 @@ const MONTHLY_SALARY_PRESETS = [
   'Custom Monthly Salary',
 ];
 
-// Curated Skills List for CAD, Engineering, Design & Tech
-const AVAILABLE_SKILLS = [
-  'AutoCAD',
-  'Revit',
-  'Navisworks',
-  'Civil 3D',
-  '3ds Max',
-  'SolidWorks',
-  'BIM Modeling',
-  'Shop Drawings',
-  'Architectural Drafting',
-  'Structural Drafting',
-  'SketchUp',
-  'Rhino 3D',
-  'Lumion',
-  'V-Ray',
-  'Figma',
-  'UI/UX Design',
-  'Design Systems',
-  'Product Design',
-  'Brand Identity',
-  'Adobe Photoshop',
-  'Adobe Illustrator',
-  'Adobe InDesign',
-  'Packaging Design',
-  '3D Visualization',
-  'Interior Design',
-  'Quantity Surveying',
-  'Site Supervision',
-  'React',
-  'TypeScript',
-  'Tailwind CSS',
-];
+import { ALL_SKILLS, SKILL_CATEGORIES } from '../data/skillsData';
 
 export const PostJobModal: React.FC<PostJobModalProps> = ({
   isOpen,
@@ -170,6 +138,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   // Skills / Tags State (Starts completely clear for poster)
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
+  const [selectedSkillCategory, setSelectedSkillCategory] = useState<string>('all');
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
 
   const [description, setDescription] = useState('');
@@ -206,8 +175,13 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
     }
   };
 
-  // Filter skills based on user search
-  const filteredSkills = AVAILABLE_SKILLS.filter(
+  // Filter skills based on user search and selected category tab
+  const categoryPool =
+    selectedSkillCategory === 'all'
+      ? ALL_SKILLS
+      : SKILL_CATEGORIES.find((c) => c.id === selectedSkillCategory)?.skills || ALL_SKILLS;
+
+  const filteredSkills = categoryPool.filter(
     (s) =>
       s.toLowerCase().includes(skillSearchQuery.toLowerCase()) &&
       !selectedTags.includes(s)
@@ -460,17 +434,32 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   </label>
                   <select
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                      const newCat = e.target.value;
+                      setCategory(newCat);
+                      if (newCat === 'Engineering') setSelectedSkillCategory('engineering');
+                      else if (newCat === 'Architecture & 3D') setSelectedSkillCategory('architecture');
+                      else if (newCat === 'Design') setSelectedSkillCategory('design');
+                      else if (newCat === 'Technology & Software') setSelectedSkillCategory('tech');
+                      else if (newCat === 'Marketing') setSelectedSkillCategory('marketing');
+                      else if (newCat === 'Data & AI') setSelectedSkillCategory('data');
+                      else if (newCat === 'Finance') setSelectedSkillCategory('finance');
+                      else if (newCat === 'Operations') setSelectedSkillCategory('operations');
+                      else if (newCat === 'Content') setSelectedSkillCategory('content');
+                      else if (newCat === 'Sales') setSelectedSkillCategory('sales');
+                    }}
                     className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
                   >
                     <option value="Engineering">Engineering</option>
                     <option value="Architecture & 3D">Architecture & 3D</option>
-                    <option value="Design">Design</option>
-                    <option value="Marketing">Marketing</option>
-                    <option value="Operations">Operations</option>
-                    <option value="Content">Content</option>
-                    <option value="Data">Data</option>
-                    <option value="Finance">Finance</option>
+                    <option value="Design">Design & UI/UX</option>
+                    <option value="Technology & Software">Technology & Software</option>
+                    <option value="Marketing">Marketing & Growth</option>
+                    <option value="Data & AI">Data & Analytics</option>
+                    <option value="Operations">Operations & Management</option>
+                    <option value="Finance">Finance & Accounting</option>
+                    <option value="Content">Content & Writing</option>
+                    <option value="Sales">Sales & Customer Success</option>
                   </select>
                 </div>
 
@@ -742,28 +731,72 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
 
                   {/* Dropdown options list */}
                   {isSkillDropdownOpen && (
-                    <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-stone-200 rounded-2xl shadow-xl max-h-48 overflow-y-auto p-2 space-y-1 animate-in fade-in duration-150">
-                      <div className="text-[10px] uppercase font-bold text-stone-400 px-2 py-1">
-                        Select a skill to add:
+                    <div className="absolute z-20 top-full left-0 right-0 mt-1.5 bg-white border border-stone-200 rounded-2xl shadow-xl max-h-80 overflow-hidden flex flex-col p-3 space-y-2 animate-in fade-in duration-150">
+                      {/* Category Filter Tabs */}
+                      <div className="flex items-center justify-between border-b border-stone-100 pb-2">
+                        <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
+                          Browse by Job Type:
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsSkillDropdownOpen(false)}
+                          className="text-[11px] text-stone-400 hover:text-stone-700 underline cursor-pointer"
+                        >
+                          Done
+                        </button>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
-                        {filteredSkills.slice(0, 15).map((skill) => (
+
+                      {/* Category Pills Bar */}
+                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedSkillCategory('all')}
+                          className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                            selectedSkillCategory === 'all'
+                              ? 'bg-[#E25B38] text-white shadow-xs'
+                              : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                          }`}
+                        >
+                          All ({ALL_SKILLS.length})
+                        </button>
+                        {SKILL_CATEGORIES.map((cat) => (
                           <button
-                            key={skill}
+                            key={cat.id}
                             type="button"
-                            onClick={() => addTag(skill)}
-                            className="text-left text-xs text-stone-700 hover:bg-orange-50 hover:text-[#E25B38] px-2.5 py-1.5 rounded-lg font-medium transition-colors cursor-pointer flex items-center justify-between"
+                            onClick={() => setSelectedSkillCategory(cat.id)}
+                            className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                              selectedSkillCategory === cat.id
+                                ? 'bg-[#E25B38] text-white shadow-xs'
+                                : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+                            }`}
                           >
-                            <span>{skill}</span>
-                            <Plus className="w-3 h-3 opacity-50" />
+                            {cat.name}
                           </button>
                         ))}
                       </div>
-                      {filteredSkills.length === 0 && (
-                        <div className="text-xs text-stone-500 p-2 text-center">
-                          No matching skills. Press Enter to add "{skillSearchQuery}".
+
+                      {/* Scrollable Skills Grid */}
+                      <div className="overflow-y-auto max-h-52 pr-1 space-y-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 pt-1">
+                          {filteredSkills.map((skill) => (
+                            <button
+                              key={skill}
+                              type="button"
+                              onClick={() => addTag(skill)}
+                              className="text-left text-xs text-stone-700 hover:bg-orange-50 hover:text-[#E25B38] px-2.5 py-2 rounded-xl font-medium transition-colors cursor-pointer flex items-center justify-between border border-stone-100 hover:border-orange-200 bg-stone-50/50"
+                            >
+                              <span className="truncate pr-1">{skill}</span>
+                              <Plus className="w-3.5 h-3.5 opacity-60 shrink-0" />
+                            </button>
+                          ))}
                         </div>
-                      )}
+
+                        {filteredSkills.length === 0 && (
+                          <div className="text-xs text-stone-500 py-6 text-center">
+                            No matching skills found for "{skillSearchQuery}". Press <strong className="text-stone-800">Enter</strong> or click <strong className="text-stone-800">+ Add</strong> above to add it as a custom skill tag.
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>

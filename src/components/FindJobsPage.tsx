@@ -210,12 +210,14 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   <option value="All">All Categories</option>
                   <option value="Engineering">Engineering</option>
                   <option value="Architecture & 3D">Architecture & 3D</option>
-                  <option value="Design">Design</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Operations">Operations</option>
-                  <option value="Content">Content</option>
-                  <option value="Data">Data</option>
-                  <option value="Finance">Finance</option>
+                  <option value="Design">Design & UI/UX</option>
+                  <option value="Technology & Software">Technology & Software</option>
+                  <option value="Marketing">Marketing & Growth</option>
+                  <option value="Data & AI">Data & Analytics</option>
+                  <option value="Operations">Operations & Management</option>
+                  <option value="Finance">Finance & Accounting</option>
+                  <option value="Content">Content & Writing</option>
+                  <option value="Sales">Sales & Customer Success</option>
                 </select>
               </div>
 
