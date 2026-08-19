@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { JobListing, PortfolioProject } from '../types';
-import { X, Send, CheckCircle2, Link2, Palette, ShieldCheck, FileText } from 'lucide-react';
+import { X, Send, CheckCircle2, Link2, Palette, ShieldCheck, FileText, Mail, Copy, Check } from 'lucide-react';
 
 interface ApplyModalProps {
   job: JobListing | null;
@@ -24,8 +24,15 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   if (!isOpen || !job) return null;
+
+  const copyEmail = (emailText: string) => {
+    navigator.clipboard?.writeText(emailText);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,6 +220,45 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                   {error}
                 </div>
               )}
+
+              {/* Direct email option banner */}
+              <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-[11px] font-bold text-stone-700 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-[#E25B38]" />
+                    Direct Company Contact
+                  </div>
+                  <span className="text-xs text-stone-600 truncate block">
+                    {job.contactEmail || 'career@mascofuture.com'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => copyEmail(job.contactEmail || 'career@mascofuture.com')}
+                    className="px-3 py-1.5 rounded-lg border border-stone-300 text-xs font-medium text-stone-700 hover:bg-white transition-colors flex items-center gap-1"
+                  >
+                    {copiedEmail ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600 font-medium">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-stone-400" />
+                        <span>Copy Email</span>
+                      </>
+                    )}
+                  </button>
+                  <a
+                    href={`mailto:${job.contactEmail || 'career@mascofuture.com'}?subject=${encodeURIComponent(`Application for ${job.title} - Dakarlaton`)}`}
+                    className="px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-medium hover:bg-stone-800 transition-colors flex items-center gap-1"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Email Direct</span>
+                  </a>
+                </div>
+              </div>
 
               <div className="pt-2 flex items-center justify-end gap-3">
                 <button

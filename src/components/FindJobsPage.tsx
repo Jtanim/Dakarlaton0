@@ -16,7 +16,11 @@ import {
   Sparkles,
   ArrowRight,
   MessageSquare,
-  TrendingUp
+  TrendingUp,
+  Mail,
+  Copy,
+  Check,
+  Send
 } from 'lucide-react';
 
 interface FindJobsPageProps {
@@ -48,7 +52,14 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
   const [showFilters, setShowFilters] = useState(false);
   const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const [showSalaryTrends, setShowSalaryTrends] = useState(false);
+
+  const copyCompanyEmail = (emailText: string) => {
+    navigator.clipboard?.writeText(emailText);
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
 
   // Filter jobs
   const filteredJobs = useMemo(() => {
@@ -304,6 +315,13 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                         {job.salary}
                       </span>
                     </div>
+
+                    {job.contactEmail && (
+                      <div className="mt-2.5 pt-2 border-t border-dashed border-stone-100 flex items-center gap-1.5 text-[11px] text-stone-500 truncate">
+                        <Mail className="w-3 h-3 text-[#E25B38] shrink-0" />
+                        <span className="truncate">{job.contactEmail}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -414,21 +432,89 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   </div>
                 )}
 
+                {/* Direct Company Email & Applications Card */}
+                <div className="bg-[#FAF8F5] rounded-2xl p-4 sm:p-5 border border-[#EBE7DF] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#1C1917] uppercase tracking-wider">
+                      <Mail className="w-4 h-4 text-[#E25B38]" />
+                      Direct Employer Application & Inquiries
+                    </div>
+                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Direct Contact
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-stone-600">
+                    You can email your CV, cover letter, or portfolio directly to the hiring manager at <span className="font-semibold text-stone-900">{activeJob.company}</span>.
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-stone-200 shadow-xs">
+                    <div className="min-w-0">
+                      <span className="text-[11px] text-stone-400 font-medium block">Official Recruiter Email:</span>
+                      <a
+                        href={`mailto:${activeJob.contactEmail || 'career@mascofuture.com'}?subject=${encodeURIComponent(`Application for ${activeJob.title} - Dakarlaton`)}&body=${encodeURIComponent(`Dear ${activeJob.company} Hiring Team,\n\nI am applying for the ${activeJob.title} position in ${activeJob.location} found on Dakarlaton.\n\nPlease find my CV and portfolio attached.\n\nBest regards,`)}`}
+                        className="text-sm font-bold text-[#E25B38] hover:underline truncate block"
+                      >
+                        {activeJob.contactEmail || 'career@mascofuture.com'}
+                      </a>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => copyCompanyEmail(activeJob.contactEmail || 'career@mascofuture.com')}
+                        className="px-3.5 py-2 rounded-xl border border-stone-300 hover:bg-stone-50 text-xs font-medium text-stone-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Copy email to clipboard"
+                      >
+                        {copiedEmail ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-600 font-semibold">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 text-stone-500" />
+                            <span>Copy Email</span>
+                          </>
+                        )}
+                      </button>
+
+                      <a
+                        href={`mailto:${activeJob.contactEmail || 'career@mascofuture.com'}?subject=${encodeURIComponent(`Application for ${activeJob.title} - Dakarlaton`)}&body=${encodeURIComponent(`Dear ${activeJob.company} Hiring Team,\n\nI am writing to apply for the ${activeJob.title} role in ${activeJob.location} listed on Dakarlaton.\n\nPlease find attached my CV, portfolio, and relevant project experience.\n\nBest regards,\n`)}`}
+                        className="px-4 py-2 rounded-xl bg-[#E25B38] hover:bg-[#c94929] text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Send Email</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Action Buttons (Matching Video 00:21) */}
                 <div className="pt-4 border-t border-stone-100 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => onOpenApply(activeJob)}
-                      className="bg-[#E25B38] hover:bg-[#c94929] text-white px-8 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer"
+                      className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5"
                     >
-                      Apply now
+                      <span>Apply now</span>
                     </button>
+
+                    <a
+                      href={`mailto:${activeJob.contactEmail || 'career@mascofuture.com'}?subject=${encodeURIComponent(`Application for ${activeJob.title} - Dakarlaton`)}&body=${encodeURIComponent(`Dear ${activeJob.company} Hiring Team,\n\nI am writing to apply for the ${activeJob.title} position in ${activeJob.location} found on Dakarlaton.\n\nPlease find attached my CV and portfolio.\n\nBest regards,`)}`}
+                      className="bg-stone-900 hover:bg-stone-800 text-white px-6 py-3 rounded-full font-medium text-sm transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+                    >
+                      <Mail className="w-4 h-4 text-[#E25B38]" />
+                      <span>Direct Email</span>
+                    </a>
+
                     <button
                       onClick={() => onNavigate('contact')}
-                      className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 px-6 py-3 rounded-full font-medium text-sm transition-all cursor-pointer"
+                      className="bg-white hover:bg-stone-50 text-stone-800 border border-stone-300 px-5 py-3 rounded-full font-medium text-sm transition-all cursor-pointer"
                     >
                       Ask a question
                     </button>
+
                     <button
                       onClick={() => toggleSaveJob(activeJob.id)}
                       className={`p-3 rounded-full border transition-colors cursor-pointer ${
@@ -436,12 +522,15 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                           ? 'border-[#E25B38] text-[#E25B38] bg-orange-50'
                           : 'border-stone-300 text-stone-500 hover:text-stone-800'
                       }`}
+                      title="Save job"
                     >
                       <Bookmark className="w-4 h-4" />
                     </button>
+
                     <button
                       onClick={handleShare}
                       className="p-3 rounded-full border border-stone-300 text-stone-500 hover:text-stone-800 transition-colors cursor-pointer relative"
+                      title="Share job"
                     >
                       <Share2 className="w-4 h-4" />
                       {copySuccess && (
@@ -453,7 +542,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   </div>
 
                   <p className="text-xs text-stone-500 italic">
-                    You'll be connected with our team to complete your application.
+                    Apply directly on Dakarlaton or send your portfolio via direct email to <span className="font-semibold text-stone-700">{activeJob.contactEmail || 'career@mascofuture.com'}</span>.
                   </p>
                 </div>
               </div>

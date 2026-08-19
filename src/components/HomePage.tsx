@@ -18,7 +18,8 @@ import {
   Users,
   HeartHandshake,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  Mail
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -201,6 +202,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                   {job.salary}
                 </span>
               </div>
+
+              {job.contactEmail && (
+                <div className="mt-2 pt-2 border-t border-dashed border-stone-100 flex items-center gap-1.5 text-[11px] text-stone-500 truncate">
+                  <Mail className="w-3 h-3 text-[#E25B38] shrink-0" />
+                  <span className="truncate">Direct: {job.contactEmail}</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
