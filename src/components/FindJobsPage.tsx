@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { JobListing } from '../types';
 import { GccSalaryTrends } from './GccSalaryTrends';
+import { FormattedTextWithLinks } from './FormattedTextWithLinks';
 import {
   Search,
   MapPin,
@@ -20,7 +21,10 @@ import {
   Mail,
   Copy,
   Check,
-  Send
+  Send,
+  ExternalLink,
+  FileText,
+  Globe
 } from 'lucide-react';
 
 interface FindJobsPageProps {
@@ -286,34 +290,35 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   <div
                     key={job.id}
                     onClick={() => handleJobCardClick(job)}
-                    className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer relative ${
+                    className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer relative max-w-full overflow-hidden ${
                       isSelected
                         ? 'border-[#E25B38] ring-1 ring-[#E25B38] shadow-md'
                         : 'border-[#EBE7DF] hover:border-stone-400 hover:shadow-xs'
                     }`}
+                    style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-[#E25B38]">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-[#E25B38] break-words">
                         {job.category}
                       </span>
-                      <span className="text-[11px] text-stone-400 flex items-center gap-1 font-medium">
+                      <span className="text-[11px] text-stone-400 flex items-center gap-1 font-medium shrink-0">
                         <Clock className="w-3 h-3" /> {job.postedAt}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-[#1C1917] mb-1">
+                    <h3 className="text-base font-bold text-[#1C1917] mb-1 break-words">
                       {job.title}
                     </h3>
-                    <p className="text-xs font-medium text-stone-600 mb-3">
+                    <p className="text-xs font-medium text-stone-600 mb-3 break-words">
                       {job.company}
                     </p>
 
-                    <div className="flex items-center justify-between text-xs text-stone-500 pt-3 border-t border-stone-100">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-stone-400" />
-                        {job.location}
+                    <div className="flex items-center justify-between text-xs text-stone-500 pt-3 border-t border-stone-100 gap-2">
+                      <span className="flex items-center gap-1 min-w-0 truncate">
+                        <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                        <span className="truncate">{job.location}</span>
                       </span>
-                      <span className="font-semibold text-stone-800">
+                      <span className="font-semibold text-stone-800 shrink-0">
                         {job.salary}
                       </span>
                     </div>
@@ -338,65 +343,111 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
 
           {/* Right Column: Selected Job Details (Matching Video 00:20) */}
           <div id="job-detail-panel" className="lg:col-span-7 sticky top-28 scroll-mt-24">
-            {activeJob ? (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE7DF] shadow-md space-y-6">
-                {/* Header */}
-                <div className="border-b border-stone-100 pb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-[#E25B38]">
-                      {activeJob.category}
-                    </span>
-                    <span className="text-xs text-stone-400 flex items-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5" /> Posted {activeJob.postedAt}
-                    </span>
+            {activeJob ? (() => {
+              // Extract external application form link if present in description or requirements
+              const fullJobText = `${activeJob.aboutRole || ''} ${activeJob.description || ''} ${(activeJob.requirements || []).join(' ')} ${(activeJob.responsibilities || []).join(' ')}`;
+              const urlMatch = fullJobText.match(/(https?:\/\/[^\s]+|www\.[^\s]+)/i);
+              let externalFormUrl: string | null = null;
+              if (urlMatch) {
+                let cleanUrl = urlMatch[0].replace(/[.,;:)\]]+$/, '');
+                if (cleanUrl.toLowerCase().startsWith('www.')) cleanUrl = `https://${cleanUrl}`;
+                externalFormUrl = cleanUrl;
+              }
+              const isGoogleForm = externalFormUrl && (externalFormUrl.includes('forms.gle') || externalFormUrl.includes('docs.google.com/forms') || externalFormUrl.includes('viewform'));
+
+              return (
+                <div
+                  className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE7DF] shadow-md space-y-6 max-w-full overflow-hidden"
+                  style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
+                >
+                  {/* Header */}
+                  <div className="border-b border-stone-100 pb-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-[#E25B38]">
+                        {activeJob.category}
+                      </span>
+                      <span className="text-xs text-stone-400 flex items-center gap-1 font-medium">
+                        <Clock className="w-3.5 h-3.5" /> Posted {activeJob.postedAt}
+                      </span>
+                    </div>
+
+                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917] mb-2 break-words">
+                      {activeJob.title}
+                    </h2>
+
+                    <p className="text-base font-semibold text-stone-700 mb-4 break-words">
+                      {activeJob.company}
+                    </p>
+
+                    {/* Meta Items with radio-style icons matching video */}
+                    <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-stone-600 font-medium">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
+                        {activeJob.location}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
+                        {activeJob.type}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
+                        {activeJob.salary}
+                      </span>
+                    </div>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917] mb-2">
-                    {activeJob.title}
-                  </h2>
-
-                  <p className="text-base font-semibold text-stone-700 mb-4">
-                    {activeJob.company}
-                  </p>
-
-                  {/* Meta Items with radio-style icons matching video */}
-                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-stone-600 font-medium">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
-                      {activeJob.location}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
-                      {activeJob.type}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-[#E25B38]" />
-                      {activeJob.salary}
-                    </span>
-                  </div>
-                </div>
+                  {/* External Application Form Callout Banner if detected */}
+                  {externalFormUrl && (
+                    <div className="bg-emerald-50 border border-emerald-200/80 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-bold text-emerald-900 block">
+                            {isGoogleForm ? 'Official Google Application Form' : 'External Application Portal'}
+                          </span>
+                          <span className="text-xs text-emerald-700 block truncate max-w-sm">
+                            Direct applicant submission form provided by employer.
+                          </span>
+                        </div>
+                      </div>
+                      <a
+                        href={externalFormUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="shrink-0 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+                      >
+                        <span>{isGoogleForm ? 'Open Google Form' : 'Open Application Link'}</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
 
                 {/* About this role */}
-                <div className="space-y-3">
+                <div className="space-y-3 max-w-full overflow-hidden">
                   <h4 className="text-sm font-bold text-[#1C1917] uppercase tracking-wider">
                     About this role
                   </h4>
-                  <p className="text-sm text-stone-600 leading-relaxed">
-                    {activeJob.aboutRole || activeJob.description}
-                  </p>
+                  <FormattedTextWithLinks
+                    text={activeJob.aboutRole || activeJob.description}
+                    className="text-sm text-stone-600 leading-relaxed"
+                  />
                 </div>
 
                 {/* Responsibilities */}
                 {activeJob.responsibilities && activeJob.responsibilities.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-w-full overflow-hidden">
                     <h4 className="text-sm font-bold text-[#1C1917] uppercase tracking-wider">
                       Responsibilities
                     </h4>
                     <ul className="space-y-2 text-xs sm:text-sm text-stone-600">
                       {activeJob.responsibilities.map((r, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <span className="text-[#E25B38] font-bold text-xs mt-0.5">•</span>
-                          <span>{r}</span>
+                        <li key={i} className="flex items-start gap-2.5 max-w-full overflow-hidden">
+                          <span className="text-[#E25B38] font-bold text-xs mt-0.5 shrink-0">•</span>
+                          <div className="min-w-0 flex-1">
+                            <FormattedTextWithLinks text={r} className="inline" />
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -405,15 +456,17 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
 
                 {/* Requirements */}
                 {activeJob.requirements && activeJob.requirements.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-w-full overflow-hidden">
                     <h4 className="text-sm font-bold text-[#1C1917] uppercase tracking-wider">
                       Requirements & Skills
                     </h4>
                     <ul className="space-y-2 text-xs sm:text-sm text-stone-600">
                       {activeJob.requirements.map((req, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <span className="text-[#E25B38] font-bold text-xs mt-0.5">•</span>
-                          <span>{req}</span>
+                        <li key={i} className="flex items-start gap-2.5 max-w-full overflow-hidden">
+                          <span className="text-[#E25B38] font-bold text-xs mt-0.5 shrink-0">•</span>
+                          <div className="min-w-0 flex-1">
+                            <FormattedTextWithLinks text={req} className="inline" />
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -426,7 +479,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                     {activeJob.tags.map((t, idx) => (
                       <span
                         key={idx}
-                        className="text-xs px-3 py-1 rounded-full bg-stone-100 text-stone-700 font-medium"
+                        className="text-xs px-3 py-1 rounded-full bg-stone-100 text-stone-700 font-medium break-words"
                       >
                         {t}
                       </span>
@@ -495,11 +548,24 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                 {/* Action Buttons (Matching Video 00:21) */}
                 <div className="pt-4 border-t border-stone-100 space-y-3">
                   <div className="flex flex-wrap items-center gap-3">
+                    {externalFormUrl ? (
+                      <a
+                        href={externalFormUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-2"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span>{isGoogleForm ? 'Apply via Google Form' : 'Apply via External Link'}</span>
+                        <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                      </a>
+                    ) : null}
+
                     <button
                       onClick={() => onOpenApply(activeJob)}
                       className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer flex items-center gap-1.5"
                     >
-                      <span>Apply now</span>
+                      <span>Apply on Dakarlaton</span>
                     </button>
 
                     <a
@@ -544,11 +610,12 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   </div>
 
                   <p className="text-xs text-stone-500 italic">
-                    Apply directly on Dakarlaton or send your portfolio via direct email to <span className="font-semibold text-stone-700">{activeJob.contactEmail || 'career@mascofuture.com'}</span>.
+                    Dakarlaton verified listing • Direct contact with {activeJob.company} hiring team
                   </p>
                 </div>
               </div>
-            ) : (
+              );
+            })() : (
               <div className="bg-white rounded-3xl p-12 text-center border border-stone-200">
                 <p className="text-stone-500 text-sm">Select a job from the list to view full specifications.</p>
               </div>

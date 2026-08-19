@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
+  html, body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-wrap: anywhere;
   }
 
   .font-serif {
     font-family: 'Lora', Georgia, Cambria, 'Times New Roman', Times, serif;
   }
 }
+
