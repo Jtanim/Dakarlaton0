@@ -3,6 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var originalFetch = window.fetch ? window.fetch.bind(window) : undefined;
+          var currentFetch = originalFetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() {
+              return currentFetch || (window.fetch ? window.fetch.bind(window) : undefined);
+            },
+            set: function(newFetch) {
+              currentFetch = newFetch;
+            },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {
+          // Ignore if already locked by environment
+        }
+      })();
+    </script>
     <title>Dakarlaton — Connecting Ambition with Opportunity</title>
     <meta name="description" content="Dakarlaton is where careers take off and great companies find freelance designers and talent to grow." />
     <link rel="canonical" href="https://dakarlaton.com/" />
