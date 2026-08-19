@@ -5,6 +5,12 @@ import {
   signInWithPopup,
   signOut as fbSignOut,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  reload,
+  updateProfile as fbUpdateProfile,
   User as FirebaseUser
 } from 'firebase/auth';
 import {
@@ -111,6 +117,12 @@ export {
   signInWithPopup,
   fbSignOut,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  reload,
+  fbUpdateProfile,
   collection,
   getDocs,
   getDoc,
