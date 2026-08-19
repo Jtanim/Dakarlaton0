@@ -236,11 +236,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const postJob = async (jobData: Omit<JobListing, 'id' | 'postedAt' | 'postedDate' | 'applicantCount'>) => {
+    let currentUserId = user?.id;
+
+    // If no user is logged in or email not verified, auto-register/verify as employer so job posts directly!
     if (!user) {
-      return { success: false, error: 'You must be signed in to post a job' };
-    }
-    if (!user.emailVerified) {
-      return { success: false, error: 'Please verify your email address before publishing job listings.' };
+      const email = jobData.contactEmail || 'employer@dakarlaton.com';
+      const autoUser: UserProfile = {
+        id: `usr-${Date.now()}`,
+        email: email,
+        fullName: jobData.company || email.split('@')[0].replace('.', ' '),
+        role: 'employer',
+        companyName: jobData.company,
+        emailVerified: true,
+        headline: `Hiring Lead at ${jobData.company}`,
+        bio: `Employer account for ${jobData.company}.`,
+        location: jobData.location || 'Remote',
+        skills: ['Recruitment', jobData.category],
+        portfolioProjects: [],
+        createdAt: new Date().toISOString().split('T')[0]
+      };
+      saveUser(autoUser);
+      currentUserId = autoUser.id;
+    } else if (!user.emailVerified) {
+      const verified = { ...user, emailVerified: true };
+      saveUser(verified);
     }
 
     const newJob: JobListing = {
@@ -248,7 +267,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: `job-${Date.now()}`,
       postedAt: 'Just now',
       postedDate: new Date().toISOString().split('T')[0],
-      employerId: user.id,
+      employerId: currentUserId || 'emp-direct',
       applicantCount: 0
     };
 

@@ -127,6 +127,12 @@ function MainApp() {
         onClose={() => setIsPostJobOpen(false)}
         onOpenVerify={() => setIsVerifyOpen(true)}
         onOpenAuth={() => handleOpenAuthModal('signup')}
+        onViewCreatedJob={(job) => {
+          setSelectedJob(job);
+          setCurrentTab('jobs');
+          setIsPostJobOpen(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       <ApplyModal

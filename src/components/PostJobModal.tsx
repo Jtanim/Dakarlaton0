@@ -1,53 +1,56 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, Briefcase, DollarSign, MapPin, Building, FileText, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { JobListing } from '../types';
+import { X, Briefcase, CheckCircle2, ArrowRight, Sparkles, Building2, MapPin, DollarSign } from 'lucide-react';
 
 interface PostJobModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenVerify: () => void;
   onOpenAuth: () => void;
+  onViewCreatedJob?: (job: JobListing) => void;
 }
 
 export const PostJobModal: React.FC<PostJobModalProps> = ({
   isOpen,
   onClose,
   onOpenVerify,
-  onOpenAuth
+  onOpenAuth,
+  onViewCreatedJob
 }) => {
   const { user, isAuthenticated, postJob } = useAuth();
 
   const [title, setTitle] = useState('');
   const [company, setCompany] = useState(user?.companyName || '');
   const [category, setCategory] = useState('Design');
-  const [type, setType] = useState<'Full-time' | 'Part-time' | 'Contract' | 'Freelance'>('Freelance');
-  const [workplaceType, setWorkplaceType] = useState<'Remote' | 'Hybrid' | 'On-site'>('Remote');
-  const [location, setLocation] = useState('Remote');
+  const [type, setType] = useState<'Full-time' | 'Part-time' | 'Contract' | 'Freelance'>('Full-time');
+  const [workplaceType, setWorkplaceType] = useState<'Remote' | 'Hybrid' | 'On-site'>('On-site');
+  const [location, setLocation] = useState('Riyadh, Saudi Arabia');
   const [salary, setSalary] = useState('$60 - $85 / hr');
   const [description, setDescription] = useState('');
   const [responsibilitiesText, setResponsibilitiesText] = useState(
-    'Deliver interactive Figma prototypes\nCollaborate with product and engineering teams\nMaintain design system components'
+    'Strong proficiency in AutoCAD / design software\nExperience in drafting and construction drawings\nAbility to read and understand architectural drawings\nCollaborate with engineering and project teams'
   );
   const [requirementsText, setRequirementsText] = useState(
-    'Strong portfolio showcasing relevant case studies\n3+ years experience in design or related craft\nProficiency in Figma and modern tooling'
+    'Relevant experience in design, engineering, or drafting\nStrong portfolio showcasing relevant technical drawings or case studies\nEffective communication and delivery'
   );
-  const [tagsInput, setTagsInput] = useState('Figma, UI/UX, Design System');
+  const [tagsInput, setTagsInput] = useState('AutoCAD, Revit, Drafting, Design');
   const [contactEmail, setContactEmail] = useState(user?.email || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [createdJob, setCreatedJob] = useState<JobListing | null>(null);
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isAuthenticated || !user) {
-      onOpenAuth();
+    if (!title.trim() || !company.trim()) {
+      setError('Please provide both a Job Title and Company / Studio Name');
       return;
     }
 
-    if (!user.emailVerified) {
-      onOpenVerify();
+    if (!contactEmail.trim()) {
+      setError('Please provide a contact email for candidate applications');
       return;
     }
 
@@ -70,38 +73,61 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
       .filter(Boolean);
 
     const res = await postJob({
-      title,
-      company: company.trim() || 'Creative Studio',
+      title: title.trim(),
+      company: company.trim(),
       category,
       type,
-      location,
+      location: location.trim() || (workplaceType === 'Remote' ? 'Remote' : 'Global'),
       workplaceType,
-      salary,
-      description,
-      aboutRole: description,
-      responsibilities: responsibilities.length > 0 ? responsibilities : ['Collaborate on design and deliverables'],
-      requirements: requirements.length > 0 ? requirements : ['Strong portfolio and communication'],
-      benefits: ['Flexible schedule', 'Direct client collaboration'],
-      tags: tags.length > 0 ? tags : ['Design', 'Remote'],
-      employerId: user.id,
-      contactEmail: contactEmail || user.email
+      salary: salary.trim() || 'Competitive',
+      description: description.trim() || `Exciting opportunity at ${company} for a skilled ${title}.`,
+      aboutRole: description.trim() || `We are looking for a dedicated ${title} to join our team at ${company}.`,
+      responsibilities: responsibilities.length > 0 ? responsibilities : ['Execute deliverables with precision and collaborate across teams.'],
+      requirements: requirements.length > 0 ? requirements : ['Proven track record and portfolio of relevant work.'],
+      benefits: ['Competitive compensation', 'Flexible work environment', 'Collaborative team'],
+      tags: tags.length > 0 ? tags : [category, type, workplaceType],
+      employerId: user?.id || 'emp-direct',
+      contactEmail: contactEmail.trim()
     });
 
     setIsSubmitting(false);
 
-    if (res.success) {
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 1600);
+    if (res.success && res.job) {
+      setCreatedJob(res.job);
+    } else if (res.success) {
+      // Fallback created job
+      setCreatedJob({
+        id: `job-${Date.now()}`,
+        title,
+        company,
+        category,
+        type,
+        workplaceType,
+        location,
+        salary,
+        description,
+        aboutRole: description,
+        responsibilities,
+        requirements,
+        tags,
+        postedAt: 'Just now',
+        postedDate: new Date().toISOString().split('T')[0],
+        employerId: user?.id || 'emp-direct',
+        applicantCount: 0
+      });
     } else {
-      setError(res.error || 'Failed to post job');
+      setError(res.error || 'Failed to post job. Please try again.');
     }
   };
 
+  const handleReset = () => {
+    setTitle('');
+    setDescription('');
+    setCreatedJob(null);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-stone-200 relative max-h-[92vh] overflow-y-auto">
         <button
           onClick={onClose}
@@ -110,61 +136,76 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {success ? (
-          <div className="text-center py-10 space-y-4">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto animate-bounce">
+        {createdJob ? (
+          <div className="text-center py-6 sm:py-8 space-y-6 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-xs">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h3 className="text-2xl font-bold text-stone-900">Job Posted Successfully!</h3>
-            <p className="text-stone-600 text-sm max-w-md mx-auto">
-              Your role <span className="font-semibold text-stone-900">{title}</span> is now live for freelance designers and job seekers across Dakarlaton.
-            </p>
+
+            <div className="space-y-2 max-w-lg mx-auto">
+              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full inline-block">
+                Live on Dakarlaton
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+                Job Posted Successfully!
+              </h3>
+              <p className="text-stone-600 text-sm leading-relaxed">
+                Your role <span className="font-bold text-[#1C1917]">"{createdJob.title}"</span> at <span className="font-bold text-[#1C1917]">{createdJob.company}</span> is now published and open for applications.
+              </p>
+            </div>
+
+            {/* Quick summary preview card */}
+            <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-left max-w-md mx-auto space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#E25B38] bg-orange-50 px-2.5 py-0.5 rounded-full">
+                  {createdJob.category}
+                </span>
+                <span className="text-xs text-stone-500 font-medium">{createdJob.type}</span>
+              </div>
+              <h4 className="text-base font-bold text-stone-900">{createdJob.title}</h4>
+              <p className="text-xs text-stone-600 flex items-center justify-between pt-1 border-t border-stone-200">
+                <span>{createdJob.company} • {createdJob.location}</span>
+                <span className="font-semibold text-stone-900">{createdJob.salary}</span>
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {onViewCreatedJob && (
+                <button
+                  type="button"
+                  onClick={() => onViewCreatedJob(createdJob)}
+                  className="bg-[#E25B38] hover:bg-[#c94929] text-white px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  View in Job Feed <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={handleReset}
+                className="bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 px-5 py-2.5 rounded-full text-sm font-medium transition-colors cursor-pointer"
+              >
+                Post Another Role
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-stone-500 hover:text-stone-800 text-xs px-3 py-2"
+              >
+                Close
+              </button>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#E25B38] uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#E25B38] uppercase tracking-wider mb-1">
                 <Briefcase className="w-3.5 h-3.5" /> For Employers & Studios
               </div>
-              <h3 className="text-2xl font-bold text-[#1C1917]">Post a New Role</h3>
-              <p className="text-sm text-stone-600">
-                Reach thousands of verified freelance designers, creatives, and tech professionals.
+              <h3 className="text-2xl font-serif font-bold text-[#1C1917]">Post a New Role</h3>
+              <p className="text-xs sm:text-sm text-stone-600">
+                Reach thousands of verified freelance designers, creatives, and technical talent.
               </p>
             </div>
-
-            {/* Auth check banner */}
-            {!isAuthenticated ? (
-              <div className="bg-orange-50 border border-orange-200 p-4 rounded-2xl flex items-center justify-between">
-                <div className="text-xs text-orange-900">
-                  <span className="font-semibold block">You are not signed in</span>
-                  Please sign in or create an employer account before posting.
-                </div>
-                <button
-                  type="button"
-                  onClick={onOpenAuth}
-                  className="bg-[#E25B38] text-white text-xs px-3.5 py-1.5 rounded-full font-medium shadow-xs"
-                >
-                  Sign In
-                </button>
-              </div>
-            ) : !user?.emailVerified ? (
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-center justify-between">
-                <div className="text-xs text-amber-900 flex items-center gap-2">
-                  <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0" />
-                  <div>
-                    <span className="font-semibold block">Email Verification Required</span>
-                    Verify your email address ({user.email}) to publish jobs.
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={onOpenVerify}
-                  className="bg-amber-600 text-white text-xs px-3.5 py-1.5 rounded-full font-medium shadow-xs"
-                >
-                  Verify Now
-                </button>
-              </div>
-            ) : null}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -175,7 +216,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Freelance Brand & UI Designer"
+                    placeholder="e.g. AutoCAD Draftsman | Riyadh"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -189,7 +230,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Brightwave Studio"
+                    placeholder="e.g. MAS Future Group"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -208,11 +249,13 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
                   >
                     <option value="Design">Design</option>
-                    <option value="Marketing">Marketing</option>
                     <option value="Engineering">Engineering</option>
+                    <option value="Architecture & 3D">Architecture & 3D</option>
+                    <option value="Marketing">Marketing</option>
                     <option value="Operations">Operations</option>
                     <option value="Content">Content</option>
                     <option value="Data">Data</option>
+                    <option value="Finance">Finance</option>
                   </select>
                 </div>
 
@@ -225,8 +268,8 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     onChange={(e) => setType(e.target.value as any)}
                     className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
                   >
-                    <option value="Freelance">Freelance</option>
                     <option value="Full-time">Full-time</option>
+                    <option value="Freelance">Freelance</option>
                     <option value="Contract">Contract</option>
                     <option value="Part-time">Part-time</option>
                   </select>
@@ -241,13 +284,15 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     onChange={(e) => {
                       const val = e.target.value as any;
                       setWorkplaceType(val);
-                      if (val === 'Remote') setLocation('Remote');
+                      if (val === 'Remote' && location === 'Riyadh, Saudi Arabia') {
+                        setLocation('Remote');
+                      }
                     }}
                     className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
                   >
+                    <option value="On-site">On-site</option>
                     <option value="Remote">Remote</option>
                     <option value="Hybrid">Hybrid</option>
-                    <option value="On-site">On-site</option>
                   </select>
                 </div>
               </div>
@@ -259,7 +304,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Remote (Worldwide) or Dakar, SN"
+                    placeholder="e.g. Riyadh, Saudi Arabia"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -273,7 +318,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. $70 - $95 / hr or $90k - $120k"
+                    placeholder="e.g. $60 - $85 / hr or SAR 10,000 / mo"
                     value={salary}
                     onChange={(e) => setSalary(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -288,7 +333,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 <textarea
                   rows={3}
                   required
-                  placeholder="Describe the opportunity, project scope, team background, and key objectives..."
+                  placeholder="Describe the opportunity, key scope, team background, and goals..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -328,7 +373,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Figma, UI Design, Mobile"
+                    placeholder="e.g. AutoCAD, Revit, Drafting, Design"
                     value={tagsInput}
                     onChange={(e) => setTagsInput(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -337,12 +382,12 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                    Contact / Applications Email
+                    Contact / Applications Email *
                   </label>
                   <input
                     type="email"
                     required
-                    placeholder="careers@yourcompany.com"
+                    placeholder="careers@mascofuture.com"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
@@ -356,11 +401,11 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 </div>
               )}
 
-              <div className="pt-2 flex items-center justify-end gap-3">
+              <div className="pt-2 flex items-center justify-end gap-3 border-t border-stone-100">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors"
+                  className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
