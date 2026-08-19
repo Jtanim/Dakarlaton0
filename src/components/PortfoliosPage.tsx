@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserProfile, PortfolioProject } from '../types';
+import { GccSalaryTrends } from './GccSalaryTrends';
 import {
   Palette,
   CheckCircle2,
@@ -13,7 +14,8 @@ import {
   Mail,
   X,
   Search,
-  FolderOpen
+  FolderOpen,
+  TrendingUp
 } from 'lucide-react';
 
 interface PortfoliosPageProps {
@@ -27,6 +29,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeDesignerModal, setActiveDesignerModal] = useState<UserProfile | null>(null);
   const [activeProjectPreview, setActiveProjectPreview] = useState<PortfolioProject | null>(null);
+  const [showSalaryTrends, setShowSalaryTrends] = useState(false);
 
   const skillsList = ['All', 'UI/UX', 'Design Systems', 'Brand Identity', '3D Design', 'Mobile UI', 'Figma', 'Packaging'];
 
@@ -78,8 +81,27 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
               <Sparkles className="w-4 h-4" /> Showcase Your Portfolio
             </button>
           )}
+
+          <button
+            onClick={() => setShowSalaryTrends(!showSalaryTrends)}
+            className={`px-6 py-3 rounded-full font-semibold text-xs transition-all flex items-center gap-2 cursor-pointer ${
+              showSalaryTrends
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'bg-orange-50 hover:bg-orange-100 text-[#E25B38] border border-orange-200'
+            }`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            {showSalaryTrends ? 'Hide Salary Trends' : 'Explore GCC Salary & Rate Benchmarks'}
+          </button>
         </div>
       </section>
+
+      {/* GCC Salary Trends Chart & Calculator */}
+      {showSalaryTrends && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-in fade-in duration-200">
+          <GccSalaryTrends />
+        </section>
+      )}
 
       {/* Filter and Search Bar */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

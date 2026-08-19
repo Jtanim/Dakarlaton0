@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { JobListing } from '../types';
+import { GccSalaryTrends } from './GccSalaryTrends';
 import {
   Search,
   MapPin,
@@ -14,7 +15,8 @@ import {
   Bookmark,
   Sparkles,
   ArrowRight,
-  MessageSquare
+  MessageSquare,
+  TrendingUp
 } from 'lucide-react';
 
 interface FindJobsPageProps {
@@ -46,6 +48,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
   const [showFilters, setShowFilters] = useState(false);
   const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [showSalaryTrends, setShowSalaryTrends] = useState(false);
 
   // Filter jobs
   const filteredJobs = useMemo(() => {
@@ -134,18 +137,40 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
             />
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className={`w-full sm:w-auto px-5 py-2.5 rounded-xl sm:rounded-full font-medium text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-              showFilters || selectedCategory !== 'All' || selectedType !== 'All'
-                ? 'bg-stone-900 text-white'
-                : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
-            }`}
-          >
-            <Filter className="w-3.5 h-3.5" /> Filters
-          </button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setShowSalaryTrends(!showSalaryTrends)}
+              className={`w-full sm:w-auto px-4 py-2.5 rounded-xl sm:rounded-full font-semibold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+                showSalaryTrends
+                  ? 'bg-[#E25B38] text-white shadow-xs'
+                  : 'bg-orange-50 hover:bg-orange-100 text-[#E25B38] border border-orange-200/60'
+              }`}
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+              {showSalaryTrends ? 'Hide Salary Trends' : 'GCC Rate & Salary Trends'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowFilters(!showFilters)}
+              className={`w-full sm:w-auto px-5 py-2.5 rounded-xl sm:rounded-full font-medium text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
+                showFilters || selectedCategory !== 'All' || selectedType !== 'All'
+                  ? 'bg-stone-900 text-white'
+                  : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" /> Filters
+            </button>
+          </div>
         </div>
+
+        {/* GCC Salary Trends Chart & Calculator */}
+        {showSalaryTrends && (
+          <div className="mb-8 animate-in fade-in duration-200">
+            <GccSalaryTrends />
+          </div>
+        )}
 
         {/* Expandable Filters Drawer */}
         {showFilters && (
