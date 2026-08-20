@@ -11,7 +11,9 @@ import {
   Plus,
   Tag,
   Search,
-  ChevronDown
+  ChevronDown,
+  Clock,
+  Calendar
 } from 'lucide-react';
 
 interface PostJobModalProps {
@@ -340,6 +342,16 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 </span>
                 <span className="text-xs text-stone-500 font-medium">
                   {createdJob.type}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium">
+                <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md">
+                  <Calendar className="w-3 h-3 text-[#E25B38]" />
+                  {createdJob.postedDate || 'Aug 20, 2026'}
+                </span>
+                <span className="flex items-center gap-1 text-stone-500">
+                  <Clock className="w-3 h-3 text-stone-400" />
+                  {createdJob.postedTime || 'Just now'}
                 </span>
               </div>
               <h4 className="text-base font-bold text-stone-900">

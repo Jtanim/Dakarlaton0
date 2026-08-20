@@ -49,6 +49,8 @@ export interface JobListing {
   salary: string;
   postedAt: string;
   postedDate: string;
+  postedTime?: string;
+  postedTimestamp?: number;
   description: string;
   aboutRole: string;
   responsibilities: string[];

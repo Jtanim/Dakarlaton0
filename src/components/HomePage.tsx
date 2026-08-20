@@ -20,7 +20,9 @@ import {
   HeartHandshake,
   Sparkles,
   ShieldCheck,
-  Mail
+  Mail,
+  Clock,
+  Calendar
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -180,6 +182,17 @@ export const HomePage: React.FC<HomePageProps> = ({
                   </span>
                   <span className="text-xs text-stone-500 font-medium">
                     {job.type}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium pt-0.5">
+                  <span className="flex items-center gap-1 text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">
+                    <Calendar className="w-3 h-3 text-[#E25B38]" />
+                    {job.postedDate || 'Aug 20, 2026'}
+                  </span>
+                  <span className="flex items-center gap-1 text-stone-500">
+                    <Clock className="w-3 h-3 text-stone-400" />
+                    {job.postedTime || '02:00 PM'}
                   </span>
                 </div>
 

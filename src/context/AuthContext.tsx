@@ -57,6 +57,7 @@ interface AuthContextType {
   addPortfolioProject: (project: Omit<PortfolioProject, 'id'>) => Promise<void>;
   deletePortfolioProject: (projectId: string) => Promise<void>;
   postJob: (jobData: Omit<JobListing, 'id' | 'postedAt' | 'postedDate' | 'applicantCount'>) => Promise<{ success: boolean; job?: JobListing; error?: string }>;
+  deleteJob: (jobId: string) => Promise<{ success: boolean; error?: string }>;
   applyToJob: (applicationData: Omit<JobApplication, 'id' | 'appliedAt' | 'status'>) => Promise<{ success: boolean; error?: string }>;
   submitContact: (data: { fullName: string; email: string; topic: string; message: string }) => Promise<{ success: boolean }>;
   subscribeToAlerts: (email: string, region: string) => Promise<{ success: boolean }>;
@@ -83,6 +84,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
   const [lastVerificationToken, setLastVerificationToken] = useState<string | null>(null);
 
+  // Helper to remove deprecated sample jobs
+  const isDeprecatedMockJob = (id: string) => {
+    return ['job-1', 'job-2', 'job-3', 'job-4', 'job-5', 'job-6', 'job-7', 'job-8'].includes(id);
+  };
+
   // Initialize cached data from local storage for fast startup
   useEffect(() => {
     try {
@@ -92,7 +98,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       const savedJobs = localStorage.getItem(LOCAL_STORAGE_JOBS_KEY);
       if (savedJobs) {
-        setJobs(JSON.parse(savedJobs));
+        const parsed = JSON.parse(savedJobs);
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed.filter((j: JobListing) => !isDeprecatedMockJob(j.id));
+          if (cleaned.length > 0) {
+            setJobs(cleaned);
+          } else {
+            setJobs(INITIAL_JOBS);
+          }
+        }
       }
       const savedApps = localStorage.getItem(LOCAL_STORAGE_APPS_KEY);
       if (savedApps) {
@@ -173,11 +187,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!snapshot.empty) {
           const fetchedJobs: JobListing[] = [];
           snapshot.forEach((docSnap) => {
-            fetchedJobs.push(docSnap.data() as JobListing);
+            const data = docSnap.data() as JobListing;
+            if (isDeprecatedMockJob(data.id)) {
+              // Delete old deprecated mock job doc from Firestore
+              deleteDoc(doc(db, 'jobs', data.id)).catch(() => {});
+            } else {
+              // Normalize date and time if missing
+              if (!data.postedTime) {
+                data.postedTime = '02:00 PM';
+              }
+              if (!data.postedTimestamp) {
+                data.postedTimestamp = data.postedDate ? new Date(data.postedDate).getTime() : Date.now();
+              }
+              fetchedJobs.push(data);
+            }
           });
-          // Sort by newest
-          fetchedJobs.sort((a, b) => (b.postedDate || '').localeCompare(a.postedDate || ''));
-          saveJobs(fetchedJobs);
+          // Sort by newest timestamp
+          fetchedJobs.sort((a, b) => (b.postedTimestamp || 0) - (a.postedTimestamp || 0));
+          if (fetchedJobs.length > 0) {
+            saveJobs(fetchedJobs);
+          } else {
+            seedInitialJobs();
+          }
         } else {
           // Auto-seed initial jobs to Firestore on first run
           seedInitialJobs();
@@ -622,11 +653,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       currentUserId = autoUser.id;
     }
 
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+    const formattedTime = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
     const newJob: JobListing = {
       ...jobData,
       id: `job-${Date.now()}`,
-      postedAt: 'Just now',
-      postedDate: new Date().toISOString().split('T')[0],
+      postedAt: `${formattedDate} at ${formattedTime}`,
+      postedDate: formattedDate,
+      postedTime: formattedTime,
+      postedTimestamp: now.getTime(),
       applicantCount: 0,
       employerId: currentUserId || 'emp-default'
     };
@@ -637,9 +682,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn('Firestore postJob fallback:', e);
     }
 
-    const updatedJobs = [newJob, ...jobs];
+    const updatedJobs = [newJob, ...jobs.filter(j => j.id !== newJob.id)];
     saveJobs(updatedJobs);
     return { success: true, job: newJob };
+  };
+
+  const deleteJob = async (jobId: string) => {
+    try {
+      await deleteDoc(doc(db, 'jobs', jobId));
+    } catch (e) {
+      console.warn('Firestore deleteJob notice:', e);
+    }
+    const updated = jobs.filter((j) => j.id !== jobId);
+    saveJobs(updated);
+    return { success: true };
   };
 
   const applyToJob = async (applicationData: Omit<JobApplication, 'id' | 'appliedAt' | 'status'>) => {
@@ -760,6 +816,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addPortfolioProject,
         deletePortfolioProject,
         postJob,
+        deleteJob,
         applyToJob,
         submitContact,
         subscribeToAlerts,

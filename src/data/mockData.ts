@@ -11,8 +11,10 @@ export const INITIAL_JOBS: JobListing[] = [
     location: 'Riyadh, Saudi Arabia',
     workplaceType: 'On-site',
     salary: 'SAR 8,500 - SAR 12,000 / month',
-    postedAt: 'Just now',
-    postedDate: '2026-08-19',
+    postedAt: 'Aug 20, 2026 at 02:00 PM',
+    postedDate: '2026-08-20',
+    postedTime: '02:00 PM',
+    postedTimestamp: 1787205600000,
     featured: true,
     description: 'MAS Future Group is looking for a skilled AutoCAD Draftsman/Draftswoman based in Riyadh to produce technical, architectural, and structural shop drawings for ongoing construction and infrastructure projects.',
     aboutRole: 'MAS Future Group is seeking an experienced AutoCAD Draftsman/Draftswoman in Riyadh. You will collaborate closely with structural engineers, site managers, and consultants to generate accurate, code-compliant as-built and detailed construction drawings.',
@@ -40,283 +42,83 @@ export const INITIAL_JOBS: JobListing[] = [
     applicantCount: 5
   },
   {
-    id: 'job-1',
-    title: 'Senior Product Designer',
-    company: 'Brightwave Studio',
-    companyLogo: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
-    category: 'Design',
+    id: 'job-gcc-architectural-bim',
+    title: 'Senior Architectural & 3D BIM Designer',
+    company: 'Al-Madar Engineering Consultants',
+    companyLogo: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=150&auto=format&fit=crop&q=80',
+    category: 'Architecture & 3D',
     type: 'Full-time',
-    location: 'Remote',
-    workplaceType: 'Remote',
-    salary: '$90k - $120k',
-    postedAt: '2 days ago',
-    postedDate: '2026-08-16',
-    featured: true,
-    description: 'Lead end-to-end product design for our core platform. You will work closely with engineering and product teams to ship beautiful, user-centered experiences at scale.',
-    aboutRole: 'Lead end-to-end product design for our core platform. You’ll work closely with engineering and product to ship beautiful, user-centered experiences at scale.',
-    responsibilities: [
-      'Architect design systems and component libraries in Figma for web and mobile',
-      'Conduct user research, interviews, and usability testing sessions with global customers',
-      'Collaborate directly with product managers and engineers throughout agile sprints',
-      'Prototype micro-interactions and interactive motion specs'
-    ],
-    requirements: [
-      '5+ years of experience designing complex web applications or SaaS tools',
-      'A stellar portfolio demonstrating strong UI/UX craft, typography, and case studies',
-      'Deep mastery of Figma, auto-layout, tokens, and prototyping workflows',
-      'Strong communication skills and freelance/remote self-direction'
-    ],
-    benefits: [
-      '100% remote work flexibility from anywhere',
-      '$3,000 annual home office & equipment stipend',
-      'Comprehensive health, dental, and vision coverage',
-      'Unlimited paid time off (minimum 25 days encouraged)'
-    ],
-    tags: ['Figma', 'Design Systems', 'UI/UX', 'SaaS', 'Mobile & Web'],
-    employerId: 'emp-brightwave',
-    contactEmail: 'careers@brightwavestudio.com',
-    applicantCount: 14
-  },
-  {
-    id: 'job-2',
-    title: 'Growth Marketing Manager',
-    company: 'Launchpad HQ',
-    companyLogo: 'https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=150&auto=format&fit=crop&q=80',
-    category: 'Marketing',
-    type: 'Full-time',
-    location: 'Dakar, SN',
-    workplaceType: 'Hybrid',
-    salary: '$75k - $95k',
-    postedAt: '3 days ago',
-    postedDate: '2026-08-15',
-    featured: true,
-    description: 'Drive high-impact user acquisition and conversion rate optimization campaigns across organic and paid channels in emerging tech hubs.',
-    aboutRole: 'Drive high-impact user acquisition and conversion rate optimization campaigns across organic and paid channels in emerging tech hubs.',
-    responsibilities: [
-      'Design, test, and scale multichannel growth experiments across paid search, social, and content',
-      'Optimize landing pages and signup funnels alongside product design teams',
-      'Analyze lifecycle metrics, cohort retention, and CAC/LTV dynamics'
-    ],
-    requirements: [
-      '3+ years in growth marketing or performance marketing at a fast-growing tech startup',
-      'Data-driven mindset with proficiency in Google Analytics, Mixpanel, and SQL basics',
-      'Fluency in English and French is an advantage for West African regional markets'
-    ],
-    benefits: [
-      'Flexible hybrid schedule in Dakar workspace or remote',
-      'Annual equity grant and performance bonus structure',
-      'Learning budget for courses and industry conferences'
-    ],
-    tags: ['Growth', 'Paid Ads', 'SEO', 'Analytics', 'Funnel Optimization'],
-    employerId: 'emp-launchpad',
-    contactEmail: 'jobs@launchpadhq.io',
-    applicantCount: 9
-  },
-  {
-    id: 'job-3',
-    title: 'Full-Stack Engineer',
-    company: 'Nexora Tech',
-    companyLogo: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&auto=format&fit=crop&q=80',
-    category: 'Engineering',
-    type: 'Full-time',
-    location: 'Remote',
-    workplaceType: 'Remote',
-    salary: '$110k - $140k',
-    postedAt: '1 day ago',
-    postedDate: '2026-08-17',
-    featured: true,
-    description: 'Build fast, scalable web applications with React, TypeScript, Node.js, and cloud native architectures.',
-    aboutRole: 'Build fast, scalable web applications with React, TypeScript, Node.js, and cloud native architectures.',
-    responsibilities: [
-      'Develop pixel-perfect web interfaces matching responsive Figma designs',
-      'Design and maintain clean GraphQL and REST APIs with Node.js/PostgreSQL',
-      'Ensure high code quality through automated testing and code reviews'
-    ],
-    requirements: [
-      '4+ years building full-stack applications in modern React and TypeScript',
-      'Strong knowledge of relational databases, caching, and serverless deployments',
-      'Comfortable communicating asynchronously across global time zones'
-    ],
-    benefits: [
-      'Competitive salary + early employee equity',
-      'Flexible working hours & async-first culture',
-      'Top-tier MacBook Pro and home setup budget'
-    ],
-    tags: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'TailwindCSS'],
-    employerId: 'emp-nexora',
-    contactEmail: 'talent@nexoratech.dev',
-    applicantCount: 22
-  },
-  {
-    id: 'job-4',
-    title: 'Operations Lead',
-    company: 'Meridian Group',
-    companyLogo: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=150&auto=format&fit=crop&q=80',
-    category: 'Operations',
-    type: 'Full-time',
-    location: 'Dakar, SN',
+    location: 'Jeddah / Riyadh, Saudi Arabia',
     workplaceType: 'On-site',
-    salary: '$65k - $85k',
-    postedAt: '5 days ago',
-    postedDate: '2026-08-13',
+    salary: 'SAR 14,000 - SAR 18,000 / month',
+    postedAt: 'Aug 20, 2026 at 01:15 PM',
+    postedDate: '2026-08-20',
+    postedTime: '01:15 PM',
+    postedTimestamp: 1787202900000,
     featured: true,
-    description: 'Oversee operational workflows, vendor coordination, and internal cross-team efficiency.',
-    aboutRole: 'Oversee operational workflows, vendor coordination, and internal cross-team efficiency across multinational offices.',
+    description: 'Lead 3D BIM model coordination, Revit architectural detailing, and clash detection for high-profile hospitality and commercial towers in Western KSA.',
+    aboutRole: 'Al-Madar Engineering is hiring a Senior Architectural BIM Specialist to supervise multi-disciplinary BIM models and ensure compliance with Saudi Vision 2030 building standards.',
     responsibilities: [
-      'Streamline business operations and standard operating procedures (SOPs)',
-      'Manage supply chain, vendor contracts, and logistics operations',
-      'Coordinate quarterly OKRs and performance tracking across regional teams'
+      'Develop LOD 300-400 BIM models in Autodesk Revit and Navisworks',
+      'Perform automated clash detection with MEP and structural disciplines',
+      'Generate high-precision architectural shop drawings and bill of quantities (BOQ)',
+      'Mentor junior draftspersons and modelers across active project sites'
     ],
     requirements: [
-      '4+ years in operational leadership or consulting',
-      'Strong organizational, project management, and negotiation skills',
-      'Proven track record scaling operational processes'
+      'Bachelors degree in Architecture or Architectural Engineering',
+      '5+ years experience in GCC architectural projects',
+      'Expert proficiency in Autodesk Revit, AutoCAD 3D, and Navisworks Manage',
+      'Registered with Saudi Council of Engineers (SCE) or eligible for immediate accreditation'
     ],
     benefits: [
-      'Private health insurance & pension plan',
-      'Generous relocation support if moving to Dakar',
-      'Annual executive retreat and wellness perks'
+      'Competitive tax-free monthly compensation package',
+      'Class-A family medical insurance',
+      'Performance-based project milestone bonuses',
+      'Relocation and housing assistance provided'
     ],
-    tags: ['Operations', 'Strategy', 'Project Management', 'Logistics'],
-    employerId: 'emp-meridian',
-    contactEmail: 'hr@meridiangroup.com',
-    applicantCount: 7
-  },
-  {
-    id: 'job-5',
-    title: 'Content Strategist',
-    company: 'Pulse Media',
-    companyLogo: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=150&auto=format&fit=crop&q=80',
-    category: 'Content',
-    type: 'Freelance',
-    location: 'Hybrid',
-    workplaceType: 'Hybrid',
-    salary: '$55k - $70k',
-    postedAt: '1 week ago',
-    postedDate: '2026-08-11',
-    featured: true,
-    description: 'Shape storytelling, editorial strategy, and content marketing narratives for high-growth tech brands.',
-    aboutRole: 'Shape storytelling, editorial strategy, and content marketing narratives for high-growth tech brands.',
-    responsibilities: [
-      'Produce compelling thought leadership articles, case studies, and video scripts',
-      'Build editorial calendars and distribution strategies across social & newsletter platforms',
-      'Collaborate with visual designers to create engaging infographics'
-    ],
-    requirements: [
-      '3+ years in editorial journalism, content strategy, or copywriting',
-      'Exceptional portfolio of published digital articles and branded content',
-      'Strong research skills and ability to unpack complex technical topics'
-    ],
-    benefits: [
-      'Flexible freelance contract with retainer options',
-      'Direct exposure to top global founders and creative directors'
-    ],
-    tags: ['Content Strategy', 'Copywriting', 'Storytelling', 'Editorial'],
-    employerId: 'emp-pulse',
-    contactEmail: 'editorial@pulsemedia.net',
-    applicantCount: 11
-  },
-  {
-    id: 'job-6',
-    title: 'Data Analyst',
-    company: 'Clearview Analytics',
-    companyLogo: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=150&auto=format&fit=crop&q=80',
-    category: 'Data',
-    type: 'Full-time',
-    location: 'Remote',
-    workplaceType: 'Remote',
-    salary: '$80k - $100k',
-    postedAt: '4 days ago',
-    postedDate: '2026-08-14',
-    featured: true,
-    description: 'Transform complex datasets into actionable business intelligence and interactive visual dashboards.',
-    aboutRole: 'Transform complex datasets into actionable business intelligence and interactive visual dashboards.',
-    responsibilities: [
-      'Build and maintain executive Tableau & PowerBI dashboards',
-      'Write optimized SQL queries against large data warehouses (BigQuery/Snowflake)',
-      'Present analytical findings and product recommendations to stakeholders'
-    ],
-    requirements: [
-      '3+ years of data analytics experience',
-      'Proficiency in SQL, Python/R, and modern data visualization tools',
-      'Experience in e-commerce or marketplace metrics is a plus'
-    ],
-    benefits: [
-      'Full remote working flexibility',
-      'Health insurance, 401(k) matching, and annual bonus'
-    ],
-    tags: ['SQL', 'Python', 'Tableau', 'BigQuery', 'Data Modeling'],
-    employerId: 'emp-clearview',
-    contactEmail: 'careers@clearviewanalytics.co',
-    applicantCount: 16
-  },
-  {
-    id: 'job-7',
-    title: 'Brand & Visual Identity Designer',
-    company: 'Studio Kora',
-    companyLogo: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?w=150&auto=format&fit=crop&q=80',
-    category: 'Design',
-    type: 'Freelance',
-    location: 'Remote',
-    workplaceType: 'Remote',
-    salary: '$60 - $85 / hr',
-    postedAt: 'Just now',
-    postedDate: '2026-08-18',
-    featured: false,
-    description: 'Create memorable visual identities, brand guidelines, packaging, and digital assets for exciting global clients.',
-    aboutRole: 'We are seeking an outstanding freelance Brand & Visual Designer to partner with us on high-profile rebranding projects.',
-    responsibilities: [
-      'Develop comprehensive brand guideline books including typography, palette, and iconography',
-      'Design logo marks, visual assets, 3D renderings, and packaging mockups',
-      'Present creative concepts to client stakeholders with persuasive rationales'
-    ],
-    requirements: [
-      'Standout portfolio showcasing high-end brand identity systems',
-      'Mastery of Adobe Illustrator, Photoshop, InDesign, and Figma',
-      'Strong typography sensibility and layout craft'
-    ],
-    benefits: [
-      'Flexible hourly contract with regular project volume',
-      'Direct attribution on major studio releases'
-    ],
-    tags: ['Branding', 'Typography', 'Visual Identity', 'Illustrator', 'Packaging'],
-    employerId: 'emp-studiokora',
-    contactEmail: 'hello@studiokora.design',
-    applicantCount: 5
-  },
-  {
-    id: 'job-8',
-    title: 'UX/UI Freelance Designer (Mobile App)',
-    company: 'FinTrack Global',
-    companyLogo: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=150&auto=format&fit=crop&q=80',
-    category: 'Design',
-    type: 'Contract',
-    location: 'Remote',
-    workplaceType: 'Remote',
-    salary: '$8,000 - $12,000 / project',
-    postedAt: '1 day ago',
-    postedDate: '2026-08-17',
-    featured: false,
-    description: 'Redesign our iOS & Android mobile financial tracking application with modern gesture-driven interactions.',
-    aboutRole: 'Looking for a seasoned freelance mobile UI/UX designer to lead the v3.0 redesign of our consumer fintech application.',
-    responsibilities: [
-      'Create intuitive mobile wireframes, user flows, and interactive prototypes',
-      'Design iOS Human Interface Guidelines and Material Design compliant UI components',
-      'Deliver final developer-ready Figma tokens and assets'
-    ],
-    requirements: [
-      'Demonstrated portfolio of shipped iOS/Android mobile apps',
-      'Deep understanding of mobile UX patterns, animations, and accessibility standards',
-      'Available for 20-30 hours per week for 2 months'
-    ],
-    benefits: [
-      'Project milestone-based payout with upfront deposit',
-      'Possibility of long-term design advisory retainer'
-    ],
-    tags: ['Mobile UI', 'iOS Design', 'Figma Prototype', 'Fintech', 'Micro-interactions'],
-    employerId: 'emp-fintrack',
-    contactEmail: 'design@fintrackglobal.com',
+    tags: ['Revit', 'BIM', 'AutoCAD', 'Navisworks', 'Architecture', 'Saudi Arabia'],
+    employerId: 'emp-almadar',
+    contactEmail: 'careers@almadarconsult.sa',
     applicantCount: 8
+  },
+  {
+    id: 'job-gcc-uiux-dubai',
+    title: 'Senior UI/UX & Design Systems Lead',
+    company: 'FinTech Oasis GCC',
+    companyLogo: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=150&auto=format&fit=crop&q=80',
+    category: 'Design',
+    type: 'Full-time',
+    location: 'Dubai, UAE (Hybrid)',
+    workplaceType: 'Hybrid',
+    salary: 'AED 18,000 - AED 26,000 / month',
+    postedAt: 'Aug 20, 2026 at 11:30 AM',
+    postedDate: '2026-08-20',
+    postedTime: '11:30 AM',
+    postedTimestamp: 1787196600000,
+    featured: true,
+    description: 'Design bilingual (Arabic & English) mobile fintech banking applications and cross-platform design systems for 500k+ active Gulf consumers.',
+    aboutRole: 'FinTech Oasis is looking for an experienced Design Systems & UI/UX Lead in Dubai to evolve our core payment ecosystems and micro-interaction libraries.',
+    responsibilities: [
+      'Architect robust multi-brand Figma token systems supporting RTL (Arabic) & LTR layout symmetry',
+      'Conduct user testing with local UAE, Saudi, and GCC consumer demographics',
+      'Deliver developer-ready component specs, auto-layout tokens, and micro-motion prototypes',
+      'Partner closely with product managers and React Native engineering squads'
+    ],
+    requirements: [
+      '4+ years designing consumer mobile applications (Fintech, E-commerce, or SaaS)',
+      'Expertise in Figma, RTL Arabic typography, and WCAG accessibility standards',
+      'Strong portfolio demonstrating end-to-end design thinking and shipped products'
+    ],
+    benefits: [
+      'Hybrid work schedule (2 days in Dubai DIFC office, 3 days remote)',
+      'Annual flight ticket allowance to home country',
+      'Comprehensive UAE premium healthcare plan',
+      'Equipment and workspace upgrade budget'
+    ],
+    tags: ['Figma', 'UI/UX', 'Design Systems', 'Fintech', 'RTL Arabic', 'Dubai'],
+    employerId: 'emp-fintechoasis',
+    contactEmail: 'talent@fintechoasis.ae',
+    applicantCount: 12
   }
 ];
 

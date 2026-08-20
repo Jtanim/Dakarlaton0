@@ -24,7 +24,9 @@ import {
   Send,
   ExternalLink,
   FileText,
-  Globe
+  Globe,
+  Calendar,
+  Trash2
 } from 'lucide-react';
 
 interface FindJobsPageProps {
@@ -46,7 +48,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
   initialKeyword = '',
   initialLocation = ''
 }) => {
-  const { jobs } = useAuth();
+  const { jobs, user, deleteJob } = useAuth();
 
   const [keyword, setKeyword] = useState(initialKeyword);
   const [location, setLocation] = useState(initialLocation);
@@ -58,6 +60,16 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
   const [copySuccess, setCopySuccess] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [showSalaryTrends, setShowSalaryTrends] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDeleteJob = async (jobId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (window.confirm('Are you sure you want to remove this job listing?')) {
+      setDeletingId(jobId);
+      await deleteJob(jobId);
+      setDeletingId(null);
+    }
+  };
 
   const copyCompanyEmail = (emailText: string) => {
     navigator.clipboard?.writeText(emailText);
@@ -301,9 +313,14 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                       <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-[#E25B38] break-words">
                         {job.category}
                       </span>
-                      <span className="text-[11px] text-stone-400 flex items-center gap-1 font-medium shrink-0">
-                        <Clock className="w-3 h-3" /> {job.postedAt}
-                      </span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium shrink-0">
+                        <span className="flex items-center gap-1 text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">
+                          <Calendar className="w-3 h-3 text-[#E25B38]" /> {job.postedDate || 'Aug 20, 2026'}
+                        </span>
+                        <span className="flex items-center gap-1 text-stone-500">
+                          <Clock className="w-3 h-3 text-stone-400" /> {job.postedTime || job.postedAt || '02:00 PM'}
+                        </span>
+                      </div>
                     </div>
 
                     <h3 className="text-base font-bold text-[#1C1917] mb-1 break-words">
@@ -362,13 +379,30 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                 >
                   {/* Header */}
                   <div className="border-b border-stone-100 pb-6">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                       <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-[#E25B38]">
                         {activeJob.category}
                       </span>
-                      <span className="text-xs text-stone-400 flex items-center gap-1 font-medium">
-                        <Clock className="w-3.5 h-3.5" /> Posted {activeJob.postedAt}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 text-xs font-medium bg-stone-50 border border-stone-200/80 px-3 py-1 rounded-full text-stone-600">
+                          <span className="flex items-center gap-1 font-semibold text-stone-700">
+                            <Calendar className="w-3.5 h-3.5 text-[#E25B38]" /> {activeJob.postedDate || 'Aug 20, 2026'}
+                          </span>
+                          <span className="text-stone-300">•</span>
+                          <span className="flex items-center gap-1 text-stone-500">
+                            <Clock className="w-3.5 h-3.5 text-stone-400" /> {activeJob.postedTime || activeJob.postedAt || '02:00 PM'}
+                          </span>
+                        </div>
+                        <button
+                          onClick={(e) => handleDeleteJob(activeJob.id, e)}
+                          disabled={deletingId === activeJob.id}
+                          className="text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-rose-200/80 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1 font-medium cursor-pointer"
+                          title="Remove this job listing"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          {deletingId === activeJob.id ? 'Deleting...' : 'Delete Job'}
+                        </button>
+                      </div>
                     </div>
 
                     <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917] mb-2 break-words">
