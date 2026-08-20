@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { JobListing } from '../types';
 import { CATEGORIES, STATS, TESTIMONIALS } from '../data/mockData';
+import { formatJobDateTime } from '../utils/dateUtils';
 import {
   Search,
   MapPin,
@@ -166,35 +167,37 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* Job Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {jobs.slice(0, 6).map((job) => (
-            <div
-              key={job.id}
-              onClick={() => {
-                onSelectJob(job);
-                onNavigate('jobs');
-              }}
-              className="bg-white rounded-2xl p-6 border border-[#EBE7DF] hover:border-[#E25B38]/50 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-[#E25B38]">
-                    {job.category}
-                  </span>
-                  <span className="text-xs text-stone-500 font-medium">
-                    {job.type}
-                  </span>
-                </div>
+          {jobs.slice(0, 6).map((job) => {
+            const jobDt = formatJobDateTime(job);
+            return (
+              <div
+                key={job.id}
+                onClick={() => {
+                  onSelectJob(job);
+                  onNavigate('jobs');
+                }}
+                className="bg-white rounded-2xl p-6 border border-[#EBE7DF] hover:border-[#E25B38]/50 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-orange-50 text-[#E25B38]">
+                      {job.category}
+                    </span>
+                    <span className="text-xs text-stone-500 font-medium">
+                      {job.type}
+                    </span>
+                  </div>
 
-                <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium pt-0.5">
-                  <span className="flex items-center gap-1 text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">
-                    <Calendar className="w-3 h-3 text-[#E25B38]" />
-                    {job.postedDate || 'Aug 20, 2026'}
-                  </span>
-                  <span className="flex items-center gap-1 text-stone-500">
-                    <Clock className="w-3 h-3 text-stone-400" />
-                    {job.postedTime || '02:00 PM'}
-                  </span>
-                </div>
+                  <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium pt-0.5">
+                    <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
+                      <Calendar className="w-3 h-3 text-[#E25B38]" />
+                      {jobDt.date}
+                    </span>
+                    <span className="flex items-center gap-1 text-stone-600 bg-orange-50/60 px-1.5 py-0.5 rounded-md font-medium">
+                      <Clock className="w-3 h-3 text-[#E25B38]" />
+                      {jobDt.time}
+                    </span>
+                  </div>
 
                 <h3 className="text-lg font-bold text-[#1C1917] group-hover:text-[#E25B38] transition-colors leading-snug">
                   {job.title}
@@ -226,7 +229,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
               )}
             </div>
-          ))}
+          );
+        })}
         </div>
       </section>
 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, UserRole, JobListing, JobApplication, ContactMessage, PortfolioProject } from '../types';
 import { INITIAL_JOBS, INITIAL_DESIGNERS } from '../data/mockData';
+import { formatJobDateTime } from '../utils/dateUtils';
 import {
   auth,
   db,
@@ -100,7 +101,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (savedJobs) {
         const parsed = JSON.parse(savedJobs);
         if (Array.isArray(parsed)) {
-          const cleaned = parsed.filter((j: JobListing) => !isDeprecatedMockJob(j.id));
+          const cleaned = parsed
+            .filter((j: JobListing) => !isDeprecatedMockJob(j.id))
+            .map((j: JobListing) => {
+              const dt = formatJobDateTime(j);
+              return {
+                ...j,
+                postedDate: dt.date,
+                postedTime: dt.time,
+                postedAt: dt.fullFormatted,
+                postedTimestamp: j.postedTimestamp || Date.now()
+              };
+            });
           if (cleaned.length > 0) {
             setJobs(cleaned);
           } else {
@@ -192,12 +204,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               // Delete old deprecated mock job doc from Firestore
               deleteDoc(doc(db, 'jobs', data.id)).catch(() => {});
             } else {
-              // Normalize date and time if missing
-              if (!data.postedTime) {
-                data.postedTime = '02:00 PM';
-              }
+              // Normalize exact date and time
+              const dt = formatJobDateTime(data);
+              data.postedDate = dt.date;
+              data.postedTime = dt.time;
+              data.postedAt = dt.fullFormatted;
               if (!data.postedTimestamp) {
-                data.postedTimestamp = data.postedDate ? new Date(data.postedDate).getTime() : Date.now();
+                data.postedTimestamp = Date.now();
               }
               fetchedJobs.push(data);
             }

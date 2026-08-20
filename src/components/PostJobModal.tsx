@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { JobListing } from '../types';
+import { formatJobDateTime } from '../utils/dateUtils';
 import {
   X,
   Briefcase,
@@ -263,6 +264,17 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
     if (res.success && res.job) {
       setCreatedJob(res.job);
     } else if (res.success) {
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      const formattedTime = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
       setCreatedJob({
         id: `job-${Date.now()}`,
         title,
@@ -277,8 +289,11 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
         responsibilities,
         requirements,
         tags: selectedTags,
-        postedAt: 'Just now',
-        postedDate: new Date().toISOString().split('T')[0],
+        postedAt: `${formattedDate} at ${formattedTime}`,
+        postedDate: formattedDate,
+        postedTime: formattedTime,
+        postedTimestamp: now.getTime(),
+        contactEmail: contactEmail.trim() || user?.email || '',
         employerId: user?.id || 'emp-direct',
         applicantCount: 0,
       });
@@ -344,14 +359,14 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   {createdJob.type}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-stone-500 font-medium">
-                <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md">
+              <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium">
+                <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
                   <Calendar className="w-3 h-3 text-[#E25B38]" />
-                  {createdJob.postedDate || 'Aug 20, 2026'}
+                  {formatJobDateTime(createdJob).date}
                 </span>
-                <span className="flex items-center gap-1 text-stone-500">
-                  <Clock className="w-3 h-3 text-stone-400" />
-                  {createdJob.postedTime || 'Just now'}
+                <span className="flex items-center gap-1 text-stone-600 bg-orange-50/60 px-1.5 py-0.5 rounded-md font-medium">
+                  <Clock className="w-3 h-3 text-[#E25B38]" />
+                  {formatJobDateTime(createdJob).time}
                 </span>
               </div>
               <h4 className="text-base font-bold text-stone-900">

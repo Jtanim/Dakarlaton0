@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { JobListing } from '../types';
 import { GccSalaryTrends } from './GccSalaryTrends';
 import { FormattedTextWithLinks } from './FormattedTextWithLinks';
+import { formatJobDateTime } from '../utils/dateUtils';
 import {
   Search,
   MapPin,
@@ -298,6 +299,7 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => {
                 const isSelected = activeJob?.id === job.id;
+                const jobDt = formatJobDateTime(job);
                 return (
                   <div
                     key={job.id}
@@ -314,11 +316,11 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                         {job.category}
                       </span>
                       <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium shrink-0">
-                        <span className="flex items-center gap-1 text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">
-                          <Calendar className="w-3 h-3 text-[#E25B38]" /> {job.postedDate || 'Aug 20, 2026'}
+                        <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
+                          <Calendar className="w-3 h-3 text-[#E25B38]" /> {jobDt.date}
                         </span>
-                        <span className="flex items-center gap-1 text-stone-500">
-                          <Clock className="w-3 h-3 text-stone-400" /> {job.postedTime || job.postedAt || '02:00 PM'}
+                        <span className="flex items-center gap-1 text-stone-600 bg-orange-50/60 px-1.5 py-0.5 rounded-md font-medium">
+                          <Clock className="w-3 h-3 text-[#E25B38]" /> {jobDt.time}
                         </span>
                       </div>
                     </div>
@@ -372,6 +374,8 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
               }
               const isGoogleForm = externalFormUrl && (externalFormUrl.includes('forms.gle') || externalFormUrl.includes('docs.google.com/forms') || externalFormUrl.includes('viewform'));
 
+              const activeDt = formatJobDateTime(activeJob);
+
               return (
                 <div
                   className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE7DF] shadow-md space-y-6 max-w-full overflow-hidden"
@@ -384,19 +388,19 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                         {activeJob.category}
                       </span>
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2 text-xs font-medium bg-stone-50 border border-stone-200/80 px-3 py-1 rounded-full text-stone-600">
-                          <span className="flex items-center gap-1 font-semibold text-stone-700">
-                            <Calendar className="w-3.5 h-3.5 text-[#E25B38]" /> {activeJob.postedDate || 'Aug 20, 2026'}
+                        <div className="flex items-center gap-2 text-xs font-medium bg-stone-50 border border-stone-200/80 px-3 py-1.5 rounded-full text-stone-600 shadow-2xs">
+                          <span className="flex items-center gap-1 font-semibold text-stone-800">
+                            <Calendar className="w-3.5 h-3.5 text-[#E25B38]" /> {activeDt.date}
                           </span>
                           <span className="text-stone-300">•</span>
-                          <span className="flex items-center gap-1 text-stone-500">
-                            <Clock className="w-3.5 h-3.5 text-stone-400" /> {activeJob.postedTime || activeJob.postedAt || '02:00 PM'}
+                          <span className="flex items-center gap-1 text-stone-700 font-semibold bg-orange-50/60 px-1.5 py-0.5 rounded">
+                            <Clock className="w-3.5 h-3.5 text-[#E25B38]" /> {activeDt.time}
                           </span>
                         </div>
                         <button
                           onClick={(e) => handleDeleteJob(activeJob.id, e)}
                           disabled={deletingId === activeJob.id}
-                          className="text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-rose-200/80 px-2.5 py-1 rounded-full transition-colors flex items-center gap-1 font-medium cursor-pointer"
+                          className="text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 border border-rose-200/80 px-2.5 py-1.5 rounded-full transition-colors flex items-center gap-1 font-medium cursor-pointer"
                           title="Remove this job listing"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
