@@ -318,3 +318,192 @@ export const FAQS: FAQItem[] = [
     answer: 'Yes, as the job author or an authorized employer, you have full access from your account dashboard to edit the job details, mark the role as filled, or remove the listing at any time.'
   }
 ];
+
+export interface InsightArticle {
+  id: string;
+  title: string;
+  category: string;
+  author: string;
+  date: string;
+  readTime: string;
+  image: string;
+  excerpt: string;
+  content: string[];
+  featuredBadge?: string;
+  isSpecialCard?: boolean;
+}
+
+export const RECRUITMENT_INSIGHTS: InsightArticle[] = [
+  {
+    id: 'ksa-salary-guide-2026',
+    title: 'KSA Salary Guide 2026',
+    category: 'Market Intelligence',
+    author: 'Dakarlaton',
+    date: 'Aug 2026',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80',
+    excerpt: "Saudi Arabia's latest salary data, hiring trends, and technical talent insights across Vision 2030 giga-projects.",
+    content: [
+      "Saudi Arabia's employment landscape continues its remarkable acceleration, driven by unprecedented infrastructure investments in Neom, the Red Sea Project, and Riyadh's expanding tech corridors.",
+      "Engineering and AutoCAD drafting specialists are seeing double-digit compensation increases, particularly for professionals certified in BIM Level 2/3 and advanced Revit modeling.",
+      "Organizations are increasingly adopting hybrid remuneration models, combining tax-free base salaries with housing allowances, executive schooling subsidies, and milestone performance bonuses."
+    ]
+  },
+  {
+    id: 'talent-trends-2026',
+    title: 'Talent Trends 2026',
+    category: 'Future of Work',
+    author: 'Dakarlaton',
+    date: 'Aug 2026',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Want to lead in 2026? Hire through the AI hype and build resilient, human-centered engineering & design teams.',
+    content: [
+      "While generative tools have transformed baseline drafting and code generation, the demand for senior architectural judgment, structural compliance, and user empathy has reached an all-time peak.",
+      "Forward-thinking companies in Riyadh and Dubai are seeking 'AI-augmented specialists'—designers and engineers who leverage computational tools to deliver projects 3x faster without sacrificing safety or craft.",
+      "Retention strategies in 2026 emphasize clear leadership pathways, modern work-life balance frameworks, and continuous technical training."
+    ]
+  },
+  {
+    id: 'uae-salary-guide-2026',
+    title: 'UAE Salary Guide 2026',
+    category: 'Market Intelligence',
+    author: 'Dakarlaton',
+    date: 'Aug 2026',
+    readTime: '7 min read',
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Your comprehensive benchmark for salaries and hiring trends across Dubai, Abu Dhabi, and the Northern Emirates.',
+    content: [
+      "Dubai's position as a global financial and creative technology capital continues to draw premier talent from Europe, the Middle East, and Asia.",
+      "Senior Product Designers and UX Specialists command monthly packages ranging from AED 22,000 to AED 38,000, especially in fintech and sovereign wealth digital initiatives.",
+      "Companies that offer transparent salary tiers and streamlined 2-week interview cycles close 85% more first-choice candidates."
+    ]
+  },
+  {
+    id: 'saudi-arabia-viable-career',
+    title: 'What makes Saudi Arabia a viable option for your next big career...',
+    category: 'Growing your career',
+    author: 'Dakarlaton',
+    date: 'Aug 2026',
+    readTime: '5 min read',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80',
+    excerpt: "Saudi Arabia's quest to rapidly diversify its economy away from oil, create jobs, and boost its international standing...",
+    content: [
+      "With landmark regulatory reforms, international standard education hubs, and world-class entertainment, Riyadh has evolved into a magnet for ambitious international talent.",
+      "Professionals who transition to the Kingdom gain firsthand leadership experience on some of the largest master-planned developments in human history.",
+      "The fast-track Saudi Green Card and specialized investor/talent visas have made relocation simpler and more secure than ever before."
+    ]
+  },
+  {
+    id: 'emiratisation-salary-guide-2026',
+    title: 'Emiratisation & Saudization Salary Guide 2026',
+    category: 'National Talent',
+    author: 'Dakarlaton',
+    date: 'Aug 2026',
+    readTime: '6 min read',
+    image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Get expert insights on Emiratisation and Saudization trends, compliance rules, and national talent development programs.',
+    content: [
+      "Meeting national hiring quotas while upholding world-class technical output requires proactive graduate mentorship and competitive early-career progression tracks.",
+      "Dakarlaton partners with local universities and technical institutes across Saudi Arabia and the UAE to match certified national engineers and designers with tier-1 enterprise employers."
+    ]
+  },
+  {
+    id: 'career-tips-advice',
+    title: 'Simple and useful advice from our team to help you navigate your career with confidence.',
+    category: 'Career Advice',
+    author: 'Dakarlaton Team',
+    date: 'Aug 2026',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
+    excerpt: 'Actionable strategies for interview preparation, CV formatting, salary negotiations, and portfolio presentations.',
+    content: [
+      "1. Quantify Your Impact: Highlight specific square footage, budget savings, or user engagement metrics rather than generic responsibilities.",
+      "2. Tailor Your Portfolio: Include clear before-and-after case studies and showcase your technical CAD/BIM or Figma workflows.",
+      "3. Follow Up Professionally: A concise follow-up email sent within 24 hours of an interview increases hiring manager recall by 60%."
+    ],
+    isSpecialCard: true
+  }
+];
+
+export const SPECIALIST_SERVICES = [
+  {
+    id: 'service-1',
+    tab: 'specialist',
+    title: 'Bespoke Consultative Recruitment',
+    description: "We find the right people for today's role and tomorrow's demands.",
+    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format&fit=crop&q=80',
+    badge: 'Permanent & Interim'
+  },
+  {
+    id: 'service-2',
+    tab: 'specialist',
+    title: 'Fixed-Term Contracting',
+    description: 'For projects that require specialist skills, we connect you with flexible contractors with proven expertise.',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop&q=80',
+    badge: 'Agile Scale'
+  },
+  {
+    id: 'service-3',
+    tab: 'specialist',
+    title: 'Consultative Approach',
+    description: 'We shape workforce decisions through practical guidance and deep regional market data.',
+    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&auto=format&fit=crop&q=80',
+    badge: 'Strategic Advisory'
+  }
+];
+
+export const EXECUTIVE_SERVICES = [
+  {
+    id: 'exec-1',
+    tab: 'executive',
+    title: 'C-Suite & Board Appointments',
+    description: 'Discreet, high-touch executive search for CEOs, Managing Directors, and Board Advisory roles across the GCC.',
+    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80',
+    badge: 'Executive Level'
+  },
+  {
+    id: 'exec-2',
+    tab: 'executive',
+    title: 'VP & Technical Directorship',
+    description: 'Securing visionary Chief Technology Officers, Engineering Directors, and Design Principals.',
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80',
+    badge: 'Senior Leadership'
+  },
+  {
+    id: 'exec-3',
+    tab: 'executive',
+    title: 'Succession & Market Mapping',
+    description: 'Confidential competitive talent mapping to de-risk executive succession planning.',
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&auto=format&fit=crop&q=80',
+    badge: 'Confidential'
+  }
+];
+
+export const ENTERPRISE_SERVICES = [
+  {
+    id: 'ent-1',
+    tab: 'enterprise',
+    title: 'Recruitment Process Outsourcing (RPO)',
+    description: 'End-to-end recruitment management for high-growth enterprises and major infrastructure consortiums.',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80',
+    badge: 'Full Lifecycle'
+  },
+  {
+    id: 'ent-2',
+    tab: 'enterprise',
+    title: 'Saudization & Emiratisation Programs',
+    description: 'Structured nationalization hiring campaigns aligned with government compliance mandates.',
+    image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?w=800&auto=format&fit=crop&q=80',
+    badge: 'Government Compliance'
+  },
+  {
+    id: 'ent-3',
+    tab: 'enterprise',
+    title: 'Project Volume Ramp-Up',
+    description: 'Mobilizing 50+ engineers, draftsmen, and site personnel within 30 days for new giga-project launches.',
+    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=800&auto=format&fit=crop&q=80',
+    badge: 'Rapid Mobilization'
+  }
+];
+

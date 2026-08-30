@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -19,13 +19,49 @@ import { ProfileModal } from './components/ProfileModal';
 import { EmailVerificationBanner } from './components/EmailVerificationBanner';
 import { EmailVerificationModal } from './components/EmailVerificationModal';
 import { LegalModal } from './components/LegalModal';
+import { SubmitCvModal } from './components/SubmitCvModal';
+import { SavedJobsModal } from './components/SavedJobsModal';
+import { ArticleModal } from './components/ArticleModal';
+import { PhishingAlertModal } from './components/PhishingAlertModal';
+import { SalaryTrendsModal } from './components/SalaryTrendsModal';
+import { RECRUITMENT_INSIGHTS, InsightArticle } from './data/mockData';
 import { JobListing } from './types';
 
 function MainApp() {
+  const { jobs } = useAuth();
   const [currentTab, setCurrentTab] = useState<'home' | 'about' | 'jobs' | 'contact' | 'designers'>('home');
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
+  const [userTypeMode, setUserTypeMode] = useState<'candidate' | 'employer'>('candidate');
+
+  // Saved Jobs Bookmarking State
+  const [savedJobIds, setSavedJobIds] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('dakarlaton_saved_jobs');
+      return stored ? JSON.parse(stored) : ['job-1', 'job-4'];
+    } catch {
+      return ['job-1', 'job-4'];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('dakarlaton_saved_jobs', JSON.stringify(savedJobIds));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [savedJobIds]);
+
+  const handleToggleSaveJob = (job: JobListing) => {
+    setSavedJobIds((prev) =>
+      prev.includes(job.id) ? prev.filter((id) => id !== job.id) : [...prev, job.id]
+    );
+  };
+
+  const handleRemoveSavedJob = (jobId: string) => {
+    setSavedJobIds((prev) => prev.filter((id) => id !== jobId));
+  };
 
   // Modals state
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -36,6 +72,13 @@ function MainApp() {
   const [isLegalOpen, setIsLegalOpen] = useState(false);
   const [legalTab, setLegalTab] = useState<'privacy' | 'terms'>('privacy');
   const [applyingJob, setApplyingJob] = useState<JobListing | null>(null);
+
+  // New Modals based on Video Template
+  const [isSubmitCvOpen, setIsSubmitCvOpen] = useState(false);
+  const [isSavedJobsOpen, setIsSavedJobsOpen] = useState(false);
+  const [isPhishingModalOpen, setIsPhishingModalOpen] = useState(false);
+  const [isSalaryTrendsOpen, setIsSalaryTrendsOpen] = useState(false);
+  const [activeArticle, setActiveArticle] = useState<InsightArticle | null>(null);
 
   const handleOpenLegal = (tab: 'privacy' | 'terms' = 'privacy') => {
     setLegalTab(tab);
@@ -58,12 +101,19 @@ function MainApp() {
     setIsAuthOpen(true);
   };
 
+  const handleOpenArticleById = (articleId: string) => {
+    const found = RECRUITMENT_INSIGHTS.find((a) => a.id === articleId) || RECRUITMENT_INSIGHTS[0];
+    setActiveArticle(found);
+  };
+
+  const savedJobs = jobs.filter((j) => savedJobIds.includes(j.id));
+
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-sans selection:bg-[#E25B38]/20 selection:text-[#E25B38]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-sans selection:bg-[#5925DC]/20 selection:text-[#5925DC]">
       {/* Email Verification Persistent Security Banner */}
       <EmailVerificationBanner onOpenVerify={() => setIsVerifyOpen(true)} />
 
-      {/* Navigation Header */}
+      {/* Navigation Header with Mega-menus & Security Advisory */}
       <Header
         currentTab={currentTab}
         setCurrentTab={handleNavigate}
@@ -71,6 +121,14 @@ function MainApp() {
         onOpenPostJob={() => setIsPostJobOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenVerify={() => setIsVerifyOpen(true)}
+        savedCount={savedJobIds.length}
+        onOpenSavedModal={() => setIsSavedJobsOpen(true)}
+        onOpenSubmitCv={() => setIsSubmitCvOpen(true)}
+        onOpenSalaryTrends={() => setIsSalaryTrendsOpen(true)}
+        onOpenPhishingInfo={() => setIsPhishingModalOpen(true)}
+        onOpenArticle={handleOpenArticleById}
+        userTypeMode={userTypeMode}
+        setUserTypeMode={setUserTypeMode}
       />
 
       {/* Main Content Pages */}
@@ -81,9 +139,16 @@ function MainApp() {
             onSelectJob={(job) => {
               setSelectedJob(job);
               setCurrentTab('jobs');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenPostJob={() => setIsPostJobOpen(true)}
             onSearch={handleSearch}
+            onOpenSubmitCv={() => setIsSubmitCvOpen(true)}
+            onOpenSalaryTrends={() => setIsSalaryTrendsOpen(true)}
+            onOpenArticle={(art) => setActiveArticle(art)}
+            onToggleSaveJob={handleToggleSaveJob}
+            savedJobIds={savedJobIds}
+            onOpenApplyModal={(job) => setApplyingJob(job)}
           />
         )}
 
@@ -116,14 +181,17 @@ function MainApp() {
         {currentTab === 'contact' && <ContactPage />}
       </main>
 
-      {/* Global Footer */}
+      {/* Global Enterprise Footer with 3 Action Cards */}
       <Footer
         onNavigate={handleNavigate}
         onOpenPostJob={() => setIsPostJobOpen(true)}
         onOpenLegal={handleOpenLegal}
+        onOpenSubmitCv={() => setIsSubmitCvOpen(true)}
+        onOpenSalaryTrends={() => setIsSalaryTrendsOpen(true)}
+        onOpenPhishingInfo={() => setIsPhishingModalOpen(true)}
       />
 
-      {/* Modals & Overlays */}
+      {/* All Application Modals */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
@@ -167,6 +235,49 @@ function MainApp() {
         isOpen={isLegalOpen}
         onClose={() => setIsLegalOpen(false)}
         initialTab={legalTab}
+      />
+
+      <SubmitCvModal
+        isOpen={isSubmitCvOpen}
+        onClose={() => setIsSubmitCvOpen(false)}
+        onOpenAuth={() => handleOpenAuthModal('signup')}
+      />
+
+      <SavedJobsModal
+        isOpen={isSavedJobsOpen}
+        onClose={() => setIsSavedJobsOpen(false)}
+        savedJobs={savedJobs}
+        onRemoveSavedJob={handleRemoveSavedJob}
+        onSelectJob={(job) => {
+          setSelectedJob(job);
+          setCurrentTab('jobs');
+          setIsSavedJobsOpen(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onApplyJob={(job) => {
+          setIsSavedJobsOpen(false);
+          setApplyingJob(job);
+        }}
+      />
+
+      <ArticleModal
+        article={activeArticle}
+        isOpen={!!activeArticle}
+        onClose={() => setActiveArticle(null)}
+        onOpenSalaryTrends={() => {
+          setActiveArticle(null);
+          setIsSalaryTrendsOpen(true);
+        }}
+      />
+
+      <PhishingAlertModal
+        isOpen={isPhishingModalOpen}
+        onClose={() => setIsPhishingModalOpen(false)}
+      />
+
+      <SalaryTrendsModal
+        isOpen={isSalaryTrendsOpen}
+        onClose={() => setIsSalaryTrendsOpen(false)}
       />
     </div>
   );
