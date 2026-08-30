@@ -105,13 +105,13 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
               className="w-12 h-12 rounded-full object-cover border border-stone-200"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-[#E25B38]/15 text-[#E25B38] font-bold flex items-center justify-center text-lg">
+            <div className="w-12 h-12 rounded-full bg-purple-100 text-[#5925DC] font-bold flex items-center justify-center text-lg">
               {user.fullName.charAt(0)}
             </div>
           )}
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-bold text-[#1C1917]">{user.fullName}</h3>
+              <h3 className="text-xl font-bold text-[#1F104F]">{user.fullName}</h3>
               {user.emailVerified ? (
                 <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
                   <CheckCircle2 className="w-3 h-3" /> Verified
@@ -135,7 +135,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
             type="button"
             onClick={() => setActiveTab('profile')}
             className={`flex-1 py-2 rounded-xl transition-all ${
-              activeTab === 'profile' ? 'bg-white text-[#1C1917] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
+              activeTab === 'profile' ? 'bg-white text-[#1F104F] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
             Profile Info
@@ -145,7 +145,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
               type="button"
               onClick={() => setActiveTab('portfolio')}
               className={`flex-1 py-2 rounded-xl transition-all ${
-                activeTab === 'portfolio' ? 'bg-white text-[#1C1917] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
+                activeTab === 'portfolio' ? 'bg-white text-[#1F104F] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
               }`}
             >
               Portfolio Showcase ({user.portfolioProjects?.length || 0})
@@ -155,7 +155,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
             type="button"
             onClick={() => setActiveTab('security')}
             className={`flex-1 py-2 rounded-xl transition-all ${
-              activeTab === 'security' ? 'bg-white text-[#1C1917] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
+              activeTab === 'security' ? 'bg-white text-[#1F104F] shadow-xs font-semibold' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
             Security & Verification
@@ -174,7 +174,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
 
@@ -187,7 +187,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="e.g. Senior Brand & Product Designer"
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                 rows={3}
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
               />
             </div>
 
@@ -214,7 +214,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="e.g. Dakar, Senegal or Remote"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
 
@@ -227,7 +227,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="e.g. $75 / hr"
                   value={hourlyRate}
                   onChange={(e) => setHourlyRate(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
             </div>
@@ -242,7 +242,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="https://mysite.com"
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
               <div>
@@ -254,7 +254,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="https://dribbble.com/..."
                   value={dribbble}
                   onChange={(e) => setDribbble(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
               <div>
@@ -266,7 +266,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="https://behance.net/..."
                   value={behance}
                   onChange={(e) => setBehance(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
             </div>
@@ -279,7 +279,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                 type="text"
                 value={skillsInput}
                 onChange={(e) => setSkillsInput(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
               />
             </div>
 
@@ -292,7 +292,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
             <div className="pt-2 flex justify-end">
               <button
                 type="submit"
-                className="bg-[#E25B38] hover:bg-[#c94929] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-xs"
+                className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-xs"
               >
                 Save Changes
               </button>
@@ -309,7 +309,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
               </div>
               <button
                 onClick={() => setIsAddingProject(!isAddingProject)}
-                className="bg-[#E25B38] text-white text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-1 hover:bg-[#c94929] transition-colors"
+                className="bg-[#5925DC] text-white text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-1 hover:bg-[#471cb3] transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Project
               </button>
@@ -325,14 +325,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                     placeholder="Project Title (e.g. Modern Fintech App)"
                     value={newProjTitle}
                     onChange={(e) => setNewProjTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                   />
                   <input
                     type="text"
                     placeholder="Category (e.g. UI/UX, Branding)"
                     value={newProjCategory}
                     onChange={(e) => setNewProjCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                   />
                 </div>
                 <textarea
@@ -341,7 +341,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="Case study description & impact..."
                   value={newProjDesc}
                   onChange={(e) => setNewProjDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
@@ -349,14 +349,14 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                     placeholder="Cover Image URL"
                     value={newProjCover}
                     onChange={(e) => setNewProjCover(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                   />
                   <input
                     type="url"
                     placeholder="Live Link / Dribbble URL"
                     value={newProjUrl}
                     onChange={(e) => setNewProjUrl(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                   />
                 </div>
                 <div className="flex justify-end gap-2 pt-1">
@@ -369,7 +369,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   </button>
                   <button
                     type="submit"
-                    className="bg-[#E25B38] text-white text-xs px-4 py-1.5 rounded-full font-medium"
+                    className="bg-[#5925DC] text-white text-xs px-4 py-1.5 rounded-full font-medium"
                   >
                     Save Project
                   </button>
@@ -393,7 +393,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                         className="w-16 h-16 rounded-xl object-cover border border-stone-100 shrink-0"
                       />
                       <div>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#E25B38]">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5925DC]">
                           {p.category}
                         </span>
                         <h5 className="text-sm font-bold text-stone-900">{p.title}</h5>
@@ -438,7 +438,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
             <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex items-start justify-between gap-4">
               <div>
                 <h4 className="text-sm font-bold text-stone-900 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-[#E25B38]" /> Email Verification Status
+                  <ShieldCheck className="w-4 h-4 text-[#5925DC]" /> Email Verification Status
                 </h4>
                 <p className="text-xs text-stone-600 mt-1">
                   {user.emailVerified

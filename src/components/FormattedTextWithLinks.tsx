@@ -40,7 +40,7 @@ export const FormattedTextWithLinks: React.FC<FormattedTextWithLinksProps> = ({
               href={`mailto:${email}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#E25B38] hover:text-[#b84121] underline font-medium break-all px-1 py-0.5 rounded hover:bg-orange-50 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 text-[#5925DC] hover:text-[#471cb3] underline font-medium break-all px-1 py-0.5 rounded hover:bg-purple-50 transition-colors cursor-pointer"
             >
               <Mail className="w-3 h-3 shrink-0 inline opacity-80" />
               <span>{email}</span>
@@ -94,7 +94,7 @@ export const FormattedTextWithLinks: React.FC<FormattedTextWithLinksProps> = ({
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100 hover:border-emerald-400'
                   : isDocumentOrDrive
                   ? 'bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100'
-                  : 'bg-orange-50 text-[#E25B38] border-orange-200 hover:bg-orange-100 hover:text-[#b84121]'
+                  : 'bg-purple-50 text-[#5925DC] border-purple-200 hover:bg-purple-100 hover:text-[#471cb3]'
               }`}
               style={{ overflowWrap: 'anywhere', wordBreak: 'break-all' }}
               title={`Open ${href}`}

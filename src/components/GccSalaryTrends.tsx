@@ -162,10 +162,10 @@ export const GccSalaryTrends: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-100 pb-6">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E25B38]/10 text-[#E25B38] text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5925DC]/10 text-[#5925DC] text-xs font-semibold uppercase tracking-wider">
             <TrendingUp className="w-3.5 h-3.5" /> GCC Market Intelligence
           </div>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1F104F]">
             GCC Salary & Freelance Rate Trends
           </h2>
           <p className="text-xs sm:text-sm text-stone-600 max-w-2xl">
@@ -181,7 +181,7 @@ export const GccSalaryTrends: React.FC = () => {
           <select
             value={selectedCurrency}
             onChange={(e) => setSelectedCurrency(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-stone-300 text-xs font-bold text-[#1C1917] bg-stone-50 focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+            className="px-3 py-2 rounded-xl border border-stone-300 text-xs font-bold text-[#1F104F] bg-stone-50 focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
           >
             {Object.entries(CURRENCY_MULTIPLIERS).map(([code, { label }]) => (
               <option key={code} value={code}>
@@ -197,9 +197,9 @@ export const GccSalaryTrends: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('salary')}
-          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'salary'
-              ? 'bg-stone-900 text-white shadow-xs'
+              ? 'bg-[#1F104F] text-white shadow-xs'
               : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
           }`}
         >
@@ -208,9 +208,9 @@ export const GccSalaryTrends: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('growth')}
-          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
             activeTab === 'growth'
-              ? 'bg-stone-900 text-white shadow-xs'
+              ? 'bg-[#1F104F] text-white shadow-xs'
               : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
           }`}
         >
@@ -219,10 +219,10 @@ export const GccSalaryTrends: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveTab('calculator')}
-          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+          className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
             activeTab === 'calculator'
-              ? 'bg-[#E25B38] text-white shadow-xs'
-              : 'bg-orange-50 text-[#E25B38] hover:bg-orange-100'
+              ? 'bg-[#5925DC] text-white shadow-xs'
+              : 'bg-purple-50 text-[#5925DC] hover:bg-purple-100'
           }`}
         >
           <Calculator className="w-3.5 h-3.5" /> Rate Estimator Calculator
@@ -291,19 +291,19 @@ export const GccSalaryTrends: React.FC = () => {
                 <Bar
                   dataKey="Junior"
                   name="Junior (1-2 yrs)"
-                  fill="#FDBA74"
+                  fill="#C4B5FD"
                   radius={[6, 6, 0, 0]}
                 />
                 <Bar
                   dataKey="Mid"
                   name="Mid-Level (3-5 yrs)"
-                  fill="#FB923C"
+                  fill="#8B5CF6"
                   radius={[6, 6, 0, 0]}
                 />
                 <Bar
                   dataKey="Senior"
                   name="Senior / Lead (5+ yrs)"
-                  fill="#E25B38"
+                  fill="#5925DC"
                   radius={[6, 6, 0, 0]}
                 />
               </BarChart>
@@ -371,8 +371,8 @@ export const GccSalaryTrends: React.FC = () => {
               >
                 <defs>
                   <linearGradient id="colorUiux" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E25B38" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#E25B38" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#5925DC" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#5925DC" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorBim" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#0284c7" stopOpacity={0.4} />
@@ -403,7 +403,7 @@ export const GccSalaryTrends: React.FC = () => {
                   type="monotone"
                   dataKey="UIUX"
                   name="UI/UX Product Design"
-                  stroke="#E25B38"
+                  stroke="#5925DC"
                   fillOpacity={1}
                   fill="url(#colorUiux)"
                   strokeWidth={2.5}
@@ -441,8 +441,8 @@ export const GccSalaryTrends: React.FC = () => {
       {activeTab === 'calculator' && (
         <div className="bg-[#FAF8F5] rounded-2xl p-6 border border-[#EBE7DF] space-y-6 animate-in fade-in duration-200">
           <div className="max-w-xl">
-            <h3 className="text-lg font-bold text-stone-900 flex items-center gap-2">
-              <Calculator className="w-5 h-5 text-[#E25B38]" /> Smart Rate Estimator
+            <h3 className="text-lg font-bold text-[#1F104F] flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-[#5925DC]" /> Smart Rate Estimator
             </h3>
             <p className="text-xs text-stone-600 mt-1">
               Calculate your suggested freelance quote and monthly retainer based on GCC regional averages.
@@ -457,7 +457,7 @@ export const GccSalaryTrends: React.FC = () => {
               <select
                 value={calcRole}
                 onChange={(e) => setCalcRole(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
               >
                 {BENCHMARK_DATA.map((r) => (
                   <option key={r.role} value={r.role}>
@@ -474,7 +474,7 @@ export const GccSalaryTrends: React.FC = () => {
               <select
                 value={calcExperience}
                 onChange={(e) => setCalcExperience(e.target.value as any)}
-                className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
               >
                 <option value="junior">Junior (1 - 2 years)</option>
                 <option value="mid">Mid-Level (3 - 5 years)</option>
@@ -493,7 +493,7 @@ export const GccSalaryTrends: React.FC = () => {
                 step="5"
                 value={calcHoursPerWeek}
                 onChange={(e) => setCalcHoursPerWeek(Number(e.target.value))}
-                className="w-full mt-2 accent-[#E25B38]"
+                className="w-full mt-2 accent-[#5925DC]"
               />
             </div>
           </div>
@@ -504,7 +504,7 @@ export const GccSalaryTrends: React.FC = () => {
               <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
                 Suggested Hourly Rate
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-serif text-[#E25B38]">
+              <div className="text-2xl sm:text-3xl font-bold font-serif text-[#5925DC]">
                 {estimatedHourly.toLocaleString()} {curr.symbol} <span className="text-xs font-sans text-stone-500">/ hr</span>
               </div>
               <p className="text-[11px] text-stone-500">
@@ -516,7 +516,7 @@ export const GccSalaryTrends: React.FC = () => {
               <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
                 Monthly Retainer Benchmark
               </span>
-              <div className="text-2xl sm:text-3xl font-bold font-serif text-[#1C1917]">
+              <div className="text-2xl sm:text-3xl font-bold font-serif text-[#1F104F]">
                 {Math.round(estimatedHourly * calcHoursPerWeek * 4.2).toLocaleString()} {curr.symbol}
               </div>
               <p className="text-[11px] text-stone-500">

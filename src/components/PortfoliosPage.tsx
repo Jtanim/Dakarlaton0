@@ -52,13 +52,13 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
     <div className="space-y-16 pb-16">
       {/* Hero Header */}
       <section className="pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#E25B38]/10 text-[#E25B38] text-xs font-semibold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#5925DC]/10 text-[#5925DC] text-xs font-semibold uppercase tracking-wider mb-6">
           <Palette className="w-3.5 h-3.5" /> Freelance Designer Showcase
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#1C1917] tracking-tight leading-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#1F104F] tracking-tight leading-tight mb-4">
           Discover World-Class <br className="hidden sm:inline" />
-          <span className="text-[#1C1917]">Freelance Designers</span>
+          <span className="text-[#5925DC]">Freelance Designers</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#57534E] max-w-2xl mx-auto leading-relaxed mb-8">
@@ -69,14 +69,14 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
           {isAuthenticated && user?.role === 'designer' ? (
             <button
               onClick={onOpenProfile}
-              className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+              className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer whitespace-nowrap"
             >
               <Plus className="w-4 h-4" /> Manage My Portfolio
             </button>
           ) : (
             <button
               onClick={onOpenAuth}
-              className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+              className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-7 py-3 rounded-full font-medium text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer whitespace-nowrap"
             >
               <Sparkles className="w-4 h-4" /> Showcase Your Portfolio
             </button>
@@ -84,10 +84,10 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
 
           <button
             onClick={() => setShowSalaryTrends(!showSalaryTrends)}
-            className={`px-6 py-3 rounded-full font-semibold text-xs transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-6 py-3 rounded-full font-semibold text-xs transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap ${
               showSalaryTrends
-                ? 'bg-stone-900 text-white shadow-xs'
-                : 'bg-orange-50 hover:bg-orange-100 text-[#E25B38] border border-orange-200'
+                ? 'bg-[#1F104F] text-white shadow-xs'
+                : 'bg-purple-50 hover:bg-purple-100 text-[#5925DC] border border-purple-200'
             }`}
           >
             <TrendingUp className="w-4 h-4" />
@@ -114,7 +114,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
               placeholder="Search designers or skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full border border-stone-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+              className="w-full pl-10 pr-4 py-2 rounded-full border border-stone-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
             />
           </div>
 
@@ -155,7 +155,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
                         className="w-14 h-14 rounded-2xl object-cover border border-stone-200 shrink-0"
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-2xl bg-[#E25B38]/15 text-[#E25B38] font-bold text-xl flex items-center justify-center shrink-0">
+                      <div className="w-14 h-14 rounded-2xl bg-purple-100 text-[#5925DC] font-bold text-xl flex items-center justify-center shrink-0">
                         {designer.fullName.charAt(0)}
                       </div>
                     )}
@@ -182,7 +182,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
                   </div>
 
                   {designer.hourlyRate && (
-                    <span className="text-xs font-semibold text-[#E25B38] bg-orange-50 px-2.5 py-1 rounded-full whitespace-nowrap">
+                    <span className="text-xs font-semibold text-[#5925DC] bg-purple-50 px-2.5 py-1 rounded-full whitespace-nowrap">
                       {designer.hourlyRate}
                     </span>
                   )}
@@ -244,7 +244,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
               <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
                 <button
                   onClick={() => setActiveDesignerModal(designer)}
-                  className="w-full bg-[#FAF8F5] hover:bg-[#E25B38] text-stone-800 hover:text-white font-medium py-2 rounded-xl text-xs transition-colors text-center border border-stone-200 hover:border-transparent cursor-pointer"
+                  className="w-full bg-[#FAF8F5] hover:bg-[#5925DC] text-stone-800 hover:text-white font-medium py-2 rounded-xl text-xs transition-colors text-center border border-stone-200 hover:border-transparent cursor-pointer"
                 >
                   View Full Portfolio
                 </button>
@@ -276,13 +276,13 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
                     className="w-16 h-16 rounded-2xl object-cover border border-stone-200"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-[#E25B38]/15 text-[#E25B38] font-bold text-2xl flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-2xl bg-purple-100 text-[#5925DC] font-bold text-2xl flex items-center justify-center">
                     {activeDesignerModal.fullName.charAt(0)}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-[#1C1917]">
+                    <h3 className="text-xl font-bold text-[#1F104F]">
                       {activeDesignerModal.fullName}
                     </h3>
                     {activeDesignerModal.emailVerified && (
@@ -303,7 +303,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
               {activeDesignerModal.hourlyRate && (
                 <div className="text-right">
                   <span className="text-xs text-stone-400 font-medium block">Rate</span>
-                  <span className="text-lg font-bold text-[#E25B38]">
+                  <span className="text-lg font-bold text-[#5925DC]">
                     {activeDesignerModal.hourlyRate}
                   </span>
                 </div>
@@ -397,7 +397,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
                               href={p.projectUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-xs font-semibold text-[#E25B38] hover:underline inline-flex items-center gap-1"
+                              className="text-xs font-semibold text-[#5925DC] hover:underline inline-flex items-center gap-1"
                             >
                               View Live Project <ExternalLink className="w-3 h-3" />
                             </a>
@@ -419,7 +419,7 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
               <span className="text-xs text-stone-500">Direct Inquiries</span>
               <a
                 href={`mailto:${activeDesignerModal.email}?subject=Collaboration Inquiry via Dakarlaton`}
-                className="bg-[#E25B38] hover:bg-[#c94929] text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-xs flex items-center gap-2"
+                className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-6 py-2.5 rounded-full text-xs font-semibold shadow-xs flex items-center gap-2"
               >
                 <Mail className="w-3.5 h-3.5" /> Send Project Inquiry
               </a>
@@ -447,10 +447,10 @@ export const PortfoliosPage: React.FC<PortfoliosPageProps> = ({ onOpenAuth, onOp
             />
 
             <div className="p-6 space-y-3">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-[#E25B38] uppercase">
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-purple-50 text-[#5925DC] uppercase">
                 {activeProjectPreview.category}
               </span>
-              <h3 className="text-xl font-bold text-[#1C1917]">{activeProjectPreview.title}</h3>
+              <h3 className="text-xl font-bold text-[#1F104F]">{activeProjectPreview.title}</h3>
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
                 {activeProjectPreview.description}
               </p>

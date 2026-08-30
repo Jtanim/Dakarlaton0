@@ -22,11 +22,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-stone-200 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#FAF8F5] border border-[#EBE7DF] text-[#E25B38] flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 text-[#5925DC] flex items-center justify-center font-bold">
               {activeTab === 'privacy' ? <ShieldCheck className="w-5 h-5" /> : <Scale className="w-5 h-5" />}
             </div>
             <div>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#1C1917]">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#1F104F]">
                 {activeTab === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
               </h3>
               <p className="text-xs text-stone-500">
@@ -51,11 +51,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             onClick={() => setActiveTab('privacy')}
             className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
               activeTab === 'privacy'
-                ? 'bg-white text-[#1C1917] shadow-xs font-bold border border-stone-200'
+                ? 'bg-white text-[#1F104F] shadow-xs font-bold border border-stone-200'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <ShieldCheck className="w-4 h-4 text-[#E25B38]" />
+            <ShieldCheck className="w-4 h-4 text-[#5925DC]" />
             Privacy Policy
           </button>
           <button
@@ -63,11 +63,11 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             onClick={() => setActiveTab('terms')}
             className={`flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
               activeTab === 'terms'
-                ? 'bg-white text-[#1C1917] shadow-xs font-bold border border-stone-200'
+                ? 'bg-white text-[#1F104F] shadow-xs font-bold border border-stone-200'
                 : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <FileText className="w-4 h-4 text-[#E25B38]" />
+            <FileText className="w-4 h-4 text-[#5925DC]" />
             Terms of Service
           </button>
         </div>
@@ -78,12 +78,12 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             <div className="space-y-6">
               {/* Introduction */}
               <section className="bg-[#FAF8F5] p-4 sm:p-5 rounded-2xl border border-[#EBE7DF]">
-                <h4 className="text-base font-bold text-[#1C1917] mb-2 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-[#E25B38]" /> 1. Commitment to Your Privacy
+                <h4 className="text-base font-bold text-[#1F104F] mb-2 flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-[#5925DC]" /> 1. Commitment to Your Privacy
                 </h4>
                 <p>
                   At <strong>Dakarlaton</strong> (accessible at{' '}
-                  <a href="https://dakarlaton.com" className="text-[#E25B38] underline font-medium">
+                  <a href="https://dakarlaton.com" className="text-[#5925DC] underline font-medium">
                     https://dakarlaton.com
                   </a>
                   ), we prioritize the confidentiality and protection of personal and professional data for freelance designers, engineers, architects, and hiring employers across Saudi Arabia, UAE, Qatar, Oman, Bahrain, and international locations.
@@ -92,7 +92,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Data Collected */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">2. Information We Collect</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">2. Information We Collect</h4>
                 <p>We collect information necessary to operate our talent discovery and job posting marketplace:</p>
                 <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
                   <li>
@@ -112,7 +112,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* How We Use Information */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">3. How We Use and Process Your Information</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">3. How We Use and Process Your Information</h4>
                 <p>We use the collected information for specific, lawful purposes:</p>
                 <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
                   <li>Connecting freelance talent directly with verified GCC and international employers.</li>
@@ -125,8 +125,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Direct Employer Contact & Transparency */}
               <section className="space-y-2 bg-stone-50 p-4 rounded-2xl border border-stone-200">
-                <h4 className="text-base font-bold text-[#1C1917] flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#E25B38]" /> 4. Direct Employer Contact & Email Transparency
+                <h4 className="text-base font-bold text-[#1F104F] flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-[#5925DC]" /> 4. Direct Employer Contact & Email Transparency
                 </h4>
                 <p>
                   To foster trust and eliminate middlemen fees, Dakarlaton allows employers to publish direct recruitment emails (e.g., <code>careers@company.com</code>). When job seekers utilize the "Direct Email Application" feature, their communication occurs directly with the employer. Dakarlaton never sells, rents, or monetizes candidate email addresses.
@@ -135,7 +135,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Data Security & Firebase Cloud Storage */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">5. Cloud Security & Data Storage</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">5. Cloud Security & Data Storage</h4>
                 <p>
                   User data is safeguarded through industry-standard encryption in transit and at rest using enterprise Google Cloud Firestore infrastructure with Zero-Trust Role-Based Access Control (RBAC) rules. Access to sensitive account records is strictly limited to authorized owners.
                 </p>
@@ -143,7 +143,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* User Rights */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">6. Your Rights & Data Choices</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">6. Your Rights & Data Choices</h4>
                 <p>You maintain full control over your personal information:</p>
                 <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
                   <li>You can update, edit, or delete your portfolio projects and profile at any time.</li>
@@ -154,14 +154,14 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Contact Information */}
               <section className="bg-[#FAF8F5] p-4 sm:p-5 rounded-2xl border border-[#EBE7DF] space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">7. Privacy Contact</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">7. Privacy Contact</h4>
                 <p className="text-xs sm:text-sm">
                   For any questions regarding this Privacy Policy or your personal data rights, contact us at:
                 </p>
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1C1917]">
-                  <Mail className="w-4 h-4 text-[#E25B38]" />
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1F104F]">
+                  <Mail className="w-4 h-4 text-[#5925DC]" />
                   <span>Email: </span>
-                  <a href="mailto:j_tanim@hotmail.com" className="text-[#E25B38] underline">
+                  <a href="mailto:j_tanim@hotmail.com" className="text-[#5925DC] underline">
                     j_tanim@hotmail.com
                   </a>
                 </div>
@@ -171,12 +171,12 @@ export const LegalModal: React.FC<LegalModalProps> = ({
             <div className="space-y-6">
               {/* Introduction */}
               <section className="bg-[#FAF8F5] p-4 sm:p-5 rounded-2xl border border-[#EBE7DF]">
-                <h4 className="text-base font-bold text-[#1C1917] mb-2 flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-[#E25B38]" /> 1. Agreement to Terms
+                <h4 className="text-base font-bold text-[#1F104F] mb-2 flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-[#5925DC]" /> 1. Agreement to Terms
                 </h4>
                 <p>
                   By accessing or using <strong>Dakarlaton</strong> (
-                  <a href="https://dakarlaton.com" className="text-[#E25B38] underline font-medium">
+                  <a href="https://dakarlaton.com" className="text-[#5925DC] underline font-medium">
                     https://dakarlaton.com
                   </a>
                   ), you agree to be bound by these Terms of Service. If you do not agree to these terms, please refrain from using our services.
@@ -185,7 +185,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Use of Platform */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">2. Platform Purpose & Scope</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">2. Platform Purpose & Scope</h4>
                 <p>
                   Dakarlaton is a dedicated job board and portfolio platform tailored for creative, design, architecture, CAD, 3D visualization, and digital technology talent operating in the GCC region (Saudi Arabia, UAE, Qatar, Oman, Bahrain, Kuwait) and globally.
                 </p>
@@ -193,7 +193,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Employer Responsibilities */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">3. Employer & Job Posting Guidelines</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">3. Employer & Job Posting Guidelines</h4>
                 <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
                   <li>Employers must provide genuine, verified role requirements, accurate compensation benchmarks, and legitimate corporate or direct contact emails.</li>
                   <li>Postings containing deceptive claims, unsolicited multi-level marketing, fee-to-apply schemes, or discrimination are strictly prohibited and subject to immediate removal.</li>
@@ -203,7 +203,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Freelancer & Applicant Responsibilities */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">4. Designer & Candidate Obligations</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">4. Designer & Candidate Obligations</h4>
                 <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm">
                   <li>Designers and applicants warrant that all portfolio works, project case studies, and credentials presented are their own original creations or accurately credit collaborators.</li>
                   <li>Applicants agree to communicate respectfully with prospective clients and employers.</li>
@@ -212,7 +212,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Intellectual Property */}
               <section className="space-y-2 bg-stone-50 p-4 rounded-2xl border border-stone-200">
-                <h4 className="text-base font-bold text-[#1C1917]">5. Intellectual Property</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">5. Intellectual Property</h4>
                 <p>
                   Designers retain 100% ownership of their portfolio artwork, Figma files, CAD drawings, and creative assets showcased on Dakarlaton. By uploading your portfolio, you grant Dakarlaton a non-exclusive license solely to display your public preview thumbnail to employers on the platform.
                 </p>
@@ -220,7 +220,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Disclaimer & Limitation of Liability */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">6. Disclaimers & Limitation of Liability</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">6. Disclaimers & Limitation of Liability</h4>
                 <p className="text-xs sm:text-sm">
                   Dakarlaton acts as a venue connecting independent freelancers and hiring organizations. Dakarlaton is not an employment agency or party to contracts executed between users. We are not liable for employment disputes, deliverables, or unpaid invoices between parties.
                 </p>
@@ -228,7 +228,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Governing Law & Dispute Resolution */}
               <section className="space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">7. Governing Law & Modifications</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">7. Governing Law & Modifications</h4>
                 <p className="text-xs sm:text-sm">
                   These Terms shall be interpreted in accordance with applicable commercial and digital trade principles. Dakarlaton reserves the right to modify these terms as platform capabilities expand. Continued use after changes indicates acceptance.
                 </p>
@@ -236,14 +236,14 @@ export const LegalModal: React.FC<LegalModalProps> = ({
 
               {/* Contact */}
               <section className="bg-[#FAF8F5] p-4 sm:p-5 rounded-2xl border border-[#EBE7DF] space-y-2">
-                <h4 className="text-base font-bold text-[#1C1917]">8. Questions Regarding Terms</h4>
+                <h4 className="text-base font-bold text-[#1F104F]">8. Questions Regarding Terms</h4>
                 <p className="text-xs sm:text-sm">
                   Direct inquiries regarding platform rules, copyright notices, or corporate agreements to:
                 </p>
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1C1917]">
-                  <Mail className="w-4 h-4 text-[#E25B38]" />
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1F104F]">
+                  <Mail className="w-4 h-4 text-[#5925DC]" />
                   <span>Contact: </span>
-                  <a href="mailto:j_tanim@hotmail.com" className="text-[#E25B38] underline">
+                  <a href="mailto:j_tanim@hotmail.com" className="text-[#5925DC] underline">
                     j_tanim@hotmail.com
                   </a>
                 </div>
@@ -260,7 +260,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2.5 bg-[#1C1917] hover:bg-stone-800 text-white font-medium text-xs sm:text-sm rounded-full transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-[#1F104F] hover:bg-stone-900 text-white font-medium text-xs sm:text-sm rounded-full transition-colors cursor-pointer whitespace-nowrap"
           >
             I Understand & Agree
           </button>

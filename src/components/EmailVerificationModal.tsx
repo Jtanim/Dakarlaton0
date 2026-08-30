@@ -187,13 +187,13 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
         ) : (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <div className="w-13 h-13 bg-[#E25B38]/10 text-[#E25B38] rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <div className="w-13 h-13 bg-purple-100 text-[#5925DC] rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <Mail className="w-7 h-7" />
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-semibold text-amber-800">
                 <ShieldCheck className="w-3.5 h-3.5" /> Action Required: Verify Email Address
               </div>
-              <h3 className="text-2xl font-bold text-[#1C1917] font-serif">Check Your Inbox</h3>
+              <h3 className="text-2xl font-bold text-[#1F104F] font-serif">Check Your Inbox</h3>
               <p className="text-sm text-stone-600 leading-relaxed max-w-sm mx-auto">
                 We sent a secure verification email to{' '}
                 <span className="font-semibold text-stone-900 bg-stone-100 px-2 py-0.5 rounded-md break-all">
@@ -263,10 +263,10 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                     Hello <span className="font-medium text-stone-900">{user.fullName || 'Member'}</span>, please verify your email address to activate your Dakarlaton GCC account and start applying or hiring designers.
                   </p>
 
-                  <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/70 flex items-center justify-between">
+                  <div className="p-3 bg-purple-50/60 rounded-xl border border-purple-200/70 flex items-center justify-between">
                     <div>
                       <div className="text-[11px] text-stone-500 uppercase tracking-wider font-semibold">Your 6-Digit Code</div>
-                      <div className="font-mono text-lg font-bold text-[#E25B38] tracking-widest">
+                      <div className="font-mono text-lg font-bold text-[#5925DC] tracking-widest">
                         {lastVerificationCode || '849201'}
                       </div>
                     </div>
@@ -276,7 +276,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                       onClick={() => setCode(lastVerificationCode || '849201')}
                       className="px-3 py-1.5 bg-white hover:bg-stone-100 border border-stone-200 rounded-lg text-xs font-semibold text-stone-800 flex items-center gap-1 shadow-xs cursor-pointer"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-[#E25B38]" /> Auto-Fill Code
+                      <Sparkles className="w-3.5 h-3.5 text-[#5925DC]" /> Auto-Fill Code
                     </button>
                   </div>
 
@@ -287,7 +287,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                       type="button"
                       onClick={handleVerifyViaInboxLink}
                       disabled={isVerifying}
-                      className="w-full bg-stone-900 hover:bg-black text-white font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+                      className="w-full bg-[#1F104F] hover:bg-stone-900 text-white font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
                     >
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       <span>Click here to verify email address (Inbox Link)</span>
@@ -313,7 +313,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     placeholder="e.g. 849201"
-                    className="w-full text-center tracking-[0.35em] font-mono text-xl py-2.5 pl-10 pr-4 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full text-center tracking-[0.35em] font-mono text-xl py-2.5 pl-10 pr-4 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                     required
                   />
                 </div>
@@ -338,7 +338,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                   id="btn-submit-verification-code"
                   type="submit"
                   disabled={isVerifying || !code.trim()}
-                  className="w-full bg-[#E25B38] hover:bg-[#c94929] text-white font-medium py-3 rounded-full shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+                  className="w-full bg-[#5925DC] hover:bg-[#471cb3] text-white font-medium py-3 rounded-full shadow-sm hover:shadow transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
                 >
                   {isVerifying ? (
                     <>
@@ -378,7 +378,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({ 
                   onClick={handleResend}
                   disabled={cooldown > 0}
                   className={`font-semibold cursor-pointer ${
-                    cooldown > 0 ? 'text-stone-400 cursor-not-allowed' : 'text-[#E25B38] hover:underline'
+                    cooldown > 0 ? 'text-stone-400 cursor-not-allowed' : 'text-[#5925DC] hover:underline'
                   }`}
                 >
                   {cooldown > 0 ? `Resend email in ${cooldown}s` : 'Resend verification email'}

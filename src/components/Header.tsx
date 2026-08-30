@@ -103,40 +103,40 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Header Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 gap-2 sm:gap-4">
           {/* Brand Logo */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 xl:gap-8 shrink-0">
             <button
               onClick={() => {
                 setCurrentTab('home');
                 closeAllMenus();
               }}
-              className="flex items-center gap-2.5 group focus:outline-none cursor-pointer"
+              className="flex items-center gap-2.5 group focus:outline-none cursor-pointer shrink-0"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#5925DC] flex items-center justify-center text-white font-bold text-xl shadow-xs group-hover:scale-105 transition-transform">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#5925DC] flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-xs group-hover:scale-105 transition-transform shrink-0">
                 D
               </div>
-              <span className="text-2xl font-black tracking-tight text-[#1F104F] font-serif">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#1F104F] font-serif whitespace-nowrap">
                 Dakarlaton
               </span>
             </button>
 
             {/* Desktop Mega Navigation */}
-            <nav className="hidden lg:flex items-center gap-6 text-[15px] font-semibold text-stone-700">
+            <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-sm xl:text-[15px] font-semibold text-stone-700">
               {/* Job Seekers Dropdown */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => {
                     setJobSeekersMenuOpen(!jobSeekersMenuOpen);
                     setContactMenuOpen(false);
                     setSpecialismsMenuOpen(false);
                   }}
-                  className={`flex items-center gap-1.5 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer whitespace-nowrap ${
                     jobSeekersMenuOpen || currentTab === 'jobs' ? 'text-[#5925DC]' : ''
                   }`}
                 >
-                  Job seekers
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${jobSeekersMenuOpen ? 'rotate-180' : ''}`} />
+                  <span>Job seekers</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${jobSeekersMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {jobSeekersMenuOpen && (
@@ -257,19 +257,19 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
 
               {/* Specialisms & Portfolios Dropdown */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => {
                     setSpecialismsMenuOpen(!specialismsMenuOpen);
                     setJobSeekersMenuOpen(false);
                     setContactMenuOpen(false);
                   }}
-                  className={`flex items-center gap-1.5 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer whitespace-nowrap ${
                     specialismsMenuOpen || currentTab === 'designers' ? 'text-[#5925DC]' : ''
                   }`}
                 >
-                  Our specialisms
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${specialismsMenuOpen ? 'rotate-180' : ''}`} />
+                  <span>Our specialisms</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${specialismsMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {specialismsMenuOpen && (
@@ -368,25 +368,25 @@ export const Header: React.FC<HeaderProps> = ({
                   if (onOpenSalaryTrends) onOpenSalaryTrends();
                   closeAllMenus();
                 }}
-                className="py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer"
+                className="py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
                 Salary Guides
               </button>
 
               {/* Contact Dropdown */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => {
                     setContactMenuOpen(!contactMenuOpen);
                     setJobSeekersMenuOpen(false);
                     setSpecialismsMenuOpen(false);
                   }}
-                  className={`flex items-center gap-1.5 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 py-2 px-1 hover:text-[#5925DC] transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                     contactMenuOpen || currentTab === 'contact' ? 'text-[#5925DC]' : ''
                   }`}
                 >
-                  Contact
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${contactMenuOpen ? 'rotate-180' : ''}`} />
+                  <span>Contact</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${contactMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {contactMenuOpen && (
@@ -429,14 +429,14 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Action Icons & Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Candidate / Employer Toggle Pill */}
             {setUserTypeMode && (
-              <div className="hidden sm:flex items-center bg-stone-100 p-1 rounded-full border border-stone-200 text-xs font-semibold">
+              <div className="hidden sm:flex items-center bg-stone-100 p-1 rounded-full border border-stone-200 text-xs font-semibold shrink-0">
                 <button
                   type="button"
                   onClick={() => setUserTypeMode('candidate')}
-                  className={`px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                     userTypeMode === 'candidate'
                       ? 'bg-white text-[#1F104F] shadow-xs'
                       : 'text-stone-500 hover:text-stone-900'
@@ -447,7 +447,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={() => setUserTypeMode('employer')}
-                  className={`px-3 py-1.5 rounded-full transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${
                     userTypeMode === 'employer'
                       ? 'bg-white text-[#1F104F] shadow-xs'
                       : 'text-stone-500 hover:text-stone-900'
@@ -461,7 +461,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Info Icon Button */}
             <button
               onClick={onOpenPhishingInfo}
-              className="p-2 rounded-full text-stone-600 hover:text-[#5925DC] hover:bg-stone-100 transition-colors cursor-pointer hidden sm:flex items-center justify-center"
+              className="p-2 rounded-full text-stone-600 hover:text-[#5925DC] hover:bg-stone-100 transition-colors cursor-pointer hidden sm:flex items-center justify-center shrink-0"
               title="Security & Advisory Info"
             >
               <Info className="w-5 h-5" />
@@ -470,7 +470,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Search Icon Button */}
             <button
               onClick={() => setCurrentTab('jobs')}
-              className="p-2 rounded-full text-stone-600 hover:text-[#5925DC] hover:bg-stone-100 transition-colors cursor-pointer"
+              className="p-2 rounded-full text-stone-600 hover:text-[#5925DC] hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
               title="Search Jobs"
             >
               <Search className="w-5 h-5" />
@@ -479,7 +479,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Heart / Saved Jobs Button with Counter */}
             <button
               onClick={onOpenSavedModal}
-              className="relative p-2 rounded-full text-stone-600 hover:text-rose-600 hover:bg-stone-100 transition-colors cursor-pointer"
+              className="relative p-2 rounded-full text-stone-600 hover:text-rose-600 hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
               title="Saved Jobs"
             >
               <Heart className={`w-5 h-5 ${savedCount > 0 ? 'fill-rose-500 text-rose-500' : ''}`} />
@@ -492,10 +492,10 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* User Account / Sign In */}
             {isAuthenticated && user ? (
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors focus:outline-none border border-stone-200 cursor-pointer"
+                  className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors focus:outline-none border border-stone-200 cursor-pointer shrink-0"
                 >
                   {user.avatar ? (
                     <img
@@ -599,9 +599,9 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Post a Job / Hire Talent CTA Button */}
             <button
               onClick={onOpenPostJob}
-              className="bg-[#5925DC] hover:bg-[#471cb3] text-white text-xs sm:text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-full shadow-xs hover:shadow transition-all duration-200 flex items-center gap-1.5 focus:outline-none cursor-pointer"
+              className="bg-[#5925DC] hover:bg-[#471cb3] text-white text-xs sm:text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-full shadow-xs hover:shadow transition-all duration-200 flex items-center gap-1.5 focus:outline-none cursor-pointer whitespace-nowrap shrink-0"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 shrink-0" />
               <span className="hidden sm:inline">Post a Job</span>
               <span className="sm:hidden">Post</span>
             </button>

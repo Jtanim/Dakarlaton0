@@ -815,7 +815,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={art.id}
                   onClick={() => onOpenArticle && onOpenArticle(art)}
-                  className="bg-[#E25B38] text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg hover:shadow-xl transition-all cursor-pointer group"
+                  className="bg-[#5925DC] text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg hover:shadow-xl transition-all cursor-pointer group"
                 >
                   <div className="space-y-3">
                     <span className="text-[11px] font-bold uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-full text-white inline-block">
@@ -829,7 +829,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                     </p>
                   </div>
                   <div className="pt-6">
-                    <button className="bg-white text-[#E25B38] font-bold px-6 py-2.5 rounded-full text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <button className="bg-white text-[#5925DC] font-bold px-6 py-2.5 rounded-full text-xs transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap">
                       Read our career tips <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>

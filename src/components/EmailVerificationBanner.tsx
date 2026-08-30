@@ -33,7 +33,7 @@ export const EmailVerificationBanner: React.FC<EmailVerificationBannerProps> = (
         <button
           id="btn-banner-verify-now"
           onClick={onOpenVerify}
-          className="inline-flex items-center gap-1.5 bg-[#E25B38] hover:bg-[#c94929] text-white font-semibold px-4 py-1.5 rounded-full text-xs shadow-xs transition-all shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-[#5925DC] hover:bg-[#471cb3] text-white font-semibold px-4 py-1.5 rounded-full text-xs shadow-xs transition-all shrink-0 cursor-pointer whitespace-nowrap"
         >
           Check Inbox & Verify <ArrowRight className="w-3.5 h-3.5" />
         </button>

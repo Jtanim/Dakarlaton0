@@ -352,7 +352,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
             {/* Quick summary preview card */}
             <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-left max-w-md mx-auto space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#E25B38] bg-orange-50 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-[#5925DC] bg-purple-50 px-2.5 py-0.5 rounded-full">
                   {createdJob.category}
                 </span>
                 <span className="text-xs text-stone-500 font-medium">
@@ -361,11 +361,11 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium">
                 <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
-                  <Calendar className="w-3 h-3 text-[#E25B38]" />
+                  <Calendar className="w-3 h-3 text-[#5925DC]" />
                   {formatJobDateTime(createdJob).date}
                 </span>
-                <span className="flex items-center gap-1 text-stone-600 bg-orange-50/60 px-1.5 py-0.5 rounded-md font-medium">
-                  <Clock className="w-3 h-3 text-[#E25B38]" />
+                <span className="flex items-center gap-1 text-stone-600 bg-purple-50/60 px-1.5 py-0.5 rounded-md font-medium">
+                  <Clock className="w-3 h-3 text-[#5925DC]" />
                   {formatJobDateTime(createdJob).time}
                 </span>
               </div>
@@ -387,7 +387,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 <button
                   type="button"
                   onClick={() => onViewCreatedJob(createdJob)}
-                  className="bg-[#E25B38] hover:bg-[#c94929] text-white px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                  className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center gap-2 cursor-pointer"
                 >
                   View in Job Feed <ArrowRight className="w-4 h-4" />
                 </button>
@@ -411,10 +411,10 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
         ) : (
           <div className="space-y-6">
             <div>
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#E25B38] uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#5925DC] uppercase tracking-wider mb-1">
                 <Briefcase className="w-3.5 h-3.5" /> For Employers & Studios
               </div>
-              <h3 className="text-2xl font-serif font-bold text-[#1C1917]">
+              <h3 className="text-2xl font-serif font-bold text-[#1F104F]">
                 Post a New Role
               </h3>
               <p className="text-xs sm:text-sm text-stone-600">
@@ -435,7 +435,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     placeholder="e.g. AutoCAD Draftsman | Riyadh"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                   />
                 </div>
 
@@ -449,7 +449,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     placeholder="e.g. MAS Future Group"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                   />
                 </div>
               </div>
@@ -475,7 +475,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                       else if (newCat === 'Content') setSelectedSkillCategory('content');
                       else if (newCat === 'Sales') setSelectedSkillCategory('sales');
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                   >
                     <option value="Engineering">Engineering</option>
                     <option value="Architecture & 3D">Architecture & 3D</option>
@@ -497,7 +497,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as any)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Freelance">Freelance</option>
@@ -516,7 +516,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                       const val = e.target.value as any;
                       setWorkplaceType(val);
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                   >
                     <option value="On-site">On-site</option>
                     <option value="Remote">Remote</option>
@@ -542,7 +542,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                             setLocation(e.target.value);
                           }
                         }}
-                        className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                        className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                       >
                         {GCC_LOCATIONS.map((group) => (
                           <optgroup key={group.group} label={group.group}>
@@ -565,7 +565,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                         placeholder="e.g. Al Khobar, Saudi Arabia"
                         value={customLocationText}
                         onChange={(e) => setCustomLocationText(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                        className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                       />
                       <button
                         type="button"
@@ -586,7 +586,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <select
                     value={salaryPreset}
                     onChange={(e) => setSalaryPreset(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                    className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                   >
                     {MONTHLY_SALARY_PRESETS.map((preset) => (
                       <option key={preset} value={preset}>
@@ -603,7 +603,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                         placeholder="e.g. SAR 8,500 - SAR 12,000 / month"
                         value={customSalaryText}
                         onChange={(e) => setCustomSalaryText(e.target.value)}
-                        className="w-full px-4 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                        className="w-full px-4 py-2 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                       />
                     </div>
                   )}
@@ -620,7 +620,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   placeholder="Describe the opportunity, key scope, project background, and objectives..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                 />
               </div>
 
@@ -645,7 +645,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     placeholder={`e.g. Lead AutoCAD / Revit drafting and 3D modeling\nPrepare shop drawings and submittals\nCoordinate with site and project engineers\nReview project architectural specifications`}
                     value={responsibilitiesText}
                     onChange={(e) => setResponsibilitiesText(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] leading-relaxed"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] leading-relaxed"
                   />
                 </div>
 
@@ -669,7 +669,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     placeholder={`e.g. 3+ years experience with AutoCAD / BIM software\nProven experience on GCC construction or design projects\nStrong portfolio of completed technical drawings\nDiploma or Bachelor's in Engineering / Architecture`}
                     value={requirementsText}
                     onChange={(e) => setRequirementsText(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] leading-relaxed"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] leading-relaxed"
                   />
                 </div>
               </div>
@@ -732,7 +732,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                         }}
                         onFocus={() => setIsSkillDropdownOpen(true)}
                         onKeyDown={handleCustomSkillKeyDown}
-                        className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#E25B38]"
+                        className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                       />
                       <button
                         type="button"
@@ -780,7 +780,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                           onClick={() => setSelectedSkillCategory('all')}
                           className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                             selectedSkillCategory === 'all'
-                              ? 'bg-[#E25B38] text-white shadow-xs'
+                              ? 'bg-[#5925DC] text-white shadow-xs'
                               : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                           }`}
                         >
@@ -793,7 +793,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                             onClick={() => setSelectedSkillCategory(cat.id)}
                             className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                               selectedSkillCategory === cat.id
-                                ? 'bg-[#E25B38] text-white shadow-xs'
+                                ? 'bg-[#5925DC] text-white shadow-xs'
                                 : 'bg-stone-100 hover:bg-stone-200 text-stone-700'
                             }`}
                           >
@@ -810,7 +810,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                               key={skill}
                               type="button"
                               onClick={() => addTag(skill)}
-                              className="text-left text-xs text-stone-700 hover:bg-orange-50 hover:text-[#E25B38] px-2.5 py-2 rounded-xl font-medium transition-colors cursor-pointer flex items-center justify-between border border-stone-100 hover:border-orange-200 bg-stone-50/50"
+                              className="text-left text-xs text-stone-700 hover:bg-purple-50 hover:text-[#5925DC] px-2.5 py-2 rounded-xl font-medium transition-colors cursor-pointer flex items-center justify-between border border-stone-100 hover:border-purple-200 bg-stone-50/50"
                             >
                               <span className="truncate pr-1">{skill}</span>
                               <Plus className="w-3.5 h-3.5 opacity-60 shrink-0" />
@@ -839,7 +839,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   placeholder="career@mascofuture.com"
                   value={contactEmail}
                   onChange={(e) => setContactEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                 />
               </div>
 
@@ -868,7 +868,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                    className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                   >
                     {isSubmitting ? 'Publishing...' : 'Publish Job Listing'}
                   </button>

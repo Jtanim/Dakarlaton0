@@ -45,13 +45,13 @@ export const ContactPage: React.FC = () => {
 
   return (
     <div className="space-y-20 pb-16">
-      {/* Header Section (Matching Video 00:35) */}
+      {/* Header Section */}
       <section className="pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#E25B38]/10 text-[#E25B38] text-xs font-semibold uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#5925DC]/10 text-[#5925DC] text-xs font-semibold uppercase tracking-wider mb-6">
           <Sparkles className="w-3.5 h-3.5" /> Get in touch
         </div>
 
-        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#1C1917] tracking-tight leading-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#1F104F] tracking-tight leading-tight mb-4">
           We'd love to hear from you
         </h1>
 
@@ -60,21 +60,21 @@ export const ContactPage: React.FC = () => {
         </p>
       </section>
 
-      {/* Main Contact Grid (Matching Video 00:30 & 00:34) */}
+      {/* Main Contact Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Info Cards */}
           <div className="lg:col-span-5 space-y-4">
             {/* Email card */}
             <div className="bg-white p-6 rounded-3xl border border-[#EBE7DF] shadow-xs flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#E25B38] flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#5925DC] flex items-center justify-center shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="space-y-0.5">
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
                   Email us
                 </span>
-                <h4 className="text-sm font-bold text-[#1C1917]">
+                <h4 className="text-sm font-bold text-[#1F104F]">
                   j_tanim@hotmail.com
                 </h4>
                 <p className="text-xs text-stone-500">
@@ -85,14 +85,14 @@ export const ContactPage: React.FC = () => {
 
             {/* Based in card */}
             <div className="bg-white p-6 rounded-3xl border border-[#EBE7DF] shadow-xs flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#E25B38] flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#5925DC] flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
               <div className="space-y-0.5">
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
                   Based in
                 </span>
-                <h4 className="text-sm font-bold text-[#1C1917]">
+                <h4 className="text-sm font-bold text-[#1F104F]">
                   Riyadh KSA
                 </h4>
                 <p className="text-xs text-stone-500">
@@ -103,14 +103,14 @@ export const ContactPage: React.FC = () => {
 
             {/* Hours card */}
             <div className="bg-white p-6 rounded-3xl border border-[#EBE7DF] shadow-xs flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 text-[#E25B38] flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#5925DC] flex items-center justify-center shrink-0">
                 <Clock className="w-5 h-5" />
               </div>
               <div className="space-y-0.5">
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
                   Hours
                 </span>
-                <h4 className="text-sm font-bold text-[#1C1917]">
+                <h4 className="text-sm font-bold text-[#1F104F]">
                   Mon – Fri, 9am – 6pm WAT
                 </h4>
                 <p className="text-xs text-stone-500">
@@ -119,10 +119,10 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Built for people card (Video 00:30) */}
+            {/* Built for people card */}
             <div className="bg-[#FAF8F5] p-6 rounded-3xl border border-[#EBE7DF] space-y-2">
-              <h4 className="text-sm font-bold text-[#1C1917] flex items-center gap-2">
-                <Heart className="w-4 h-4 text-[#E25B38]" /> Built for people.
+              <h4 className="text-sm font-bold text-[#1F104F] flex items-center gap-2">
+                <Heart className="w-4 h-4 text-[#5925DC]" /> Built for people.
               </h4>
               <p className="text-xs text-stone-600 leading-relaxed">
                 Every message we receive is read by a real person. We care about every job seeker and every employer on our platform.
@@ -130,10 +130,10 @@ export const ContactPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Message Form (Matching Video 00:30 & 00:34) */}
+          {/* Right Message Form */}
           <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-[#EBE7DF] shadow-sm space-y-6">
             <div>
-              <h3 className="text-2xl font-serif font-bold text-[#1C1917]">
+              <h3 className="text-2xl font-serif font-bold text-[#1F104F]">
                 Send us a message
               </h3>
               <p className="text-sm text-stone-500 mt-1">
@@ -162,7 +162,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="Amara Diallo"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                     />
                   </div>
 
@@ -176,7 +176,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                     />
                   </div>
                 </div>
@@ -189,7 +189,7 @@ export const ContactPage: React.FC = () => {
                     required
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38] bg-white"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC] bg-white"
                   >
                     <option value="">Select a topic...</option>
                     <option value="Job Seeker Support">Job Seeker Support</option>
@@ -211,7 +211,7 @@ export const ContactPage: React.FC = () => {
                     placeholder="Tell us how we can help..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                   />
                 </div>
 
@@ -219,7 +219,7 @@ export const ContactPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto bg-[#E25B38] hover:bg-[#c94929] text-white px-8 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer disabled:opacity-50"
+                    className="w-full sm:w-auto bg-[#5925DC] hover:bg-[#471cb3] text-white px-8 py-3 rounded-full font-medium text-sm transition-all shadow-sm hover:shadow cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? 'Sending...' : 'Send message'}
                   </button>
@@ -230,13 +230,13 @@ export const ContactPage: React.FC = () => {
         </div>
       </section>
 
-      {/* FAQ Section (Matching Video 00:31 - 00:33) */}
+      {/* FAQ Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <span className="text-xs font-semibold text-[#E25B38] uppercase tracking-wider block mb-1">
+          <span className="text-xs font-semibold text-[#5925DC] uppercase tracking-wider block mb-1">
             Common questions
           </span>
-          <h2 className="text-3xl font-serif font-bold text-[#1C1917]">
+          <h2 className="text-3xl font-serif font-bold text-[#1F104F]">
             Quick answers
           </h2>
         </div>
@@ -252,11 +252,11 @@ export const ContactPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-[#1C1917] hover:text-[#E25B38] transition-colors cursor-pointer"
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-[#1F104F] hover:text-[#5925DC] transition-colors cursor-pointer"
                 >
                   <span>{faq.question}</span>
                   {isOpen ? (
-                    <ChevronUp className="w-4 h-4 text-[#E25B38] shrink-0" />
+                    <ChevronUp className="w-4 h-4 text-[#5925DC] shrink-0" />
                   ) : (
                     <ChevronDown className="w-4 h-4 text-stone-400 shrink-0" />
                   )}

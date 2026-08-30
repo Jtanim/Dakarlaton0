@@ -107,23 +107,23 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
         ) : (
           <div className="space-y-6">
             <div className="border-b border-stone-100 pb-4">
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-orange-50 text-[#E25B38] uppercase tracking-wider inline-block mb-2">
+              <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-50 text-[#5925DC] uppercase tracking-wider inline-block mb-2">
                 {job.category} • {job.type}
               </span>
-              <h3 className="text-2xl font-bold text-[#1C1917]">{job.title}</h3>
+              <h3 className="text-2xl font-bold text-[#1F104F]">{job.title}</h3>
               <p className="text-sm text-stone-600 font-medium">{job.company} • {job.location} ({job.salary})</p>
             </div>
 
             {!isAuthenticated ? (
-              <div className="bg-orange-50 border border-orange-200 p-4 rounded-2xl flex items-center justify-between">
-                <div className="text-xs text-orange-900">
+              <div className="bg-purple-50 border border-purple-200 p-4 rounded-2xl flex items-center justify-between">
+                <div className="text-xs text-[#1F104F]">
                   <span className="font-semibold block">Sign in required</span>
                   Please sign in or create your designer account to submit your portfolio.
                 </div>
                 <button
                   type="button"
                   onClick={onOpenAuth}
-                  className="bg-[#E25B38] text-white text-xs px-3.5 py-1.5 rounded-full font-medium shadow-xs"
+                  className="bg-[#5925DC] hover:bg-[#471cb3] text-white text-xs px-3.5 py-1.5 rounded-full font-medium shadow-xs"
                 >
                   Sign In
                 </button>
@@ -143,7 +143,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                     placeholder="https://dribbble.com/yourhandle or personal website"
                     value={portfolioUrl}
                     onChange={(e) => setPortfolioUrl(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                   />
                 </div>
               </div>
@@ -161,7 +161,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                         onClick={() => toggleProject(p.id)}
                         className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                           selectedProjectIds.includes(p.id)
-                            ? 'border-[#E25B38] bg-orange-50/50'
+                            ? 'border-[#5925DC] bg-purple-50/50'
                             : 'border-stone-200 hover:border-stone-300'
                         }`}
                       >
@@ -181,7 +181,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                           type="checkbox"
                           checked={selectedProjectIds.includes(p.id)}
                           onChange={() => {}}
-                          className="accent-[#E25B38] w-4 h-4 rounded"
+                          className="accent-[#5925DC] w-4 h-4 rounded"
                         />
                       </div>
                     ))}
@@ -198,7 +198,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                   placeholder="e.g. $75 / hr or $5,000 / milestone"
                   value={rate}
                   onChange={(e) => setRate(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                 />
               </div>
 
@@ -211,7 +211,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                   required
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#E25B38] focus:border-[#E25B38]"
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
               <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="text-[11px] font-bold text-stone-700 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[#E25B38]" />
+                    <Mail className="w-3.5 h-3.5 text-[#5925DC]" />
                     Direct Company Contact
                   </div>
                   <span className="text-xs text-stone-600 truncate block">
@@ -236,7 +236,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                   <button
                     type="button"
                     onClick={() => copyEmail(job.contactEmail || 'career@mascofuture.com')}
-                    className="px-3 py-1.5 rounded-lg border border-stone-300 text-xs font-medium text-stone-700 hover:bg-white transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg border border-stone-300 text-xs font-medium text-stone-700 hover:bg-white transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     {copiedEmail ? (
                       <>
@@ -252,7 +252,7 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                   </button>
                   <a
                     href={`mailto:${job.contactEmail || 'career@mascofuture.com'}?subject=${encodeURIComponent(`Application for ${job.title} - Dakarlaton`)}`}
-                    className="px-3 py-1.5 rounded-lg bg-stone-900 text-white text-xs font-medium hover:bg-stone-800 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg bg-[#1F104F] hover:bg-stone-900 text-white text-xs font-medium transition-colors flex items-center gap-1"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Email Direct</span>
@@ -264,14 +264,14 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, on
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors"
+                  className="px-5 py-2.5 rounded-full text-stone-600 hover:text-stone-900 text-sm font-medium transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#E25B38] hover:bg-[#c94929] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                  className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                 >
                   {isSubmitting ? 'Sending...' : 'Submit Application & Portfolio'}
                 </button>
