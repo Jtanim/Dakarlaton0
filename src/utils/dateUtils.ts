@@ -95,3 +95,50 @@ export function formatJobDateTime(job: {
     shortBadge: `${resolvedDate} • ${resolvedTime}`
   };
 }
+
+/**
+ * Derives a guaranteed, deterministic numeric timestamp for any job listing.
+ * Prevents sorting instability, reordering flickers, and jitter between Firestore snapshots.
+ */
+export function getJobTimestamp(job: {
+  postedTimestamp?: number;
+  postedDate?: string;
+  postedTime?: string;
+  postedAt?: string;
+  id?: string;
+}): number {
+  // 1. Direct valid numerical timestamp
+  if (job.postedTimestamp && typeof job.postedTimestamp === 'number' && !isNaN(job.postedTimestamp) && job.postedTimestamp > 0) {
+    return job.postedTimestamp;
+  }
+
+  // 2. Extract timestamp from ID if generated as job-<timestamp>
+  if (job.id && job.id.startsWith('job-')) {
+    const rawTs = job.id.replace('job-', '');
+    const numTs = Number(rawTs);
+    if (!isNaN(numTs) && numTs > 1000000000000) {
+      return numTs;
+    }
+  }
+
+  // 3. Extract exact date and time from formatted fields
+  const dt = formatJobDateTime(job);
+  if (dt.date && dt.time) {
+    const parsed = Date.parse(`${dt.date} ${dt.time}`);
+    if (!isNaN(parsed)) {
+      return parsed;
+    }
+  }
+
+  // 4. Stable deterministic tie-breaker based on ID hash
+  if (job.id) {
+    let hash = 0;
+    for (let i = 0; i < job.id.length; i++) {
+      hash = (hash << 5) - hash + job.id.charCodeAt(i);
+      hash |= 0;
+    }
+    return 1787205600000 + (Math.abs(hash) % 1000000);
+  }
+
+  return 1787205600000;
+}

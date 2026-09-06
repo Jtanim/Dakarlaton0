@@ -35,6 +35,22 @@ function MainApp() {
   const [searchLocation, setSearchLocation] = useState('');
   const [userTypeMode, setUserTypeMode] = useState<'candidate' | 'employer'>('candidate');
 
+  // Maintain active job selection across background job updates
+  useEffect(() => {
+    if (selectedJob) {
+      const match = jobs.find((j) => j.id === selectedJob.id);
+      if (
+        match &&
+        (match.applicantCount !== selectedJob.applicantCount ||
+          match.title !== selectedJob.title ||
+          match.description !== selectedJob.description ||
+          match.postedTimestamp !== selectedJob.postedTimestamp)
+      ) {
+        setSelectedJob(match);
+      }
+    }
+  }, [jobs, selectedJob]);
+
   // Saved Jobs Bookmarking State
   const [savedJobIds, setSavedJobIds] = useState<string[]>(() => {
     try {

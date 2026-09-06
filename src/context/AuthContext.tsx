@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, UserRole, JobListing, JobApplication, ContactMessage, PortfolioProject } from '../types';
 import { INITIAL_JOBS, INITIAL_DESIGNERS } from '../data/mockData';
-import { formatJobDateTime } from '../utils/dateUtils';
+import { formatJobDateTime, getJobTimestamp } from '../utils/dateUtils';
 import {
   auth,
   db,
@@ -105,14 +105,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .filter((j: JobListing) => !isDeprecatedMockJob(j.id))
             .map((j: JobListing) => {
               const dt = formatJobDateTime(j);
+              const ts = getJobTimestamp(j);
               return {
                 ...j,
                 postedDate: dt.date,
                 postedTime: dt.time,
                 postedAt: dt.fullFormatted,
-                postedTimestamp: j.postedTimestamp || Date.now()
+                postedTimestamp: ts
               };
             });
+          cleaned.sort((a, b) => {
+            const diff = (b.postedTimestamp || 0) - (a.postedTimestamp || 0);
+            if (diff !== 0) return diff;
+            return (a.id || '').localeCompare(b.id || '');
+          });
           if (cleaned.length > 0) {
             setJobs(cleaned);
           } else {
@@ -126,7 +132,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       const savedDesigners = localStorage.getItem(LOCAL_STORAGE_DESIGNERS_KEY);
       if (savedDesigners) {
-        setDesigners(JSON.parse(savedDesigners));
+        const parsedDesigners = JSON.parse(savedDesigners);
+        if (Array.isArray(parsedDesigners)) {
+          parsedDesigners.sort((a: UserProfile, b: UserProfile) => (a.id || '').localeCompare(b.id || ''));
+          setDesigners(parsedDesigners);
+        }
       }
     } catch (e) {
       console.warn('Local storage initialization warning:', e);
@@ -206,16 +216,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             // Normalize exact date and time
             const dt = formatJobDateTime(data);
+            const ts = getJobTimestamp(data);
             data.postedDate = dt.date;
             data.postedTime = dt.time;
             data.postedAt = dt.fullFormatted;
-            if (!data.postedTimestamp) {
-              data.postedTimestamp = 1787205600000;
-            }
+            data.postedTimestamp = ts;
             fetchedJobs.push(data);
           });
-          // Sort by newest timestamp
-          fetchedJobs.sort((a, b) => (b.postedTimestamp || 0) - (a.postedTimestamp || 0));
+          // Deterministic sort: newest timestamp first, then stable ID tie-breaker
+          fetchedJobs.sort((a, b) => {
+            const diff = (b.postedTimestamp || 0) - (a.postedTimestamp || 0);
+            if (diff !== 0) return diff;
+            return (a.id || '').localeCompare(b.id || '');
+          });
           if (fetchedJobs.length > 0) {
             saveJobs(fetchedJobs);
           }
@@ -243,6 +256,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               fetchedUsers.push(data);
             }
           });
+          fetchedUsers.sort((a, b) => (a.id || '').localeCompare(b.id || ''));
           if (fetchedUsers.length > 0) {
             saveDesigners(fetchedUsers);
           }
@@ -296,12 +310,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const saveUser = (u: UserProfile | null) => {
-    setUser(u);
-    if (u) {
-      localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(u));
-    } else {
-      localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
-    }
+    setUser((prev) => {
+      if (
+        (prev === null && u === null) ||
+        (prev &&
+          u &&
+          prev.id === u.id &&
+          prev.emailVerified === u.emailVerified &&
+          prev.role === u.role &&
+          prev.fullName === u.fullName &&
+          prev.email === u.email)
+      ) {
+        return prev;
+      }
+      if (u) {
+        try {
+          localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(u));
+        } catch (e) {
+          console.warn('LocalStorage user write error:', e);
+        }
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+      }
+      return u;
+    });
   };
 
   const saveJobs = (newJobs: JobListing[]) => {
@@ -313,7 +345,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             pj.id === newJobs[idx]?.id &&
             pj.postedTimestamp === newJobs[idx]?.postedTimestamp &&
             pj.applicantCount === newJobs[idx]?.applicantCount &&
-            pj.title === newJobs[idx]?.title
+            pj.title === newJobs[idx]?.title &&
+            pj.company === newJobs[idx]?.company
         )
       ) {
         return prevJobs;
@@ -328,8 +361,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const saveApplications = (newApps: JobApplication[]) => {
-    setApplications(newApps);
-    localStorage.setItem(LOCAL_STORAGE_APPS_KEY, JSON.stringify(newApps));
+    setApplications((prevApps) => {
+      if (
+        prevApps.length === newApps.length &&
+        prevApps.every(
+          (pa, idx) =>
+            pa.id === newApps[idx]?.id &&
+            pa.status === newApps[idx]?.status &&
+            pa.jobId === newApps[idx]?.jobId
+        )
+      ) {
+        return prevApps;
+      }
+      try {
+        localStorage.setItem(LOCAL_STORAGE_APPS_KEY, JSON.stringify(newApps));
+      } catch (e) {
+        console.warn('LocalStorage apps write error:', e);
+      }
+      return newApps;
+    });
   };
 
   const saveDesigners = (newDesigners: UserProfile[]) => {

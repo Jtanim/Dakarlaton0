@@ -98,7 +98,16 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
     });
   }, [jobs, keyword, location, selectedCategory, selectedType, selectedWorkplace]);
 
-  const activeJob = selectedJob || filteredJobs[0] || null;
+  const activeJob = useMemo(() => {
+    if (selectedJob) {
+      const foundInFiltered = filteredJobs.find((j) => j.id === selectedJob.id);
+      if (foundInFiltered) return foundInFiltered;
+      const foundInAll = jobs.find((j) => j.id === selectedJob.id);
+      if (foundInAll) return foundInAll;
+      return selectedJob;
+    }
+    return filteredJobs[0] || null;
+  }, [selectedJob, filteredJobs, jobs]);
 
   const handleJobCardClick = (job: JobListing) => {
     onSelectJob(job);
@@ -294,9 +303,9 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   <div
                     key={job.id}
                     onClick={() => handleJobCardClick(job)}
-                    className={`bg-white rounded-2xl p-5 border transition-colors cursor-pointer relative max-w-full overflow-hidden ${
+                    className={`bg-white rounded-2xl p-5 border-2 transition-colors cursor-pointer relative max-w-full overflow-hidden ${
                       isSelected
-                        ? 'border-2 border-[#5925DC] shadow-sm'
+                        ? 'border-[#5925DC] shadow-sm'
                         : 'border-[#EBE7DF] hover:border-purple-300 hover:shadow-xs'
                     }`}
                     style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
