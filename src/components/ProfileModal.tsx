@@ -17,6 +17,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
   const [headline, setHeadline] = useState(user?.headline || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [location, setLocation] = useState(user?.location || '');
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
+  const [linkedinUrl, setLinkedinUrl] = useState(user?.linkedinUrl || '');
   const [hourlyRate, setHourlyRate] = useState(user?.hourlyRate || '$75 / hr');
   const [website, setWebsite] = useState(user?.website || '');
   const [dribbble, setDribbble] = useState(user?.dribbble || '');
@@ -49,6 +51,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
       headline,
       bio,
       location,
+      phoneNumber,
+      linkedinUrl,
       hourlyRate,
       website,
       dribbble,
@@ -227,6 +231,34 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                   placeholder="e.g. $75 / hr"
                   value={hourlyRate}
                   onChange={(e) => setHourlyRate(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
+                  Mobile / WhatsApp Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+966 50 123 4567"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
+                  LinkedIn Profile URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://linkedin.com/in/username"
+                  value={linkedinUrl}
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
                 />
               </div>
@@ -442,8 +474,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                 </h4>
                 <p className="text-xs text-stone-600 mt-1">
                   {user.emailVerified
-                    ? 'Your email address is verified. Your account holds full verified status on Dakarlaton.'
-                    : 'Your email address is unverified. Verify now to unlock uninhibited job posting and applications.'}
+                    ? `Your email address (${user.email}) is verified.`
+                    : `Your email address (${user.email}) is unverified. Verification is required to list jobs.`}
                 </p>
               </div>
               {user.emailVerified ? (
@@ -452,10 +484,37 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
                 </span>
               ) : (
                 <button
+                  type="button"
                   onClick={onOpenVerify}
                   className="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-1.5 rounded-full font-semibold shrink-0 cursor-pointer shadow-xs"
                 >
                   Verify Now
+                </button>
+              )}
+            </div>
+
+            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex items-start justify-between gap-4">
+              <div>
+                <h4 className="text-sm font-bold text-stone-900 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#5925DC]" /> Mobile SMS Verification Status
+                </h4>
+                <p className="text-xs text-stone-600 mt-1">
+                  {user.phoneVerified
+                    ? `Your mobile number (${user.phoneNumber || 'Registered'}) is verified.`
+                    : `Your mobile number (${user.phoneNumber || 'Not provided'}) is unverified. Two-step SMS verification is required to list jobs.`}
+                </p>
+              </div>
+              {user.phoneVerified ? (
+                <span className="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-semibold shrink-0 flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Verified
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onOpenVerify}
+                  className="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3.5 py-1.5 rounded-full font-semibold shrink-0 cursor-pointer shadow-xs"
+                >
+                  Verify SMS
                 </button>
               )}
             </div>

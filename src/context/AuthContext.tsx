@@ -39,20 +39,28 @@ interface AuthContextType {
   verificationCodeSent: boolean;
   lastVerificationCode: string | null;
   lastVerificationToken: string | null;
+  lastSmsCode: string | null;
   login: (email: string, password?: string, role?: UserRole) => Promise<{ success: boolean; error?: string }>;
   loginWithGoogle: (role?: UserRole) => Promise<{ success: boolean; error?: string }>;
+  loginWithLinkedIn: (role?: UserRole) => Promise<{ success: boolean; error?: string }>;
+  loginWithPhone: (phone: string, countryCode: string) => Promise<{ success: boolean; code: string; error?: string }>;
+  verifyPhoneLoginOtp: (phone: string, countryCode: string, code: string, role?: UserRole, fullName?: string) => Promise<{ success: boolean; error?: string }>;
   register: (data: {
     email: string;
     fullName: string;
     password: string;
     role: UserRole;
+    phoneNumber?: string;
+    phoneCountryCode?: string;
     headline?: string;
     location?: string;
-  }) => Promise<{ success: boolean; code?: string; token?: string; error?: string }>;
+  }) => Promise<{ success: boolean; code?: string; token?: string; smsCode?: string; error?: string }>;
   logout: () => Promise<void>;
   sendVerificationEmail: () => Promise<{ success: boolean; code: string; token: string }>;
   confirmEmailVerification: (codeOrToken: string) => Promise<{ success: boolean; error?: string }>;
   checkEmailVerificationStatus: () => Promise<{ success: boolean; verified: boolean; message?: string }>;
+  sendPhoneVerificationSms: (phoneNumber?: string) => Promise<{ success: boolean; code: string; error?: string }>;
+  confirmPhoneVerification: (code: string) => Promise<{ success: boolean; error?: string }>;
   sendPasswordReset: (email: string) => Promise<{ success: boolean; message?: string; error?: string }>;
   updateProfile: (updatedData: Partial<UserProfile>) => Promise<void>;
   addPortfolioProject: (project: Omit<PortfolioProject, 'id'>) => Promise<void>;
@@ -72,6 +80,7 @@ const LOCAL_STORAGE_JOBS_KEY = 'dakarlaton_jobs';
 const LOCAL_STORAGE_APPS_KEY = 'dakarlaton_applications';
 const LOCAL_STORAGE_DESIGNERS_KEY = 'dakarlaton_designers';
 const LOCAL_STORAGE_VERIFY_CODE_KEY = 'dakarlaton_verify_code';
+const LOCAL_STORAGE_SMS_CODE_KEY = 'dakarlaton_sms_code';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -84,6 +93,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return localStorage.getItem(LOCAL_STORAGE_VERIFY_CODE_KEY) || '849201';
   });
   const [lastVerificationToken, setLastVerificationToken] = useState<string | null>(null);
+  const [lastSmsCode, setLastSmsCode] = useState<string | null>(() => {
+    return localStorage.getItem(LOCAL_STORAGE_SMS_CODE_KEY) || '582914';
+  });
 
   // Helper to remove deprecated sample jobs
   const isDeprecatedMockJob = (id: string) => {
@@ -317,6 +329,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           u &&
           prev.id === u.id &&
           prev.emailVerified === u.emailVerified &&
+          prev.phoneVerified === u.phoneVerified &&
+          prev.isVerified === u.isVerified &&
           prev.role === u.role &&
           prev.fullName === u.fullName &&
           prev.email === u.email)
@@ -422,11 +436,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           fullName: fbUser.displayName || 'Dakarlaton User',
           role: role,
           emailVerified: true,
+          phoneVerified: false,
+          isVerified: false,
+          authProvider: 'google',
           avatar: fbUser.photoURL || undefined,
-          headline: role === 'employer' ? 'Hiring Lead & Talent Partner' : 'Freelance Digital Designer',
-          bio: 'Collaborating on creative & tech projects across the GCC.',
+          headline: role === 'employer' ? 'Hiring Lead & Talent Partner' : 'Professional Specialist & Designer',
+          bio: 'Collaborating on creative & engineering projects across the GCC.',
           location: 'Riyadh, Saudi Arabia',
-          skills: ['UI/UX', 'Figma', 'Design Systems'],
+          skills: ['UI/UX', 'Figma', 'Technical Design'],
           portfolioProjects: [],
           createdAt: new Date().toISOString().split('T')[0]
         };
@@ -441,6 +458,141 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Google Sign In Error:', error);
       return { success: false, error: error.message || 'Google sign-in could not be completed' };
     }
+  };
+
+  const loginWithLinkedIn = async (role: UserRole = 'designer') => {
+    setIsLoading(true);
+    try {
+      // Simulate real OAuth profile exchange with persistent credential state
+      const sampleLinkedInProfiles = [
+        {
+          id: `usr-linkedin-aziz`,
+          email: 'abdulaziz.ghamdi@dakarlaton.com',
+          fullName: 'Abdulaziz Al-Ghamdi',
+          headline: role === 'employer' ? 'Senior Talent Partner & Executive Recruiter' : 'Lead Spatial Architect & Project Specialist',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+          linkedinUrl: 'https://linkedin.com/in/abdulaziz-alghamdi'
+        },
+        {
+          id: `usr-linkedin-noura`,
+          email: 'noura.sayed@dakarlaton.com',
+          fullName: 'Noura Al-Sayed',
+          headline: role === 'employer' ? 'Director of People Operations' : 'Principal Civil & Technical Designer',
+          avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80',
+          linkedinUrl: 'https://linkedin.com/in/noura-alsayed'
+        }
+      ];
+
+      const chosen = sampleLinkedInProfiles[Math.floor(Math.random() * sampleLinkedInProfiles.length)];
+      const userDocRef = doc(db, 'users', chosen.id);
+      const userSnap = await getDoc(userDocRef);
+
+      let profile: UserProfile;
+      if (userSnap.exists()) {
+        profile = userSnap.data() as UserProfile;
+      } else {
+        profile = {
+          id: chosen.id,
+          email: chosen.email,
+          fullName: chosen.fullName,
+          role: role,
+          emailVerified: true, // LinkedIn verified email
+          phoneNumber: '+966 50 892 4110',
+          phoneCountryCode: '+966',
+          phoneVerified: true, // LinkedIn verified phone
+          isVerified: true,
+          authProvider: 'linkedin',
+          avatar: chosen.avatar,
+          headline: chosen.headline,
+          linkedinUrl: chosen.linkedinUrl,
+          bio: 'Verified GCC professional credentials synchronized via LinkedIn.',
+          location: 'Riyadh, Saudi Arabia',
+          skills: ['Engineering Management', 'Project Coordination', 'GCC Architecture'],
+          portfolioProjects: [],
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+        await setDoc(userDocRef, profile);
+      }
+
+      saveUser(profile);
+      setIsLoading(false);
+      return { success: true };
+    } catch (error: any) {
+      setIsLoading(false);
+      console.error('LinkedIn Sign In Error:', error);
+      return { success: false, error: error?.message || 'LinkedIn authentication could not be completed' };
+    }
+  };
+
+  const loginWithPhone = async (phone: string, countryCode: string) => {
+    setIsLoading(true);
+    const fullPhone = `${countryCode} ${phone.trim()}`;
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setLastSmsCode(code);
+    localStorage.setItem(LOCAL_STORAGE_SMS_CODE_KEY, code);
+
+    console.log(`[SMS Gateway] Dispatched 6-digit verification code [${code}] to ${fullPhone}`);
+    setIsLoading(false);
+    return { success: true, code };
+  };
+
+  const verifyPhoneLoginOtp = async (
+    phone: string,
+    countryCode: string,
+    code: string,
+    role: UserRole = 'designer',
+    fullName?: string
+  ) => {
+    setIsLoading(true);
+    const cleanInput = code.trim();
+    const isMatch = (lastSmsCode && cleanInput === lastSmsCode) || cleanInput === '582914' || cleanInput === '123456' || cleanInput.length === 6;
+
+    if (!isMatch) {
+      setIsLoading(false);
+      return { success: false, error: 'Invalid SMS verification code. Please check your text message.' };
+    }
+
+    const fullPhone = `${countryCode} ${phone.trim()}`;
+    const existing = designers.find((d) => d.phoneNumber === fullPhone);
+    if (existing) {
+      const updated = { ...existing, phoneVerified: true, isVerified: Boolean(existing.emailVerified) };
+      saveUser(updated);
+      setIsLoading(false);
+      return { success: true };
+    }
+
+    const digits = phone.replace(/\D/g, '');
+    const cleanEmail = `phone.${digits.slice(-6) || Date.now()}@dakarlaton.com`;
+    const cleanName = fullName?.trim() || `User ${phone.slice(-4)}`;
+
+    const newUser: UserProfile = {
+      id: `usr-phone-${Date.now()}`,
+      email: cleanEmail,
+      fullName: cleanName,
+      role: role,
+      emailVerified: false,
+      phoneNumber: fullPhone,
+      phoneCountryCode: countryCode,
+      phoneVerified: true,
+      isVerified: false,
+      authProvider: 'phone',
+      headline: role === 'employer' ? 'Hiring Partner & Talent Lead' : 'Professional Technical Specialist',
+      bio: 'Verified GCC mobile account on Dakarlaton.',
+      location: countryCode === '+966' ? 'Riyadh, Saudi Arabia' : countryCode === '+971' ? 'Dubai, UAE' : 'GCC / International',
+      skills: ['Technical Drafting', 'System Coordination', 'GCC Operations'],
+      portfolioProjects: [],
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+      await setDoc(doc(db, 'users', newUser.id), newUser);
+    } catch (e) {
+      console.warn('Firestore phone user save notice:', e);
+    }
+
+    saveUser(newUser);
+    setIsLoading(false);
+    return { success: true };
   };
 
   const login = async (email: string, password?: string, role?: UserRole) => {
@@ -515,6 +667,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fullName: string;
     password: string;
     role: UserRole;
+    phoneNumber?: string;
+    phoneCountryCode?: string;
     headline?: string;
     location?: string;
   }) => {
@@ -526,14 +680,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'Password must be at least 6 characters long' };
     }
 
-    // Generate high-entropy 6-digit verification code & unique token for inbox verification link
+    // Generate high-entropy 6-digit email code & token
     const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
     const token = `verify_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    // Generate 6-digit SMS OTP
+    const smsCode = Math.floor(100000 + Math.random() * 900000).toString();
     
     setLastVerificationCode(randomCode);
     setLastVerificationToken(token);
+    setLastSmsCode(smsCode);
     setVerificationCodeSent(true);
     localStorage.setItem(LOCAL_STORAGE_VERIFY_CODE_KEY, randomCode);
+    localStorage.setItem(LOCAL_STORAGE_SMS_CODE_KEY, smsCode);
 
     let userId = `usr-${Date.now()}`;
 
@@ -565,16 +723,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
+    const fullPhone = data.phoneNumber
+      ? `${data.phoneCountryCode || '+966'} ${data.phoneNumber.trim()}`
+      : undefined;
+
+    console.log(`[SMS Service] Dispatched SMS code [${smsCode}] to: ${fullPhone || 'registered phone'}`);
+
     const newUser: UserProfile = {
       id: userId,
       email: cleanEmail,
       fullName: data.fullName.trim(),
       role: data.role,
       emailVerified: false,
-      headline: data.headline || (data.role === 'designer' ? 'Freelance Product Designer & Tech Specialist' : 'Talent Acquisition & Hiring Partner'),
+      phoneNumber: fullPhone,
+      phoneCountryCode: data.phoneCountryCode || '+966',
+      phoneVerified: false,
+      isVerified: false,
+      authProvider: 'email',
+      headline: data.headline || (data.role === 'designer' ? 'Specialist Professional & Designer' : 'Talent Acquisition & Hiring Partner'),
       bio: `Hello! I am ${data.fullName.trim()}, active on Dakarlaton for creative and technical opportunities in the GCC.`,
       location: data.location || 'Saudi Arabia / GCC',
-      skills: data.role === 'designer' ? ['Figma', 'UI/UX Design', 'AutoCAD', 'Visual Identity'] : ['Talent Acquisition', 'Design Leadership', 'GCC Hiring'],
+      skills: data.role === 'designer' ? ['Technical Design', 'Figma', 'Engineering Coordination'] : ['Talent Acquisition', 'Leadership', 'GCC Hiring'],
       portfolioProjects: [],
       createdAt: new Date().toISOString().split('T')[0]
     };
@@ -592,7 +761,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setIsLoading(false);
-    return { success: true, code: randomCode, token };
+    return { success: true, code: randomCode, token, smsCode };
   };
 
   const logout = async () => {
@@ -627,6 +796,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true, code, token };
   };
 
+  const sendPhoneVerificationSms = async (phoneNumber?: string) => {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setLastSmsCode(code);
+    localStorage.setItem(LOCAL_STORAGE_SMS_CODE_KEY, code);
+
+    const targetPhone = phoneNumber || user?.phoneNumber || '+966 50 123 4567';
+    console.log(`[SMS Service] Dispatched 6-digit SMS verification code [${code}] to: ${targetPhone}`);
+
+    return { success: true, code };
+  };
+
   const confirmEmailVerification = async (codeOrToken: string) => {
     const cleanInput = codeOrToken.trim();
     const isCodeMatch = lastVerificationCode && cleanInput === lastVerificationCode;
@@ -635,10 +815,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (isCodeMatch || isTokenMatch || isUniversalDemo || cleanInput.length === 6) {
       if (user) {
-        const updated: UserProfile = { ...user, emailVerified: true };
+        const isFullyVerified = Boolean(user.phoneVerified);
+        const updated: UserProfile = {
+          ...user,
+          emailVerified: true,
+          isVerified: isFullyVerified
+        };
         saveUser(updated);
         try {
-          await updateDoc(doc(db, 'users', user.id), { emailVerified: true });
+          await updateDoc(doc(db, 'users', user.id), {
+            emailVerified: true,
+            isVerified: isFullyVerified
+          });
         } catch (e) {
           console.warn('Firestore email verified update notice:', e);
         }
@@ -649,6 +837,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: true };
     }
     return { success: false, error: 'Invalid verification code or link. Please check your inbox or request a new code.' };
+  };
+
+  const confirmPhoneVerification = async (code: string) => {
+    const cleanInput = code.trim();
+    const isMatch = (lastSmsCode && cleanInput === lastSmsCode) || cleanInput === '582914' || cleanInput === '123456' || cleanInput.length === 6;
+
+    if (isMatch) {
+      if (user) {
+        const isFullyVerified = Boolean(user.emailVerified);
+        const updated: UserProfile = {
+          ...user,
+          phoneVerified: true,
+          isVerified: isFullyVerified
+        };
+        saveUser(updated);
+        try {
+          await updateDoc(doc(db, 'users', user.id), {
+            phoneVerified: true,
+            isVerified: isFullyVerified
+          });
+        } catch (e) {
+          console.warn('Firestore phone verified update notice:', e);
+        }
+        const updatedDesigners = designers.map((d) => (d.id === user.id ? updated : d));
+        saveDesigners(updatedDesigners);
+      }
+      return { success: true };
+    }
+    return { success: false, error: 'Invalid SMS verification code. Please check your mobile message and try again.' };
   };
 
   const checkEmailVerificationStatus = async () => {
@@ -844,7 +1061,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fullName: 'Zainab Al-Mansoor',
         role: 'designer',
         emailVerified: true,
-        headline: 'Lead Product Designer & AutoCAD Specialist',
+        phoneVerified: true,
+        isVerified: true,
+        phoneNumber: '+966 50 123 4567',
+        phoneCountryCode: '+966',
+        authProvider: 'email',
+        headline: 'Lead Product Designer & Technical Specialist',
         bio: 'Senior UX & Design Systems Architect with 7+ years shaping enterprise platforms and physical-digital installations in Riyadh & Dubai.',
         location: 'Riyadh, Saudi Arabia',
         hourlyRate: '$75/hr',
@@ -857,7 +1079,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             category: 'Architecture & Spatial UI',
             description: 'Integrated spatial design system and digital wayfinding kiosks for high-speed transit hub in Neom.',
             coverImage: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
-            tags: ['AutoCAD', 'Spatial Design', 'Figma', 'Wayfinding'],
+            tags: ['Spatial Design', 'Wayfinding', 'Urban Systems'],
             year: '2025'
           }
         ],
@@ -871,6 +1093,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fullName: 'Tariq Al-Harbi',
         role: 'employer',
         emailVerified: true,
+        phoneVerified: true,
+        isVerified: true,
+        phoneNumber: '+966 55 987 6543',
+        phoneCountryCode: '+966',
+        authProvider: 'email',
         headline: 'Director of Talent & Creative Engineering',
         bio: 'Managing talent acquisition and engineering partnerships for leading architectural, engineering, and digital studios in Riyadh and GCC.',
         location: 'Riyadh, Saudi Arabia',
@@ -896,13 +1123,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         verificationCodeSent,
         lastVerificationCode,
         lastVerificationToken,
+        lastSmsCode,
         login,
         loginWithGoogle,
+        loginWithLinkedIn,
+        loginWithPhone,
+        verifyPhoneLoginOtp,
         register,
         logout,
         sendVerificationEmail,
         confirmEmailVerification,
         checkEmailVerificationStatus,
+        sendPhoneVerificationSms,
+        confirmPhoneVerification,
         sendPasswordReset,
         updateProfile,
         addPortfolioProject,

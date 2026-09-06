@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
+import { PhoneCountrySelector } from './PhoneCountrySelector';
+import { CountryItem, DEFAULT_COUNTRY } from '../data/countriesData';
 import {
   X,
   Lock,
@@ -19,9 +21,8 @@ import {
   KeyRound,
   ChevronLeft,
   CheckCircle2,
-  Bookmark,
-  Bell,
-  FileText
+  Phone,
+  MessageSquare
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -39,17 +40,39 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onVerificationTrigger,
   onOpenLegal
 }) => {
-  const { login, register, loginWithGoogle, loginAsDemo, sendPasswordReset } = useAuth();
-  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot'>(initialMode);
+  const {
+    login,
+    register,
+    loginWithGoogle,
+    loginWithLinkedIn,
+    loginWithPhone,
+    verifyPhoneLoginOtp,
+    loginAsDemo,
+    sendPasswordReset
+  } = useAuth();
+
+  const [mode, setMode] = useState<'signin' | 'signup' | 'forgot' | 'phone-signin'>(initialMode);
   const [role, setRole] = useState<UserRole>('designer');
+  
+  // Registration & Email Login Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState('');
-  const [headline, setHeadline] = useState('');
   const [location, setLocation] = useState('Saudi Arabia (Riyadh)');
   const [staySignedIn, setStaySignedIn] = useState(true);
   const [agreeTerms, setAgreeTerms] = useState(true);
+
+  // Phone state with Universal Countries list
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<CountryItem>(DEFAULT_COUNTRY);
+
+  // Phone Sign-in OTP state
+  const [phoneOtpStep, setPhoneOtpStep] = useState<'request' | 'verify'>('request');
+  const [phoneOtpCode, setPhoneOtpCode] = useState('');
+  const [generatedPhoneCode, setGeneratedPhoneCode] = useState('');
+
+  // Status & Feedback
   const [error, setError] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -69,6 +92,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
+  const handleLinkedInSignIn = async () => {
+    setError('');
+    setInfoMessage('');
+    setLoading(true);
+    const res = await loginWithLinkedIn(role);
+    setLoading(false);
+    if (res.success) {
+      onClose();
+    } else {
+      setError(res.error || 'LinkedIn authentication failed');
+    }
+  };
+
   const calculatePasswordStrength = (pass: string) => {
     let score = 0;
     if (pass.length >= 6) score++;
@@ -81,6 +117,44 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   const strength = calculatePasswordStrength(password);
 
+  const handlePhoneSignInRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneNumber.trim()) {
+      setError('Please enter your mobile phone number');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    const res = await loginWithPhone(phoneNumber, selectedCountry.dialCode);
+    setLoading(false);
+    if (res.success) {
+      setGeneratedPhoneCode(res.code);
+      setPhoneOtpCode(res.code); // auto-fill for frictionless verification in preview
+      setPhoneOtpStep('verify');
+      setInfoMessage(`SMS verification code dispatched to ${selectedCountry.dialCode} ${phoneNumber}`);
+    } else {
+      setError(res.error || 'Failed to dispatch SMS code');
+    }
+  };
+
+  const handlePhoneSignInVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneOtpCode.trim()) {
+      setError('Please enter the 6-digit SMS verification code');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    const res = await verifyPhoneLoginOtp(phoneNumber, selectedCountry.dialCode, phoneOtpCode, role, fullName);
+    setLoading(false);
+    if (res.success) {
+      onClose();
+      if (onVerificationTrigger) onVerificationTrigger();
+    } else {
+      setError(res.error || 'Invalid SMS verification code');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -89,7 +163,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     if (mode === 'forgot') {
       if (!email.trim()) {
-        setError('Please enter your account email');
+        setError('Please enter your registered account email');
         setLoading(false);
         return;
       }
@@ -114,6 +188,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         setLoading(false);
         return;
       }
+      if (!phoneNumber.trim()) {
+        setError('Please provide a mobile phone number for SMS security verification');
+        setLoading(false);
+        return;
+      }
       if (password.length < 6) {
         setError('Password must be at least 6 characters long');
         setLoading(false);
@@ -130,7 +209,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         fullName,
         password,
         role,
-        headline: headline.trim() || (role === 'designer' ? 'Specialist CAD & Creative Designer' : 'Hiring Manager & Enterprise Partner'),
+        phoneNumber,
+        phoneCountryCode: selectedCountry.dialCode,
+        headline: role === 'designer' ? 'Specialist Professional & Project Engineer' : 'Talent Acquisition & Hiring Partner',
         location: location
       });
       setLoading(false);
@@ -146,8 +227,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div id="auth-modal-overlay" className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
-      <div id="auth-modal-card" className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-stone-200 relative overflow-hidden max-h-[92vh] flex flex-col md:flex-row">
+    <div
+      id="auth-modal-overlay"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+    >
+      <div
+        id="auth-modal-card"
+        className="bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-stone-200 relative overflow-hidden max-h-[92vh] flex flex-col md:flex-row"
+      >
         {/* Close Button */}
         <button
           id="btn-close-auth-modal"
@@ -160,6 +247,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Left Side: Interactive Form */}
         <div className="flex-1 p-6 sm:p-10 overflow-y-auto max-h-[90vh]">
           {mode === 'forgot' ? (
+            /* PASSWORD RECOVERY VIEW */
             <div className="space-y-5">
               <button
                 id="btn-back-to-signin"
@@ -227,15 +315,141 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </button>
               </form>
             </div>
+          ) : mode === 'phone-signin' ? (
+            /* PHONE / SMS LOGIN VIEW */
+            <div className="space-y-5">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('signin');
+                  setError('');
+                  setInfoMessage('');
+                }}
+                className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-900 font-medium cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" /> Back to Email Sign In
+              </button>
+
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#5925DC]">
+                  Mobile Authentication
+                </span>
+                <h3 className="text-2xl font-serif font-bold text-[#1F104F]">
+                  Sign in with Phone & SMS
+                </h3>
+                <p className="text-xs text-stone-600">
+                  Enter your mobile number with your country code to receive a secure 6-digit one-time SMS passcode.
+                </p>
+              </div>
+
+              {phoneOtpStep === 'request' ? (
+                <form onSubmit={handlePhoneSignInRequest} className="space-y-4">
+                  <PhoneCountrySelector
+                    phoneNumber={phoneNumber}
+                    selectedCountry={selectedCountry}
+                    onPhoneChange={setPhoneNumber}
+                    onCountryChange={setSelectedCountry}
+                    idPrefix="signin-phone"
+                  />
+
+                  {error && (
+                    <div className="text-xs text-red-600 bg-red-50 p-2.5 rounded-xl flex items-center gap-1.5 border border-red-200">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || !phoneNumber.trim()}
+                    className="w-full bg-[#1F104F] hover:bg-[#160838] text-white font-medium py-3 rounded-full text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {loading ? 'Sending SMS OTP...' : 'Send SMS Verification Code'}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handlePhoneSignInVerify} className="space-y-4">
+                  <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-900 flex items-center justify-between">
+                    <div>
+                      <span>Mobile: </span>
+                      <span className="font-semibold font-mono">
+                        {selectedCountry.dialCode} {phoneNumber}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPhoneOtpStep('request')}
+                      className="text-xs text-[#5925DC] font-semibold hover:underline cursor-pointer"
+                    >
+                      Change
+                    </button>
+                  </div>
+
+                  {generatedPhoneCode && (
+                    <div className="p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-600 flex items-center justify-between">
+                      <span>SMS Demo Code: <strong className="font-mono text-[#5925DC]">{generatedPhoneCode}</strong></span>
+                      <button
+                        type="button"
+                        onClick={() => setPhoneOtpCode(generatedPhoneCode)}
+                        className="text-xs text-[#5925DC] font-semibold hover:underline cursor-pointer"
+                      >
+                        Auto-fill
+                      </button>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
+                      Enter 6-Digit SMS Code
+                    </label>
+                    <div className="relative">
+                      <MessageSquare className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
+                      <input
+                        type="text"
+                        required
+                        maxLength={10}
+                        value={phoneOtpCode}
+                        onChange={(e) => setPhoneOtpCode(e.target.value)}
+                        placeholder="e.g. 582914"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm font-mono tracking-widest text-center focus:outline-none focus:ring-2 focus:ring-[#5925DC]"
+                      />
+                    </div>
+                  </div>
+
+                  {error && (
+                    <div className="text-xs text-red-600 bg-red-50 p-2.5 rounded-xl flex items-center gap-1.5 border border-red-200">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading || !phoneOtpCode.trim()}
+                    className="w-full bg-[#1F104F] hover:bg-[#160838] text-white font-medium py-3 rounded-full text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {loading ? 'Verifying...' : 'Verify Code & Sign In'}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+              )}
+            </div>
           ) : (
+            /* MAIN SIGN IN / SIGN UP VIEW */
             <div className="space-y-5">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#5925DC]">
                   Dakarlaton Portal
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1F104F] mt-1">
-                  {mode === 'signin' ? 'Log in to your account' : 'Create your account'}
+                  {mode === 'signin' ? 'Sign in to your account' : 'Create your account'}
                 </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  {mode === 'signin'
+                    ? 'Access your GCC recruitment dashboard, applications, and saved jobs.'
+                    : 'Join leading professionals and certified employers across the GCC.'}
+                </p>
               </div>
 
               {/* Form elements */}
@@ -262,7 +476,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                             <Palette className={`w-4 h-4 ${role === 'designer' ? 'text-[#5925DC]' : 'text-stone-500'}`} />
                             {role === 'designer' && <Check className="w-3.5 h-3.5 text-[#5925DC]" />}
                           </div>
-                          <span className="font-bold text-xs text-stone-900">Job Seeker / Specialist</span>
+                          <span className="font-bold text-xs text-stone-900">Specialist / Candidate</span>
                           <span className="text-[11px] text-stone-500">Apply to jobs & upload CV</span>
                         </button>
 
@@ -305,10 +519,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       </div>
                     </div>
 
+                    {/* Universal Country Phone Selector */}
+                    <PhoneCountrySelector
+                      phoneNumber={phoneNumber}
+                      selectedCountry={selectedCountry}
+                      onPhoneChange={setPhoneNumber}
+                      onCountryChange={setSelectedCountry}
+                      idPrefix="signup-phone"
+                      required={true}
+                    />
+
                     {/* Location Selection */}
                     <div>
                       <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                        Location / Country
+                        Primary Region / Country
                       </label>
                       <div className="relative">
                         <MapPin className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
@@ -415,17 +639,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                 {/* Stay signed in checkbox */}
                 {mode === 'signin' && (
-                  <div className="flex items-center gap-2">
-                    <input
-                      id="checkbox-stay-signed-in"
-                      type="checkbox"
-                      checked={staySignedIn}
-                      onChange={(e) => setStaySignedIn(e.target.checked)}
-                      className="rounded border-stone-300 text-[#5925DC] focus:ring-[#5925DC] cursor-pointer"
-                    />
-                    <label htmlFor="checkbox-stay-signed-in" className="text-xs text-stone-600 font-medium cursor-pointer">
-                      Stay signed in
-                    </label>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="checkbox-stay-signed-in"
+                        type="checkbox"
+                        checked={staySignedIn}
+                        onChange={(e) => setStaySignedIn(e.target.checked)}
+                        className="rounded border-stone-300 text-[#5925DC] focus:ring-[#5925DC] cursor-pointer"
+                      />
+                      <label htmlFor="checkbox-stay-signed-in" className="text-xs text-stone-600 font-medium cursor-pointer">
+                        Stay signed in
+                      </label>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setMode('phone-signin')}
+                      className="text-xs font-semibold text-[#5925DC] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <Phone className="w-3 h-3" /> Sign in with Phone & SMS
+                    </button>
                   </div>
                 )}
 
@@ -456,7 +690,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       >
                         Privacy Policy
                       </button>
-                      .
+                      . Both email & SMS verification are required to post jobs.
                     </label>
                   </div>
                 )}
@@ -479,7 +713,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   ) : mode === 'signin' ? (
                     'Sign in'
                   ) : (
-                    'Create Account'
+                    'Create Verified Account'
                   )}
                 </button>
               </form>
@@ -488,7 +722,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="space-y-3 pt-2">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 h-px bg-stone-200" />
-                  <span className="text-[11px] text-stone-400 font-semibold uppercase tracking-wider">Or continue with</span>
+                  <span className="text-[11px] text-stone-400 font-semibold uppercase tracking-wider">
+                    Or continue with
+                  </span>
                   <div className="flex-1 h-px bg-stone-200" />
                 </div>
 
@@ -497,7 +733,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     type="button"
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className="bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 font-semibold py-2 px-3 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
+                    className="bg-white hover:bg-stone-50 text-stone-700 border border-stone-300 font-semibold py-2.5 px-3 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path
@@ -522,13 +758,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => {
-                      loginAsDemo('designer');
-                      onClose();
-                    }}
-                    className="bg-[#0A66C2] hover:bg-[#084e96] text-white font-semibold py-2 px-3 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
+                    onClick={handleLinkedInSignIn}
+                    disabled={loading}
+                    className="bg-[#0A66C2] hover:bg-[#084e96] text-white font-semibold py-2.5 px-3 rounded-2xl transition-all flex items-center justify-center gap-2 cursor-pointer text-xs"
                   >
-                    <span>LinkedIn SSO</span>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                    </svg>
+                    <span>LinkedIn</span>
                   </button>
                 </div>
               </div>
@@ -565,7 +802,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
         </div>
 
-        {/* Right Side: Branded Visual Showcase Container */}
+        {/* Right Side: Professional Branded Visual Showcase Container (Industry-Agnostic, No CAD/BIM) */}
         <div className="w-full md:w-80 lg:w-96 bg-[#5925DC] text-white p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
           {/* Background decorative ring */}
           <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-white/10 pointer-events-none" />
@@ -577,7 +814,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 border-2 border-white/30 shadow-lg">
                   <img
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"
-                    alt="Dakarlaton Candidate"
+                    alt="Dakarlaton Professional"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
@@ -586,21 +823,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   Create an account
                 </h4>
                 <p className="text-xs text-purple-100 leading-relaxed">
-                  Join thousands of skilled professionals and specialists hired across leading organizations in the GCC.
+                  Join thousands of verified professionals, project engineers, architectural leaders, and specialized talent hired across the GCC.
                 </p>
 
                 <ul className="mt-6 space-y-3 text-xs text-purple-50">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#A3E635] shrink-0 mt-0.5" />
-                    <span>View your matched roles and track active applications</span>
+                    <span>View matched roles and track your direct applications</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#A3E635] shrink-0 mt-0.5" />
-                    <span>Apply with one click with your saved CV & portfolio</span>
+                    <span>Apply instantly with verified email and mobile security</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#A3E635] shrink-0 mt-0.5" />
-                    <span>Manage instant salary & regional role alerts</span>
+                    <span>Receive instant alerts for leading roles across Saudi Arabia & UAE</span>
                   </li>
                 </ul>
               </div>
@@ -633,15 +870,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   Already have an account?
                 </h4>
                 <p className="text-xs text-purple-100 leading-relaxed">
-                  Sign back in to review your saved job bookmarks, application status, or manage your company's active talent searches.
+                  Sign back in to manage your active listings, candidate shortlists, and regional recruitment operations.
                 </p>
 
                 <div className="mt-6 p-4 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15 space-y-2">
                   <div className="text-xs font-bold text-white flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" /> GCC Market Access
                   </div>
-                  <p className="text-[11px] text-purple-100">
-                    Get discovered by top giga-project contractors across Saudi Arabia, UAE, and Qatar.
+                  <p className="text-[11px] text-purple-100 leading-relaxed">
+                    Connect directly with top giga-project contractors, development consultancies, and innovative studios across Riyadh, Dubai, and Doha.
                   </p>
                 </div>
               </div>

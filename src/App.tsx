@@ -17,7 +17,7 @@ import { PostJobModal } from './components/PostJobModal';
 import { ApplyModal } from './components/ApplyModal';
 import { ProfileModal } from './components/ProfileModal';
 import { EmailVerificationBanner } from './components/EmailVerificationBanner';
-import { EmailVerificationModal } from './components/EmailVerificationModal';
+import { AccountVerificationModal } from './components/AccountVerificationModal';
 import { LegalModal } from './components/LegalModal';
 import { SubmitCvModal } from './components/SubmitCvModal';
 import { SavedJobsModal } from './components/SavedJobsModal';
@@ -242,9 +242,12 @@ function MainApp() {
         onOpenVerify={() => setIsVerifyOpen(true)}
       />
 
-      <EmailVerificationModal
+      <AccountVerificationModal
         isOpen={isVerifyOpen}
         onClose={() => setIsVerifyOpen(false)}
+        onVerificationComplete={() => {
+          setIsVerifyOpen(false);
+        }}
       />
 
       <LegalModal

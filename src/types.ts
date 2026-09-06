@@ -18,6 +18,11 @@ export interface UserProfile {
   fullName: string;
   role: UserRole;
   emailVerified: boolean;
+  phoneNumber?: string;
+  phoneCountryCode?: string;
+  phoneVerified?: boolean;
+  isVerified?: boolean;
+  authProvider?: 'email' | 'google' | 'linkedin' | 'phone';
   avatar?: string;
   headline?: string;
   bio?: string;
@@ -29,6 +34,7 @@ export interface UserProfile {
   behance?: string;
   figma?: string;
   github?: string;
+  linkedinUrl?: string;
   skills: string[];
   portfolioProjects: PortfolioProject[];
   createdAt: string;

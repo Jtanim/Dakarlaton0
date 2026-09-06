@@ -14,7 +14,13 @@ import {
   Search,
   ChevronDown,
   Clock,
-  Calendar
+  Calendar,
+  ShieldCheck,
+  Lock,
+  AlertCircle,
+  Phone,
+  Mail,
+  Check
 } from 'lucide-react';
 
 interface PostJobModalProps {
@@ -199,8 +205,25 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
     ? customLocationText.trim() || 'Riyadh, Saudi Arabia'
     : location;
 
+  const isFullyVerified = Boolean(
+    user && (user.isVerified || (user.emailVerified && user.phoneVerified))
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) {
+      setError('You must create an account and sign in to post jobs.');
+      return;
+    }
+
+    if (!isFullyVerified) {
+      setError(
+        'Account verification required: Only verified employers (both email and SMS phone verification) can list jobs.'
+      );
+      return;
+    }
+
     if (!title.trim() || !company.trim()) {
       setError('Please provide both a Job Title and Company / Studio Name');
       return;
@@ -408,18 +431,156 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
               </button>
             </div>
           </div>
+        ) : !user ? (
+          /* NOT LOGGED IN GATE */
+          <div className="text-center py-8 sm:py-10 space-y-6 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-purple-100 text-[#5925DC] rounded-3xl flex items-center justify-center mx-auto shadow-sm">
+              <Lock className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2 max-w-md mx-auto">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5925DC] bg-purple-50 px-3 py-1 rounded-full inline-block">
+                Account Required
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1F104F]">
+                Sign In to Post Jobs
+              </h3>
+              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                To maintain the highest recruitment standards across the GCC and protect candidates, account creation and verification are strictly required before listing jobs.
+              </p>
+            </div>
+
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 max-w-md mx-auto text-left space-y-2.5 text-xs text-stone-700">
+              <div className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span><strong>Verified Employer Identity:</strong> Ensure candidates know they are applying to legitimate opportunities.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span><strong>Email & SMS Verification:</strong> Secure your account with two-step contact validation.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span><strong>GCC Talent Reach:</strong> Connect directly with verified specialists across Saudi Arabia, UAE, and Qatar.</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenAuth();
+                }}
+                className="w-full sm:w-auto flex-1 bg-[#1F104F] hover:bg-[#160838] text-white font-semibold py-3 px-6 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                Create Employer Account <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenAuth();
+                }}
+                className="w-full sm:w-auto bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 font-semibold py-3 px-6 rounded-full text-xs transition-colors cursor-pointer"
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+        ) : !isFullyVerified ? (
+          /* NOT VERIFIED GATE */
+          <div className="text-center py-8 sm:py-10 space-y-6 animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm">
+              <ShieldCheck className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2 max-w-md mx-auto">
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full inline-block">
+                Verification Required
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1F104F]">
+                Verify Your Account to Post Jobs
+              </h3>
+              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                Only verified employers are allowed to list jobs on Dakarlaton. Both Email and SMS phone verification must be completed to protect our candidate community.
+              </p>
+            </div>
+
+            {/* Verification Checklist */}
+            <div className="bg-stone-50 border border-stone-200 rounded-2xl p-4 max-w-md mx-auto text-left space-y-3">
+              <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-white border border-stone-200">
+                <div className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-stone-500" />
+                  <div>
+                    <div className="font-semibold text-stone-800">Email Address</div>
+                    <div className="text-[11px] text-stone-500">{user.email}</div>
+                  </div>
+                </div>
+                {user.emailVerified ? (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Verified
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> Pending
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-white border border-stone-200">
+                <div className="flex items-center gap-2.5">
+                  <Phone className="w-4 h-4 text-stone-500" />
+                  <div>
+                    <div className="font-semibold text-stone-800">Mobile / WhatsApp SMS</div>
+                    <div className="text-[11px] text-stone-500">{user.phoneNumber || 'Phone not set'}</div>
+                  </div>
+                </div>
+                {user.phoneVerified ? (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Verified
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> Pending
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenVerify();
+                }}
+                className="w-full sm:w-auto flex-1 bg-[#5925DC] hover:bg-[#471cb3] text-white font-semibold py-3 px-6 rounded-full text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                Complete Account Verification <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full sm:w-auto text-stone-500 hover:text-stone-800 text-xs px-4 py-3 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         ) : (
+          /* FORM VIEW FOR FULLY VERIFIED USERS */
           <div className="space-y-6">
             <div>
               <div className="flex items-center gap-1.5 text-xs font-semibold text-[#5925DC] uppercase tracking-wider mb-1">
-                <Briefcase className="w-3.5 h-3.5" /> For Employers & Studios
+                <Briefcase className="w-3.5 h-3.5" /> For Verified Employers & Studios
               </div>
               <h3 className="text-2xl font-serif font-bold text-[#1F104F]">
                 Post a New Role
               </h3>
               <p className="text-xs sm:text-sm text-stone-600">
-                Reach thousands of verified candidates, engineers, architects,
-                and freelance designers across the GCC.
+                Reach thousands of verified candidates, engineers, architectural leads,
+                and specialized talent across the GCC.
               </p>
             </div>
 
@@ -432,7 +593,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. AutoCAD Draftsman | Riyadh"
+                    placeholder="e.g. Senior Project Architect | Riyadh"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#5925DC] focus:border-[#5925DC]"

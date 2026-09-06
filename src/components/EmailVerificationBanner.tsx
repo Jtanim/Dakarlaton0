@@ -1,15 +1,22 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShieldAlert, ArrowRight, Mail } from 'lucide-react';
+import { ShieldAlert, ArrowRight, Mail, Phone } from 'lucide-react';
 
 interface EmailVerificationBannerProps {
   onOpenVerify: () => void;
 }
 
 export const EmailVerificationBanner: React.FC<EmailVerificationBannerProps> = ({ onOpenVerify }) => {
-  const { user, lastVerificationCode } = useAuth();
+  const { user, lastVerificationCode, lastSmsCode } = useAuth();
 
-  if (!user || user.emailVerified) {
+  if (!user) {
+    return null;
+  }
+
+  const needsEmail = !user.emailVerified;
+  const needsPhone = !user.phoneVerified;
+
+  if (!needsEmail && !needsPhone) {
     return null;
   }
 
@@ -18,13 +25,27 @@ export const EmailVerificationBanner: React.FC<EmailVerificationBannerProps> = (
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs sm:text-sm">
         <div className="flex items-center gap-2.5 text-center sm:text-left">
           <div className="w-6 h-6 rounded-full bg-amber-200/80 text-amber-900 flex items-center justify-center shrink-0">
-            <Mail className="w-3.5 h-3.5 text-amber-800" />
+            {needsEmail ? (
+              <Mail className="w-3.5 h-3.5 text-amber-800" />
+            ) : (
+              <Phone className="w-3.5 h-3.5 text-amber-800" />
+            )}
           </div>
-          <span>
-            <strong className="font-semibold text-amber-950">Email Verification Required:</strong> Please check your inbox (<span className="font-medium underline">{user.email}</span>) to activate all GCC employer & talent privileges.
-            {lastVerificationCode && (
-              <span className="ml-2 font-mono bg-amber-100/90 text-amber-900 px-2 py-0.5 rounded-md border border-amber-300 font-semibold inline-block my-0.5">
-                Code: {lastVerificationCode}
+          <span className="leading-snug">
+            <strong className="font-semibold text-amber-950">Verification Required:</strong>{' '}
+            {needsEmail && needsPhone
+              ? 'Complete both Email and Mobile SMS verification to list jobs and activate all features.'
+              : needsEmail
+              ? `Verify your email (${user.email}) to activate full account privileges.`
+              : `Verify your mobile number (${user.phoneNumber || 'phone'}) via SMS to list jobs.`}
+            {lastVerificationCode && needsEmail && (
+              <span className="ml-2 font-mono bg-amber-100/90 text-amber-900 px-2 py-0.5 rounded-md border border-amber-300 font-semibold inline-block my-0.5 text-xs">
+                Email: {lastVerificationCode}
+              </span>
+            )}
+            {lastSmsCode && needsPhone && (
+              <span className="ml-2 font-mono bg-purple-100/90 text-purple-900 px-2 py-0.5 rounded-md border border-purple-300 font-semibold inline-block my-0.5 text-xs">
+                SMS: {lastSmsCode}
               </span>
             )}
           </span>
@@ -35,7 +56,7 @@ export const EmailVerificationBanner: React.FC<EmailVerificationBannerProps> = (
           onClick={onOpenVerify}
           className="inline-flex items-center gap-1.5 bg-[#5925DC] hover:bg-[#471cb3] text-white font-semibold px-4 py-1.5 rounded-full text-xs shadow-xs transition-all shrink-0 cursor-pointer whitespace-nowrap"
         >
-          Check Inbox & Verify <ArrowRight className="w-3.5 h-3.5" />
+          Verify Account Now <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
