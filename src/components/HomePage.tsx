@@ -124,7 +124,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </h1>
 
               <p className="text-base sm:text-lg text-stone-600 max-w-xl leading-relaxed">
-                Specialized recruitment across AutoCAD engineering, BIM architecture, executive search and creative technology in Saudi Arabia, UAE and the GCC.
+                Specialized recruitment and career opportunities connecting top talent with leading enterprises across all industries in Saudi Arabia, the UAE, and the GCC.
               </p>
 
               {/* Dual Hero CTAs */}
@@ -147,7 +147,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             {/* Right Hero Visual with Cheerful Professional & Geometric Accents */}
             <div className="lg:col-span-5 relative flex justify-center">
               {/* Playful Floating Geometric Accents */}
-              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#A3E635] -z-0 opacity-80 animate-pulse" />
+              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#A3E635] -z-0 opacity-80" />
               <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-3xl bg-[#5925DC]/20 -z-0 rotate-12" />
               <div className="absolute top-1/2 -right-8 w-12 h-12 rounded-full bg-[#FFF676] -z-0" />
 
@@ -195,7 +195,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="bim, engineer, designer, autocad..."
+                placeholder="Job title, skills, or industry..."
                 className="w-full text-sm text-stone-900 placeholder-stone-400 focus:outline-none bg-transparent"
               />
             </div>

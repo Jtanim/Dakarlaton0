@@ -294,9 +294,9 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
                   <div
                     key={job.id}
                     onClick={() => handleJobCardClick(job)}
-                    className={`bg-white rounded-2xl p-5 border transition-all cursor-pointer relative max-w-full overflow-hidden ${
+                    className={`bg-white rounded-2xl p-5 border transition-colors cursor-pointer relative max-w-full overflow-hidden ${
                       isSelected
-                        ? 'border-[#5925DC] ring-2 ring-[#5925DC]/30 shadow-md'
+                        ? 'border-2 border-[#5925DC] shadow-sm'
                         : 'border-[#EBE7DF] hover:border-purple-300 hover:shadow-xs'
                     }`}
                     style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}

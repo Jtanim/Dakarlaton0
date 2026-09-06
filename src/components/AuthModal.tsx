@@ -586,7 +586,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   Create an account
                 </h4>
                 <p className="text-xs text-purple-100 leading-relaxed">
-                  Join thousands of AutoCAD draftsmen, BIM modelers, and creative specialists hired across the GCC.
+                  Join thousands of skilled professionals and specialists hired across leading organizations in the GCC.
                 </p>
 
                 <ul className="mt-6 space-y-3 text-xs text-purple-50">

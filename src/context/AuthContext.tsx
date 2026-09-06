@@ -201,30 +201,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           snapshot.forEach((docSnap) => {
             const data = docSnap.data() as JobListing;
             if (isDeprecatedMockJob(data.id)) {
-              // Delete old deprecated mock job doc from Firestore
-              deleteDoc(doc(db, 'jobs', data.id)).catch(() => {});
-            } else {
-              // Normalize exact date and time
-              const dt = formatJobDateTime(data);
-              data.postedDate = dt.date;
-              data.postedTime = dt.time;
-              data.postedAt = dt.fullFormatted;
-              if (!data.postedTimestamp) {
-                data.postedTimestamp = Date.now();
-              }
-              fetchedJobs.push(data);
+              // Ignore deprecated sample job doc without performing unauthorized deletes
+              return;
             }
+            // Normalize exact date and time
+            const dt = formatJobDateTime(data);
+            data.postedDate = dt.date;
+            data.postedTime = dt.time;
+            data.postedAt = dt.fullFormatted;
+            if (!data.postedTimestamp) {
+              data.postedTimestamp = 1787205600000;
+            }
+            fetchedJobs.push(data);
           });
           // Sort by newest timestamp
           fetchedJobs.sort((a, b) => (b.postedTimestamp || 0) - (a.postedTimestamp || 0));
           if (fetchedJobs.length > 0) {
             saveJobs(fetchedJobs);
-          } else {
-            seedInitialJobs();
           }
-        } else {
-          // Auto-seed initial jobs to Firestore on first run
-          seedInitialJobs();
         }
       },
       (error) => {
@@ -311,8 +305,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const saveJobs = (newJobs: JobListing[]) => {
-    setJobs(newJobs);
-    localStorage.setItem(LOCAL_STORAGE_JOBS_KEY, JSON.stringify(newJobs));
+    setJobs((prevJobs) => {
+      if (
+        prevJobs.length === newJobs.length &&
+        prevJobs.every(
+          (pj, idx) =>
+            pj.id === newJobs[idx]?.id &&
+            pj.postedTimestamp === newJobs[idx]?.postedTimestamp &&
+            pj.applicantCount === newJobs[idx]?.applicantCount &&
+            pj.title === newJobs[idx]?.title
+        )
+      ) {
+        return prevJobs;
+      }
+      try {
+        localStorage.setItem(LOCAL_STORAGE_JOBS_KEY, JSON.stringify(newJobs));
+      } catch (e) {
+        console.warn('LocalStorage jobs write error:', e);
+      }
+      return newJobs;
+    });
   };
 
   const saveApplications = (newApps: JobApplication[]) => {
@@ -321,8 +333,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const saveDesigners = (newDesigners: UserProfile[]) => {
-    setDesigners(newDesigners);
-    localStorage.setItem(LOCAL_STORAGE_DESIGNERS_KEY, JSON.stringify(newDesigners));
+    setDesigners((prevDesigners) => {
+      if (
+        prevDesigners.length === newDesigners.length &&
+        prevDesigners.every(
+          (pd, idx) =>
+            pd.id === newDesigners[idx]?.id &&
+            pd.emailVerified === newDesigners[idx]?.emailVerified &&
+            pd.fullName === newDesigners[idx]?.fullName
+        )
+      ) {
+        return prevDesigners;
+      }
+      try {
+        localStorage.setItem(LOCAL_STORAGE_DESIGNERS_KEY, JSON.stringify(newDesigners));
+      } catch (e) {
+        console.warn('LocalStorage designers write error:', e);
+      }
+      return newDesigners;
+    });
   };
 
   const loginWithGoogle = async (role: UserRole = 'designer') => {
