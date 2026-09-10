@@ -9,6 +9,7 @@ import {
   InsightArticle
 } from '../data/mockData';
 import { formatJobDateTime } from '../utils/dateUtils';
+import { isJobLive } from '../utils/jobScheduler';
 import {
   Search,
   MapPin,
@@ -71,8 +72,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   // Service tab state
   const [serviceTab, setServiceTab] = useState<'specialist' | 'executive' | 'enterprise'>('specialist');
 
-  const featuredJobs = jobs.filter((j) => j.featured).length > 0 ? jobs.filter((j) => j.featured) : jobs;
-  const currentFeaturedJob = featuredJobs[featuredIndex % featuredJobs.length] || jobs[0];
+  const liveJobs = jobs.filter(isJobLive);
+  const featuredJobs = liveJobs.filter((j) => j.featured).length > 0 ? liveJobs.filter((j) => j.featured) : liveJobs;
+  const currentFeaturedJob = featuredJobs[featuredIndex % (featuredJobs.length || 1)] || liveJobs[0] || jobs[0];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

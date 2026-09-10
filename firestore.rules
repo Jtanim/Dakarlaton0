@@ -58,6 +58,9 @@ service cloud.firestore {
              data.salary is string && data.salary.size() <= 100 &&
              data.employerId is string && data.employerId.size() <= 128 &&
              data.contactEmail is string && data.contactEmail.size() <= 150 &&
+             (!('status' in data) || data.status in ['draft', 'scheduled', 'published', 'expired']) &&
+             (!('scheduledAt' in data) || (data.scheduledAt is string && data.scheduledAt.size() <= 50)) &&
+             (!('expiresAt' in data) || (data.expiresAt is string && data.expiresAt.size() <= 50)) &&
              (!('description' in data) || (data.description is string && data.description.size() <= 5000));
     }
 
@@ -97,7 +100,8 @@ service cloud.firestore {
       allow create: if isValidJobListing(incoming()) && isValidId(jobId);
       allow update: if (
         (isSignedIn() && (resource.data.employerId == request.auth.uid || isAdmin())) ||
-        incoming().diff(existing()).affectedKeys().hasOnly(['applicantCount'])
+        incoming().diff(existing()).affectedKeys().hasOnly(['applicantCount']) ||
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'postedAt', 'postedDate', 'postedTime', 'postedTimestamp'])
       ) && isValidJobListing(incoming()) && isValidId(jobId);
       allow delete: if isSignedIn() && (resource.data.employerId == request.auth.uid || isAdmin());
     }

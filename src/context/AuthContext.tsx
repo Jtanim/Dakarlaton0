@@ -1,7 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { UserProfile, UserRole, JobListing, JobApplication, ContactMessage, PortfolioProject } from '../types';
+import { UserProfile, UserRole, JobListing, JobApplication, ContactMessage, PortfolioProject, JobStatus, SchedulerLogEntry } from '../types';
 import { INITIAL_JOBS, INITIAL_DESIGNERS } from '../data/mockData';
 import { formatJobDateTime, getJobTimestamp } from '../utils/dateUtils';
+import {
+  isJobLive,
+  getJobComputedStatus,
+  getStoredSchedulerLogs,
+  saveSchedulerLogs,
+  appendSchedulerLog,
+  LOCAL_STORAGE_LOGS_KEY
+} from '../utils/jobScheduler';
 import {
   auth,
   db,
@@ -67,6 +75,15 @@ interface AuthContextType {
   deletePortfolioProject: (projectId: string) => Promise<void>;
   postJob: (jobData: Omit<JobListing, 'id' | 'postedAt' | 'postedDate' | 'applicantCount'>) => Promise<{ success: boolean; job?: JobListing; error?: string }>;
   deleteJob: (jobId: string) => Promise<{ success: boolean; error?: string }>;
+  updateJobSchedule: (
+    jobId: string,
+    updates: { status?: JobStatus; scheduledAt?: string; expiresAt?: string }
+  ) => Promise<{ success: boolean; error?: string }>;
+  publishJobNow: (jobId: string) => Promise<{ success: boolean; error?: string }>;
+  expireJobNow: (jobId: string) => Promise<{ success: boolean; error?: string }>;
+  runSchedulerCheckNow: () => Promise<{ autoPublishedCount: number; autoExpiredCount: number }>;
+  clearSchedulerLogs: () => void;
+  schedulerLogs: SchedulerLogEntry[];
   applyToJob: (applicationData: Omit<JobApplication, 'id' | 'appliedAt' | 'status'>) => Promise<{ success: boolean; error?: string }>;
   submitContact: (data: { fullName: string; email: string; topic: string; message: string }) => Promise<{ success: boolean }>;
   subscribeToAlerts: (email: string, region: string) => Promise<{ success: boolean }>;
@@ -95,6 +112,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [lastVerificationToken, setLastVerificationToken] = useState<string | null>(null);
   const [lastSmsCode, setLastSmsCode] = useState<string | null>(() => {
     return localStorage.getItem(LOCAL_STORAGE_SMS_CODE_KEY) || '582914';
+  });
+  const [schedulerLogs, setSchedulerLogs] = useState<SchedulerLogEntry[]>(() => {
+    return getStoredSchedulerLogs();
   });
 
   // Helper to remove deprecated sample jobs
@@ -360,7 +380,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             pj.postedTimestamp === newJobs[idx]?.postedTimestamp &&
             pj.applicantCount === newJobs[idx]?.applicantCount &&
             pj.title === newJobs[idx]?.title &&
-            pj.company === newJobs[idx]?.company
+            pj.company === newJobs[idx]?.company &&
+            pj.status === newJobs[idx]?.status &&
+            pj.scheduledAt === newJobs[idx]?.scheduledAt &&
+            pj.expiresAt === newJobs[idx]?.expiresAt
         )
       ) {
         return prevJobs;
@@ -974,9 +997,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hour12: true
     });
 
+    // Check if scheduled for the future
+    const isFutureScheduled = Boolean(
+      jobData.scheduledAt && new Date(jobData.scheduledAt).getTime() > now.getTime()
+    );
+
+    const initialStatus: JobStatus = jobData.status || (isFutureScheduled ? 'scheduled' : 'published');
+
     const newJob: JobListing = {
       ...jobData,
       id: `job-${Date.now()}`,
+      status: initialStatus,
       postedAt: `${formattedDate} at ${formattedTime}`,
       postedDate: formattedDate,
       postedTime: formattedTime,
@@ -991,9 +1022,281 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn('Firestore postJob fallback:', e);
     }
 
+    if (initialStatus === 'scheduled') {
+      appendSchedulerLog({
+        jobId: newJob.id,
+        jobTitle: newJob.title,
+        company: newJob.company,
+        action: 'SCHEDULED',
+        message: `Listing scheduled to auto-publish on ${newJob.scheduledAt}.`,
+        details: newJob.expiresAt ? `Auto-expiry set for ${newJob.expiresAt}` : 'No auto-expiry set',
+        status: 'success'
+      });
+      setSchedulerLogs(getStoredSchedulerLogs());
+    }
+
     const updatedJobs = [newJob, ...jobs.filter(j => j.id !== newJob.id)];
     saveJobs(updatedJobs);
     return { success: true, job: newJob };
+  };
+
+  const publishJobNow = async (jobId: string) => {
+    const targetJob = jobs.find((j) => j.id === jobId);
+    if (!targetJob) return { success: false, error: 'Job not found' };
+
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+    const formattedTime = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    const updatedJob: JobListing = {
+      ...targetJob,
+      status: 'published',
+      scheduledAt: undefined,
+      postedAt: `${formattedDate} at ${formattedTime}`,
+      postedDate: formattedDate,
+      postedTime: formattedTime,
+      postedTimestamp: now.getTime()
+    };
+
+    try {
+      await updateDoc(doc(db, 'jobs', jobId), {
+        status: 'published',
+        postedAt: updatedJob.postedAt,
+        postedDate: updatedJob.postedDate,
+        postedTime: updatedJob.postedTime,
+        postedTimestamp: updatedJob.postedTimestamp
+      });
+    } catch (err) {
+      console.warn('Firestore publishJobNow notice:', err);
+    }
+
+    appendSchedulerLog({
+      jobId: targetJob.id,
+      jobTitle: targetJob.title,
+      company: targetJob.company,
+      action: 'MANUAL_PUBLISH',
+      message: 'Employer manually published listing live.',
+      details: `Published live on ${formattedDate} at ${formattedTime}`,
+      status: 'success'
+    });
+    setSchedulerLogs(getStoredSchedulerLogs());
+
+    const updated = jobs.map((j) => (j.id === jobId ? updatedJob : j));
+    saveJobs(updated);
+    return { success: true };
+  };
+
+  const expireJobNow = async (jobId: string) => {
+    const targetJob = jobs.find((j) => j.id === jobId);
+    if (!targetJob) return { success: false, error: 'Job not found' };
+
+    const updatedJob: JobListing = {
+      ...targetJob,
+      status: 'expired'
+    };
+
+    try {
+      await updateDoc(doc(db, 'jobs', jobId), {
+        status: 'expired'
+      });
+    } catch (err) {
+      console.warn('Firestore expireJobNow notice:', err);
+    }
+
+    appendSchedulerLog({
+      jobId: targetJob.id,
+      jobTitle: targetJob.title,
+      company: targetJob.company,
+      action: 'STATUS_CHANGE',
+      message: 'Listing manually moved to expired/archived status.',
+      details: `Archived at ${new Date().toLocaleTimeString()}`,
+      status: 'warning'
+    });
+    setSchedulerLogs(getStoredSchedulerLogs());
+
+    const updated = jobs.map((j) => (j.id === jobId ? updatedJob : j));
+    saveJobs(updated);
+    return { success: true };
+  };
+
+  const updateJobSchedule = async (
+    jobId: string,
+    updates: { status?: JobStatus; scheduledAt?: string; expiresAt?: string }
+  ) => {
+    const targetJob = jobs.find((j) => j.id === jobId);
+    if (!targetJob) return { success: false, error: 'Job not found' };
+
+    const updatedJob: JobListing = {
+      ...targetJob,
+      ...updates
+    };
+
+    try {
+      const firestoreUpdates: Record<string, unknown> = {};
+      if (updates.status !== undefined) firestoreUpdates.status = updates.status;
+      if (updates.scheduledAt !== undefined) firestoreUpdates.scheduledAt = updates.scheduledAt;
+      if (updates.expiresAt !== undefined) firestoreUpdates.expiresAt = updates.expiresAt;
+      await updateDoc(doc(db, 'jobs', jobId), firestoreUpdates);
+    } catch (err) {
+      console.warn('Firestore updateJobSchedule notice:', err);
+    }
+
+    appendSchedulerLog({
+      jobId: targetJob.id,
+      jobTitle: targetJob.title,
+      company: targetJob.company,
+      action: 'STATUS_CHANGE',
+      message: `Schedule updated (Status: ${updatedJob.status || 'published'}, Scheduled: ${updatedJob.scheduledAt || 'None'}, Expires: ${updatedJob.expiresAt || 'None'})`,
+      status: 'success'
+    });
+    setSchedulerLogs(getStoredSchedulerLogs());
+
+    const updated = jobs.map((j) => (j.id === jobId ? updatedJob : j));
+    saveJobs(updated);
+    return { success: true };
+  };
+
+  const clearSchedulerLogs = () => {
+    localStorage.removeItem(LOCAL_STORAGE_LOGS_KEY);
+    setSchedulerLogs([]);
+  };
+
+  const runSchedulerEvaluation = async (currentJobsList?: JobListing[]) => {
+    const list = currentJobsList || jobs;
+    const now = new Date();
+    let hasChanges = false;
+    let autoPublishedCount = 0;
+    let autoExpiredCount = 0;
+
+    const updatedList = await Promise.all(
+      list.map(async (job) => {
+        // 1. Check for scheduled jobs due for automatic publishing
+        const isScheduled =
+          job.status === 'scheduled' ||
+          (!job.status && job.scheduledAt && new Date(job.scheduledAt).getTime() > (job.postedTimestamp || 0));
+
+        if (isScheduled && job.scheduledAt) {
+          const schedTime = new Date(job.scheduledAt).getTime();
+          if (!isNaN(schedTime) && schedTime <= now.getTime()) {
+            hasChanges = true;
+            autoPublishedCount++;
+            const formattedDate = now.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric'
+            });
+            const formattedTime = now.toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+
+            const publishedJob: JobListing = {
+              ...job,
+              status: 'published',
+              postedAt: `${formattedDate} at ${formattedTime}`,
+              postedDate: formattedDate,
+              postedTime: formattedTime,
+              postedTimestamp: now.getTime()
+            };
+
+            try {
+              await updateDoc(doc(db, 'jobs', job.id), {
+                status: 'published',
+                postedAt: publishedJob.postedAt,
+                postedDate: publishedJob.postedDate,
+                postedTime: publishedJob.postedTime,
+                postedTimestamp: publishedJob.postedTimestamp
+              });
+            } catch (err) {
+              console.warn('Firestore auto-publish notice:', err);
+            }
+
+            appendSchedulerLog({
+              jobId: job.id,
+              jobTitle: job.title,
+              company: job.company,
+              action: 'AUTO_PUBLISHED',
+              message: `Listing flipped to LIVE automatically. Scheduled time reached: ${job.scheduledAt}.`,
+              details: `Published at ${formattedDate} ${formattedTime}`,
+              status: 'success'
+            });
+
+            return publishedJob;
+          }
+        }
+
+        // 2. Check for live jobs that have passed their expiration date
+        const isCurrentlyLive =
+          (job.status === 'published' || !job.status) &&
+          isJobLive(job, new Date(now.getTime() - 1000));
+
+        if (isCurrentlyLive && job.expiresAt) {
+          const expTime = new Date(job.expiresAt).getTime();
+          if (!isNaN(expTime) && expTime <= now.getTime()) {
+            hasChanges = true;
+            autoExpiredCount++;
+
+            const expiredJob: JobListing = {
+              ...job,
+              status: 'expired'
+            };
+
+            try {
+              await updateDoc(doc(db, 'jobs', job.id), {
+                status: 'expired'
+              });
+            } catch (err) {
+              console.warn('Firestore auto-expire notice:', err);
+            }
+
+            appendSchedulerLog({
+              jobId: job.id,
+              jobTitle: job.title,
+              company: job.company,
+              action: 'AUTO_EXPIRED',
+              message: `Listing auto-expired and un-published (Threshold was ${job.expiresAt}).`,
+              details: `Expired at ${now.toLocaleTimeString()}`,
+              status: 'warning'
+            });
+
+            return expiredJob;
+          }
+        }
+
+        return job;
+      })
+    );
+
+    if (hasChanges) {
+      saveJobs(updatedList);
+      setSchedulerLogs(getStoredSchedulerLogs());
+    }
+
+    return { autoPublishedCount, autoExpiredCount };
+  };
+
+  // Run automated scheduler checks periodically
+  useEffect(() => {
+    runSchedulerEvaluation();
+
+    const interval = setInterval(() => {
+      runSchedulerEvaluation();
+    }, 10000); // Check every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [jobs]);
+
+  const runSchedulerCheckNow = async () => {
+    return await runSchedulerEvaluation();
   };
 
   const deleteJob = async (jobId: string) => {
@@ -1142,6 +1445,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         deletePortfolioProject,
         postJob,
         deleteJob,
+        updateJobSchedule,
+        publishJobNow,
+        expireJobNow,
+        runSchedulerCheckNow,
+        clearSchedulerLogs,
+        schedulerLogs,
         applyToJob,
         submitContact,
         subscribeToAlerts,

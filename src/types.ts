@@ -43,6 +43,20 @@ export interface UserProfile {
   companyWebsite?: string;
 }
 
+export type JobStatus = 'draft' | 'scheduled' | 'published' | 'expired';
+
+export interface SchedulerLogEntry {
+  id: string;
+  timestamp: string;
+  jobId: string;
+  jobTitle: string;
+  company: string;
+  action: 'SCHEDULED' | 'AUTO_PUBLISHED' | 'AUTO_EXPIRED' | 'MANUAL_PUBLISH' | 'STATUS_CHANGE' | 'ERROR';
+  message: string;
+  details?: string;
+  status: 'success' | 'warning' | 'error';
+}
+
 export interface JobListing {
   id: string;
   title: string;
@@ -67,6 +81,9 @@ export interface JobListing {
   employerId: string;
   contactEmail: string;
   applicantCount?: number;
+  status?: JobStatus;
+  scheduledAt?: string; // ISO 8601 string, e.g. "2026-09-06T14:30:00"
+  expiresAt?: string; // ISO 8601 string, e.g. "2026-09-20T23:59:00"
 }
 
 export interface JobApplication {

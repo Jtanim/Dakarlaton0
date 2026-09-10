@@ -4,6 +4,7 @@ import { JobListing } from '../types';
 import { GccSalaryTrends } from './GccSalaryTrends';
 import { FormattedTextWithLinks } from './FormattedTextWithLinks';
 import { formatJobDateTime } from '../utils/dateUtils';
+import { isJobLive } from '../utils/jobScheduler';
 import {
   Search,
   MapPin,
@@ -70,6 +71,9 @@ export const FindJobsPage: React.FC<FindJobsPageProps> = ({
   // Filter jobs
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
+      // Must be live (published and not expired or scheduled in the future)
+      if (!isJobLive(job)) return false;
+
       const matchKeyword =
         !keyword ||
         job.title.toLowerCase().includes(keyword.toLowerCase()) ||

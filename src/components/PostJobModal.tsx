@@ -29,6 +29,7 @@ interface PostJobModalProps {
   onOpenVerify: () => void;
   onOpenAuth: () => void;
   onViewCreatedJob?: (job: JobListing) => void;
+  onOpenManageListings?: () => void;
 }
 
 // GCC Locations List
@@ -120,6 +121,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   onOpenVerify,
   onOpenAuth,
   onViewCreatedJob,
+  onOpenManageListings,
 }) => {
   const { user, postJob } = useAuth();
 
@@ -149,6 +151,12 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   const [skillSearchQuery, setSkillSearchQuery] = useState('');
   const [selectedSkillCategory, setSelectedSkillCategory] = useState<string>('all');
   const [isSkillDropdownOpen, setIsSkillDropdownOpen] = useState(false);
+
+  // Scheduling & Expiry state
+  const [publishTiming, setPublishTiming] = useState<'now' | 'scheduled'>('now');
+  const [scheduledDate, setScheduledDate] = useState<string>('');
+  const [enableExpiry, setEnableExpiry] = useState(false);
+  const [expiresDate, setExpiresDate] = useState<string>('');
 
   const [description, setDescription] = useState('');
   const [responsibilitiesText, setResponsibilitiesText] = useState('');
@@ -247,6 +255,43 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
       .map((r) => r.trim())
       .filter(Boolean);
 
+    let finalScheduledAt: string | undefined = undefined;
+    if (publishTiming === 'scheduled') {
+      if (!scheduledDate) {
+        setError('Please select a date and time for scheduled publishing.');
+        setIsSubmitting(false);
+        return;
+      }
+      const schedTime = new Date(scheduledDate).getTime();
+      if (isNaN(schedTime)) {
+        setError('Invalid scheduled date/time.');
+        setIsSubmitting(false);
+        return;
+      }
+      finalScheduledAt = new Date(scheduledDate).toISOString();
+    }
+
+    let finalExpiresAt: string | undefined = undefined;
+    if (enableExpiry) {
+      if (!expiresDate) {
+        setError('Please select an expiration date/time or uncheck auto-expiry.');
+        setIsSubmitting(false);
+        return;
+      }
+      const expTime = new Date(expiresDate).getTime();
+      if (isNaN(expTime)) {
+        setError('Invalid expiration date/time.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (finalScheduledAt && expTime <= new Date(finalScheduledAt).getTime()) {
+        setError('Expiration date must be later than the scheduled publishing date.');
+        setIsSubmitting(false);
+        return;
+      }
+      finalExpiresAt = new Date(expiresDate).toISOString();
+    }
+
     const res = await postJob({
       title: title.trim(),
       company: company.trim(),
@@ -280,6 +325,9 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
           : [category, type, workplaceType],
       employerId: user?.id || 'emp-direct',
       contactEmail: contactEmail.trim(),
+      status: finalScheduledAt ? 'scheduled' : 'published',
+      scheduledAt: finalScheduledAt,
+      expiresAt: finalExpiresAt,
     });
 
     setIsSubmitting(false);
@@ -312,6 +360,9 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
         responsibilities,
         requirements,
         tags: selectedTags,
+        status: finalScheduledAt ? 'scheduled' : 'published',
+        scheduledAt: finalScheduledAt,
+        expiresAt: finalExpiresAt,
         postedAt: `${formattedDate} at ${formattedTime}`,
         postedDate: formattedDate,
         postedTime: formattedTime,
@@ -334,6 +385,10 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
     setSkillSearchQuery('');
     setCreatedJob(null);
     setError('');
+    setPublishTiming('now');
+    setScheduledDate('');
+    setEnableExpiry(false);
+    setExpiresDate('');
   };
 
   return (
@@ -348,29 +403,66 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
 
         {createdJob ? (
           <div className="text-center py-6 sm:py-8 space-y-6 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-xs">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
+            {createdJob.status === 'scheduled' ? (
+              <>
+                <div className="w-16 h-16 bg-purple-100 text-[#5925DC] rounded-full flex items-center justify-center mx-auto shadow-xs">
+                  <Clock className="w-10 h-10" />
+                </div>
 
-            <div className="space-y-2 max-w-lg mx-auto">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full inline-block">
-                Live on Dakarlaton
-              </span>
-              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
-                Job Posted Successfully!
-              </h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Your role{' '}
-                <span className="font-bold text-[#1C1917]">
-                  "{createdJob.title}"
-                </span>{' '}
-                at{' '}
-                <span className="font-bold text-[#1C1917]">
-                  {createdJob.company}
-                </span>{' '}
-                is now live and accepting applications.
-              </p>
-            </div>
+                <div className="space-y-2 max-w-lg mx-auto">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#5925DC] bg-purple-100 px-3 py-1 rounded-full inline-block">
+                    ⏰ Scheduled For Future Publishing
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+                    Job Scheduled Successfully!
+                  </h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Your role{' '}
+                    <span className="font-bold text-[#1C1917]">
+                      "{createdJob.title}"
+                    </span>{' '}
+                    has been saved and queued. The automated scheduler will flip it to <span className="font-bold text-emerald-700">Live</span> on{' '}
+                    <span className="font-bold text-[#1C1917]">
+                      {createdJob.scheduledAt
+                        ? new Date(createdJob.scheduledAt).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
+                        : 'the scheduled date'}
+                    </span>.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-xs">
+                  <CheckCircle2 className="w-10 h-10" />
+                </div>
+
+                <div className="space-y-2 max-w-lg mx-auto">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full inline-block">
+                    Live on Dakarlaton
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1917]">
+                    Job Posted Successfully!
+                  </h3>
+                  <p className="text-stone-600 text-sm leading-relaxed">
+                    Your role{' '}
+                    <span className="font-bold text-[#1C1917]">
+                      "{createdJob.title}"
+                    </span>{' '}
+                    at{' '}
+                    <span className="font-bold text-[#1C1917]">
+                      {createdJob.company}
+                    </span>{' '}
+                    is now live and accepting applications.
+                  </p>
+                </div>
+              </>
+            )}
 
             {/* Quick summary preview card */}
             <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-left max-w-md mx-auto space-y-2">
@@ -383,14 +475,23 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-stone-500 font-medium">
-                <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
-                  <Calendar className="w-3 h-3 text-[#5925DC]" />
-                  {formatJobDateTime(createdJob).date}
-                </span>
-                <span className="flex items-center gap-1 text-stone-600 bg-purple-50/60 px-1.5 py-0.5 rounded-md font-medium">
-                  <Clock className="w-3 h-3 text-[#5925DC]" />
-                  {formatJobDateTime(createdJob).time}
-                </span>
+                {createdJob.status === 'scheduled' ? (
+                  <span className="flex items-center gap-1 text-purple-900 bg-purple-100 px-2 py-0.5 rounded-md font-semibold">
+                    <Clock className="w-3 h-3 text-[#5925DC]" />
+                    Scheduled: {createdJob.scheduledAt ? new Date(createdJob.scheduledAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'Future'}
+                  </span>
+                ) : (
+                  <>
+                    <span className="flex items-center gap-1 text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md font-semibold">
+                      <Calendar className="w-3 h-3 text-[#5925DC]" />
+                      {formatJobDateTime(createdJob).date}
+                    </span>
+                    <span className="flex items-center gap-1 text-stone-600 bg-purple-50/60 px-1.5 py-0.5 rounded-md font-medium">
+                      <Clock className="w-3 h-3 text-[#5925DC]" />
+                      {formatJobDateTime(createdJob).time}
+                    </span>
+                  </>
+                )}
               </div>
               <h4 className="text-base font-bold text-stone-900">
                 {createdJob.title}
@@ -406,11 +507,23 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              {onViewCreatedJob && (
+              {onOpenManageListings && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenManageListings();
+                  }}
+                  className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <Calendar className="w-4 h-4" /> Open Scheduler & Listings
+                </button>
+              )}
+              {createdJob.status !== 'scheduled' && onViewCreatedJob && (
                 <button
                   type="button"
                   onClick={() => onViewCreatedJob(createdJob)}
-                  className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-6 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                  className="bg-stone-900 hover:bg-stone-800 text-white px-5 py-2.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center gap-2 cursor-pointer"
                 >
                   View in Job Feed <ArrowRight className="w-4 h-4" />
                 </button>
@@ -990,6 +1103,242 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 </div>
               </div>
 
+              {/* Publishing Schedule & Automated Expiry Section */}
+              <div className="bg-purple-50/40 border border-purple-200/80 rounded-2xl p-4 sm:p-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-purple-100 text-[#5925DC] flex items-center justify-center shrink-0">
+                      <Clock className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-[#1F104F] uppercase tracking-wider">
+                        Publishing Timing & Automated Expiry
+                      </h4>
+                      <p className="text-[11px] text-stone-500">
+                        Choose whether this listing goes live immediately or automatically flips live at a scheduled future date.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Immediate vs Scheduled Radio Tabs */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPublishTiming('now');
+                      setScheduledDate('');
+                    }}
+                    className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                      publishTiming === 'now'
+                        ? 'bg-white border-[#5925DC] text-[#5925DC] shadow-xs'
+                        : 'bg-white/60 border-stone-200 text-stone-600 hover:bg-white'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Publish Immediately
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPublishTiming('scheduled');
+                      if (!scheduledDate) {
+                        const d = new Date(Date.now() + 10 * 60000);
+                        const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                          .toISOString()
+                          .slice(0, 16);
+                        setScheduledDate(localIso);
+                      }
+                    }}
+                    className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                      publishTiming === 'scheduled'
+                        ? 'bg-white border-[#5925DC] text-[#5925DC] shadow-xs'
+                        : 'bg-white/60 border-stone-200 text-stone-600 hover:bg-white'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    Schedule for Future Date
+                  </button>
+                </div>
+
+                {/* Scheduled DateTime Details */}
+                {publishTiming === 'scheduled' && (
+                  <div className="space-y-2.5 pt-1 animate-in fade-in duration-150">
+                    <label className="block text-xs font-semibold text-stone-700">
+                      Publish Date & Time (Listing will automatically flip live) *
+                    </label>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <input
+                        type="datetime-local"
+                        required={publishTiming === 'scheduled'}
+                        value={scheduledDate}
+                        onChange={(e) => setScheduledDate(e.target.value)}
+                        className="flex-1 px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC] bg-white"
+                      />
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                      <span className="text-stone-400 font-medium mr-1">Quick presets:</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date(Date.now() + 2 * 60000);
+                          const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                            .toISOString()
+                            .slice(0, 16);
+                          setScheduledDate(localIso);
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-white border border-purple-200 text-[#5925DC] hover:bg-purple-100 font-bold cursor-pointer transition-colors shadow-2xs"
+                        title="Ideal for rapid testing: schedule 2 minutes in future"
+                      >
+                        ⚡ +2 minutes (Test)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date(Date.now() + 15 * 60000);
+                          const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                            .toISOString()
+                            .slice(0, 16);
+                          setScheduledDate(localIso);
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 font-medium cursor-pointer transition-colors"
+                      >
+                        +15 mins
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const d = new Date(Date.now() + 60 * 60000);
+                          const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                            .toISOString()
+                            .slice(0, 16);
+                          setScheduledDate(localIso);
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 font-medium cursor-pointer transition-colors"
+                      >
+                        +1 hour
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const tomorrow = new Date();
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          tomorrow.setHours(9, 0, 0, 0);
+                          const localIso = new Date(tomorrow.getTime() - tomorrow.getTimezoneOffset() * 60000)
+                            .toISOString()
+                            .slice(0, 16);
+                          setScheduledDate(localIso);
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-white border border-stone-200 text-stone-700 hover:bg-stone-100 font-medium cursor-pointer transition-colors"
+                      >
+                        Tomorrow 9:00 AM
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-stone-500 bg-white/70 p-2.5 rounded-xl border border-purple-100 leading-relaxed">
+                      💡 <strong>Automated Publishing:</strong> This listing will remain hidden from candidates on the public job board until the scheduled timestamp, when it will automatically flip to Live.
+                    </p>
+                  </div>
+                )}
+
+                {/* Expiry Checkbox & Settings */}
+                <div className="pt-2 border-t border-purple-100">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={enableExpiry}
+                      onChange={(e) => {
+                        setEnableExpiry(e.target.checked);
+                        if (e.target.checked && !expiresDate) {
+                          const d = new Date(Date.now() + 30 * 86400000);
+                          const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                            .toISOString()
+                            .slice(0, 16);
+                          setExpiresDate(localIso);
+                        }
+                      }}
+                      className="rounded border-stone-300 text-[#5925DC] focus:ring-[#5925DC]"
+                    />
+                    <span className="text-xs font-semibold text-stone-800">
+                      Set an automatic expiration / archive date
+                    </span>
+                  </label>
+
+                  {enableExpiry && (
+                    <div className="mt-3 space-y-2 pl-6 animate-in fade-in duration-150">
+                      <label className="block text-[11px] font-semibold text-stone-600">
+                        Expires & un-publishes automatically on:
+                      </label>
+                      <input
+                        type="datetime-local"
+                        required={enableExpiry}
+                        value={expiresDate}
+                        onChange={(e) => setExpiresDate(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#5925DC] bg-white"
+                      />
+                      <div className="flex flex-wrap items-center gap-1.5 text-[10px]">
+                        <span className="text-stone-400">Presets:</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date(Date.now() + 7 * 86400000);
+                            const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                              .toISOString()
+                              .slice(0, 16);
+                            setExpiresDate(localIso);
+                          }}
+                          className="px-2 py-0.5 rounded bg-white border border-stone-200 hover:bg-stone-100 cursor-pointer"
+                        >
+                          7 days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date(Date.now() + 14 * 86400000);
+                            const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                              .toISOString()
+                              .slice(0, 16);
+                            setExpiresDate(localIso);
+                          }}
+                          className="px-2 py-0.5 rounded bg-white border border-stone-200 hover:bg-stone-100 cursor-pointer"
+                        >
+                          14 days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date(Date.now() + 30 * 86400000);
+                            const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                              .toISOString()
+                              .slice(0, 16);
+                            setExpiresDate(localIso);
+                          }}
+                          className="px-2 py-0.5 rounded bg-white border border-stone-200 hover:bg-stone-100 cursor-pointer"
+                        >
+                          30 days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date(Date.now() + 60 * 86400000);
+                            const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                              .toISOString()
+                              .slice(0, 16);
+                            setExpiresDate(localIso);
+                          }}
+                          className="px-2 py-0.5 rounded bg-white border border-stone-200 hover:bg-stone-100 cursor-pointer"
+                        >
+                          60 days
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
                   Contact / Applications Email *
@@ -1031,7 +1380,13 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                     disabled={isSubmitting}
                     className="bg-[#5925DC] hover:bg-[#471cb3] text-white px-7 py-2.5 rounded-full font-medium text-sm shadow-sm hover:shadow transition-all disabled:opacity-50 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                   >
-                    {isSubmitting ? 'Publishing...' : 'Publish Job Listing'}
+                    {isSubmitting
+                      ? publishTiming === 'scheduled'
+                        ? 'Scheduling...'
+                        : 'Publishing...'
+                      : publishTiming === 'scheduled'
+                      ? 'Schedule Job Listing'
+                      : 'Publish Job Listing'}
                   </button>
                 </div>
               </div>

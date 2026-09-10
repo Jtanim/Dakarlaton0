@@ -54,7 +54,10 @@
         "tags": { "type": "array" },
         "employerId": { "type": "string", "maxLength": 128 },
         "contactEmail": { "type": "string", "format": "email", "maxLength": 150 },
-        "applicantCount": { "type": "number" }
+        "applicantCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "scheduled", "published", "expired"] },
+        "scheduledAt": { "type": "string", "maxLength": 50 },
+        "expiresAt": { "type": "string", "maxLength": 50 }
       },
       "required": ["id", "title", "company", "category", "type", "location", "salary", "employerId", "contactEmail"]
     },

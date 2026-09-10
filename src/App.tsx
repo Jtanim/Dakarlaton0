@@ -24,6 +24,7 @@ import { SavedJobsModal } from './components/SavedJobsModal';
 import { ArticleModal } from './components/ArticleModal';
 import { PhishingAlertModal } from './components/PhishingAlertModal';
 import { SalaryTrendsModal } from './components/SalaryTrendsModal';
+import { ManageListingsModal } from './components/ManageListingsModal';
 import { RECRUITMENT_INSIGHTS, InsightArticle } from './data/mockData';
 import { JobListing } from './types';
 
@@ -94,6 +95,7 @@ function MainApp() {
   const [isSavedJobsOpen, setIsSavedJobsOpen] = useState(false);
   const [isPhishingModalOpen, setIsPhishingModalOpen] = useState(false);
   const [isSalaryTrendsOpen, setIsSalaryTrendsOpen] = useState(false);
+  const [isManageListingsOpen, setIsManageListingsOpen] = useState(false);
   const [activeArticle, setActiveArticle] = useState<InsightArticle | null>(null);
 
   const handleOpenLegal = (tab: 'privacy' | 'terms' = 'privacy') => {
@@ -145,6 +147,7 @@ function MainApp() {
         onOpenArticle={handleOpenArticleById}
         userTypeMode={userTypeMode}
         setUserTypeMode={setUserTypeMode}
+        onOpenManageListings={() => setIsManageListingsOpen(true)}
       />
 
       {/* Main Content Pages */}
@@ -221,6 +224,7 @@ function MainApp() {
         onClose={() => setIsPostJobOpen(false)}
         onOpenVerify={() => setIsVerifyOpen(true)}
         onOpenAuth={() => handleOpenAuthModal('signup')}
+        onOpenManageListings={() => setIsManageListingsOpen(true)}
         onViewCreatedJob={(job) => {
           setSelectedJob(job);
           setCurrentTab('jobs');
@@ -297,6 +301,18 @@ function MainApp() {
       <SalaryTrendsModal
         isOpen={isSalaryTrendsOpen}
         onClose={() => setIsSalaryTrendsOpen(false)}
+      />
+
+      <ManageListingsModal
+        isOpen={isManageListingsOpen}
+        onClose={() => setIsManageListingsOpen(false)}
+        onOpenPostJob={() => setIsPostJobOpen(true)}
+        onViewJobInFeed={(job) => {
+          setSelectedJob(job);
+          setCurrentTab('jobs');
+          setIsManageListingsOpen(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
     </div>
   );

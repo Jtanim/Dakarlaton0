@@ -20,7 +20,9 @@ import {
   MessageSquare,
   Sparkles,
   ArrowRight,
-  ShieldAlert
+  ShieldAlert,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import { InsightArticle } from '../data/mockData';
 
@@ -39,6 +41,7 @@ interface HeaderProps {
   onOpenArticle?: (articleId: string) => void;
   userTypeMode?: 'candidate' | 'employer';
   setUserTypeMode?: (mode: 'candidate' | 'employer') => void;
+  onOpenManageListings?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -55,7 +58,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenPhishingInfo,
   onOpenArticle,
   userTypeMode = 'candidate',
-  setUserTypeMode
+  setUserTypeMode,
+  onOpenManageListings
 }) => {
   const { user, isAuthenticated, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -458,6 +462,19 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
+            {/* Quick Scheduler & Listings Modal Trigger */}
+            {onOpenManageListings && (
+              <button
+                type="button"
+                onClick={onOpenManageListings}
+                className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-purple-50 text-[#5925DC] border border-purple-200 hover:bg-purple-100 transition-colors cursor-pointer shrink-0 shadow-2xs"
+                title="Manage Scheduled & Published Job Listings"
+              >
+                <Clock className="w-3.5 h-3.5 text-[#5925DC]" />
+                <span>Listings & Schedule</span>
+              </button>
+            )}
+
             {/* Info Icon Button */}
             <button
               onClick={onOpenPhishingInfo}
@@ -556,6 +573,19 @@ export const Header: React.FC<HeaderProps> = ({
                         <User className="w-4 h-4 text-stone-400" />
                         {user.role === 'designer' ? 'My Portfolio & Profile' : 'Company Dashboard'}
                       </button>
+
+                      {onOpenManageListings && (
+                        <button
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            onOpenManageListings();
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-[#5925DC] hover:bg-purple-50 flex items-center gap-2 cursor-pointer font-medium"
+                        >
+                          <Calendar className="w-4 h-4 text-[#5925DC]" />
+                          Listings & Schedule Manager
+                        </button>
+                      )}
 
                       {!user.emailVerified && (
                         <button
