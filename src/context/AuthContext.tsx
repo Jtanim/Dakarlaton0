@@ -1394,16 +1394,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await runSchedulerEvaluation();
   };
 
-  const deleteJob = async (jobId: string) => {
-    addDeletedJobId(jobId);
-    try {
-      await deleteDoc(doc(db, 'jobs', jobId));
-    } catch (e) {
-      console.warn('Firestore deleteJob notice:', e);
-    }
-    const updated = jobs.filter((j) => j.id !== jobId);
-    saveJobs(updated);
-    return { success: true };
+  const deleteJob = async (_jobId: string) => {
+    console.warn('Job deletion is disabled: all postings are permanently preserved.');
+    return { success: false, error: 'Job deletion is disabled: all postings are permanently preserved.' };
   };
 
   const applyToJob = async (applicationData: Omit<JobApplication, 'id' | 'appliedAt' | 'status'>) => {

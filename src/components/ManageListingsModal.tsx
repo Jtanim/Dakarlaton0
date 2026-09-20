@@ -11,7 +11,6 @@ import {
   AlertCircle,
   Play,
   RotateCcw,
-  Trash2,
   ExternalLink,
   Plus,
   RefreshCw,
@@ -43,7 +42,6 @@ export const ManageListingsModal: React.FC<ManageListingsModalProps> = ({
     publishJobNow,
     expireJobNow,
     updateJobSchedule,
-    deleteJob,
     runSchedulerCheckNow,
     schedulerLogs,
     clearSchedulerLogs,
@@ -644,18 +642,6 @@ export const ManageListingsModal: React.FC<ManageListingsModalProps> = ({
                               Expire Now
                             </button>
                           )}
-
-                          <button
-                            onClick={() => {
-                              if (confirm(`Delete listing "${job.title}"?`)) {
-                                deleteJob(job.id);
-                              }
-                            }}
-                            className="text-stone-400 hover:text-red-600 p-1 rounded-lg transition-colors cursor-pointer"
-                            title="Delete listing"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
                         </div>
                       </div>
 
