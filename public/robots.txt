@@ -1,4 +1,26 @@
 User-agent: *
 Allow: /
 
+# Googlebot specific directives
+User-agent: Googlebot
+Allow: /
+
+# Bingbot specific directives
+User-agent: Bingbot
+Allow: /
+
+# Social Crawlers for Rich Link Previews
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Host specification
+Host: https://dakarlaton.com
+
+# XML Sitemaps
 Sitemap: https://dakarlaton.com/sitemap.xml

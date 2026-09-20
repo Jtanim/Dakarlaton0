@@ -27,6 +27,7 @@ import { SalaryTrendsModal } from './components/SalaryTrendsModal';
 import { ManageListingsModal } from './components/ManageListingsModal';
 import { RECRUITMENT_INSIGHTS, InsightArticle } from './data/mockData';
 import { JobListing } from './types';
+import { SEOHead } from './components/SEOHead';
 
 function MainApp() {
   const { jobs } = useAuth();
@@ -35,6 +36,50 @@ function MainApp() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   const [userTypeMode, setUserTypeMode] = useState<'candidate' | 'employer'>('candidate');
+
+  // URL Deep-Linking & History Synchronizer
+  useEffect(() => {
+    const parseUrlRoute = () => {
+      try {
+        const path = window.location.pathname.toLowerCase();
+        const params = new URLSearchParams(window.location.search);
+        const jobId = params.get('id') || params.get('job');
+        const q = params.get('q') || params.get('keyword') || params.get('category');
+        const loc = params.get('location');
+
+        if (q) setSearchKeyword(q);
+        if (loc) setSearchLocation(loc);
+
+        if (path.includes('about')) {
+          setCurrentTab('about');
+          setSelectedJob(null);
+        } else if (path.includes('contact')) {
+          setCurrentTab('contact');
+          setSelectedJob(null);
+        } else if (path.includes('designer') || path.includes('talent')) {
+          setCurrentTab('designers');
+          setSelectedJob(null);
+        } else if (path.includes('job') || jobId) {
+          setCurrentTab('jobs');
+          if (jobId) {
+            const match = jobs.find((j) => j.id === jobId);
+            if (match) setSelectedJob(match);
+          }
+        }
+      } catch (e) {
+        console.warn('URL parsing error:', e);
+      }
+    };
+
+    parseUrlRoute();
+
+    const handlePopState = () => {
+      parseUrlRoute();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [jobs]);
 
   // Maintain active job selection across background job updates
   useEffect(() => {
@@ -105,13 +150,48 @@ function MainApp() {
 
   const handleNavigate = (tab: 'home' | 'about' | 'jobs' | 'contact' | 'designers') => {
     setCurrentTab(tab);
+    setSelectedJob(null);
+    const path = tab === 'home' ? '/' : `/${tab}`;
+    try {
+      window.history.pushState(null, '', path);
+    } catch {
+      // Ignore if iframe sandbox restricts
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectJob = (job: JobListing | null) => {
+    setSelectedJob(job);
+    if (job) {
+      setCurrentTab('jobs');
+      try {
+        window.history.pushState(null, '', `/jobs?id=${job.id}`);
+      } catch {
+        // Ignore
+      }
+    } else {
+      try {
+        window.history.pushState(null, '', '/jobs');
+      } catch {
+        // Ignore
+      }
+    }
   };
 
   const handleSearch = (keyword: string, location: string) => {
     setSearchKeyword(keyword);
     setSearchLocation(location);
     setSelectedJob(null);
+    setCurrentTab('jobs');
+    const params = new URLSearchParams();
+    if (keyword) params.set('q', keyword);
+    if (location) params.set('location', location);
+    const searchStr = params.toString() ? `?${params.toString()}` : '';
+    try {
+      window.history.pushState(null, '', `/jobs${searchStr}`);
+    } catch {
+      // Ignore
+    }
   };
 
   const handleOpenAuthModal = (mode: 'signin' | 'signup' = 'signin') => {
@@ -126,8 +206,66 @@ function MainApp() {
 
   const savedJobs = jobs.filter((j) => savedJobIds.includes(j.id));
 
+  // Determine dynamic SEO parameters
+  let seoTitle = '';
+  let seoDescription = '';
+  let canonicalPath = '/';
+  let breadcrumbs: Array<{ name: string; url: string }> = [{ name: 'Home', url: '/' }];
+
+  if (selectedJob) {
+    seoTitle = `${selectedJob.title} in ${selectedJob.location} (${selectedJob.company})`;
+    seoDescription = `${selectedJob.company} is hiring for ${selectedJob.title} in ${selectedJob.location}. ${selectedJob.description?.slice(0, 140) || ''} Apply now on Dakarlaton.`;
+    canonicalPath = `/jobs?id=${selectedJob.id}`;
+    breadcrumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'Find Jobs', url: '/jobs' },
+      { name: selectedJob.title, url: `/jobs?id=${selectedJob.id}` }
+    ];
+  } else if (currentTab === 'jobs') {
+    seoTitle = 'Explore Verified Jobs in Saudi Arabia, UAE & GCC';
+    seoDescription = 'Search thousands of verified career opportunities in Riyadh, Dubai, Jeddah, and Doha across engineering, BIM, architecture, design, and technology.';
+    canonicalPath = '/jobs';
+    breadcrumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'Find Jobs', url: '/jobs' }
+    ];
+  } else if (currentTab === 'designers') {
+    seoTitle = 'Browse Pre-Vetted Designers & Tech Talent';
+    seoDescription = 'Hire top freelance product designers, design systems specialists, 3D artists, and creative technologists across the Middle East and worldwide.';
+    canonicalPath = '/designers';
+    breadcrumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'Browse Talent', url: '/designers' }
+    ];
+  } else if (currentTab === 'about') {
+    seoTitle = 'About Dakarlaton — Leading Middle East Recruitment Platform';
+    seoDescription = 'Learn how Dakarlaton connects top professionals with leading enterprises and high-growth startups across Saudi Arabia, UAE, and GCC.';
+    canonicalPath = '/about';
+    breadcrumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'About Us', url: '/about' }
+    ];
+  } else if (currentTab === 'contact') {
+    seoTitle = 'Contact Us — Dakarlaton Support & Inquiries';
+    seoDescription = 'Get in touch with the Dakarlaton recruitment team in Riyadh and Dubai. Direct support for job seekers, hiring managers, and corporate partnerships.';
+    canonicalPath = '/contact';
+    breadcrumbs = [
+      { name: 'Home', url: '/' },
+      { name: 'Contact', url: '/contact' }
+    ];
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C1917] flex flex-col font-sans selection:bg-[#5925DC]/20 selection:text-[#5925DC]">
+      {/* Dynamic SEO Meta & Schema.org Injector */}
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription}
+        canonicalPath={canonicalPath}
+        jobPosting={selectedJob}
+        breadcrumbs={breadcrumbs}
+      />
+
       {/* Email Verification Persistent Security Banner */}
       <EmailVerificationBanner onOpenVerify={() => setIsVerifyOpen(true)} />
 
@@ -156,8 +294,7 @@ function MainApp() {
           <HomePage
             onNavigate={handleNavigate}
             onSelectJob={(job) => {
-              setSelectedJob(job);
-              setCurrentTab('jobs');
+              handleSelectJob(job);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenPostJob={() => setIsPostJobOpen(true)}
@@ -181,7 +318,7 @@ function MainApp() {
         {currentTab === 'jobs' && (
           <FindJobsPage
             selectedJob={selectedJob}
-            onSelectJob={setSelectedJob}
+            onSelectJob={handleSelectJob}
             onOpenApply={(job) => setApplyingJob(job)}
             onOpenPostJob={() => setIsPostJobOpen(true)}
             onNavigate={handleNavigate}

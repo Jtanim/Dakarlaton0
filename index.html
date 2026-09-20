@@ -26,14 +26,38 @@
       })();
     </script>
 
+    <!-- Single Page Apps for GitHub Pages SPA Path Restorer -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location));
+    </script>
+
     <!-- Primary SEO Meta Tags -->
     <title>Dakarlaton — Premier Jobs & Careers in Saudi Arabia, UAE, Qatar & GCC</title>
     <meta name="title" content="Dakarlaton — Premier Jobs & Careers in Saudi Arabia, UAE, Qatar & GCC" />
-    <meta name="description" content="Discover premier career opportunities and verified talent across Saudi Arabia, UAE, Qatar, Oman, Bahrain & Kuwait across engineering, technology, design, business, and leadership." />
-    <meta name="keywords" content="jobs in saudi arabia, jobs in riyadh, jobs in dubai, jobs in uae, qatar jobs, oman jobs, bahrain jobs, kuwait jobs, gcc jobs portal, career opportunities middle east, dakarlaton jobs" />
+    <meta name="description" content="Discover premier career opportunities and verified talent across Saudi Arabia, UAE, Qatar, Oman, Bahrain & Kuwait. Explore jobs in engineering, AutoCAD, BIM, technology, design, and leadership." />
+    <meta name="keywords" content="jobs in saudi arabia, jobs in riyadh, jobs in jeddah, jobs in dubai, jobs in uae, qatar jobs, oman jobs, bahrain jobs, kuwait jobs, gcc jobs portal, autocad draftsman riyadh, bim designer saudi, ui ux designer dubai, career opportunities middle east, dakarlaton jobs, وظائف في السعودية, وظائف الرياض, وظائف دبي, وظائف قطر, وظائف هندسية, وظائف تصميم, منصة توظيف دكارلاتون" />
     <meta name="author" content="Dakarlaton" />
+    <meta name="application-name" content="Dakarlaton" />
+    <meta name="theme-color" content="#5925DC" />
+    <meta name="apple-mobile-web-app-title" content="Dakarlaton" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    
+    <!-- Canonical and Alternate Languages -->
     <link rel="canonical" href="https://dakarlaton.com/" />
+    <link rel="alternate" hreflang="en" href="https://dakarlaton.com/" />
+    <link rel="alternate" hreflang="ar" href="https://dakarlaton.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://dakarlaton.com/" />
 
     <!-- Geo & Regional Meta Tags for GCC Ranking -->
     <meta name="geo.region" content="SA;AE;QA;OM;BH;KW" />
@@ -45,13 +69,18 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dakarlaton.com/" />
     <meta property="og:title" content="Dakarlaton — Premier Jobs & Careers in Saudi Arabia, UAE & the GCC" />
-    <meta property="og:description" content="Discover top career opportunities and verified talent across the GCC. Connect with leading organizations across all industries." />
+    <meta property="og:description" content="Discover premier career opportunities and verified talent across Saudi Arabia, UAE, Qatar, Oman, Bahrain & Kuwait. Connect with leading organizations across engineering, architecture, design, and tech." />
     <meta property="og:site_name" content="Dakarlaton" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Dakarlaton Jobs Platform in Saudi Arabia and UAE" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@dakarlaton" />
+    <meta name="twitter:creator" content="@dakarlaton" />
     <meta name="twitter:url" content="https://dakarlaton.com/" />
     <meta name="twitter:title" content="Dakarlaton — Best Jobs in Saudi Arabia, UAE, Qatar, Oman & GCC" />
     <meta name="twitter:description" content="Explore verified careers and top talent across Saudi Arabia, UAE, Qatar, Oman, and Bahrain on Dakarlaton." />
@@ -75,16 +104,18 @@
           "description": "Connecting Ambition with Opportunity across Saudi Arabia, UAE, Qatar, Oman, Bahrain and the GCC.",
           "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://dakarlaton.com/?q={search_term_string}",
+            "target": "https://dakarlaton.com/jobs?q={search_term_string}",
             "query-input": "required name=search_term_string"
           }
         },
         {
-          "@type": "Organization",
+          "@type": "EmploymentAgency",
           "@id": "https://dakarlaton.com/#organization",
           "name": "Dakarlaton",
           "url": "https://dakarlaton.com/",
-          "logo": "https://dakarlaton.com/icon.svg",
+          "logo": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80",
+          "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80",
+          "description": "Premier recruitment and talent marketplace connecting exceptional professionals with top organizations across the GCC region.",
           "contactPoint": {
             "@type": "ContactPoint",
             "email": "j_tanim@hotmail.com",
@@ -92,13 +123,287 @@
             "areaServed": ["SA", "AE", "QA", "OM", "BH", "KW"],
             "availableLanguage": ["English", "Arabic"]
           }
+        },
+        {
+          "@type": "JobPosting",
+          "@id": "https://dakarlaton.com/jobs?id=job-autocad-riyadh",
+          "title": "AutoCAD Draftsman / Draftswoman | Riyadh",
+          "description": "MAS Future Group is looking for a skilled AutoCAD Draftsman/Draftswoman based in Riyadh to produce technical, architectural, and structural shop drawings for ongoing construction and infrastructure projects across Saudi Arabia.",
+          "datePosted": "2026-08-20",
+          "validThrough": "2026-12-31T23:59:59Z",
+          "employmentType": "FULL_TIME",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": "MAS Future Group",
+            "sameAs": "https://dakarlaton.com",
+            "logo": "https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=150&auto=format&fit=crop&q=80"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Riyadh",
+              "addressRegion": "Riyadh Province",
+              "addressCountry": "SA"
+            }
+          },
+          "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "SAR",
+            "value": {
+              "@type": "QuantitativeValue",
+              "minValue": 8500,
+              "maxValue": 12000,
+              "unitText": "MONTH"
+            }
+          }
+        },
+        {
+          "@type": "JobPosting",
+          "@id": "https://dakarlaton.com/jobs?id=job-gcc-architectural-bim",
+          "title": "Senior Architectural & 3D BIM Designer",
+          "description": "Lead 3D BIM model coordination, Revit architectural detailing, and clash detection for high-profile hospitality and commercial towers in Western KSA.",
+          "datePosted": "2026-08-20",
+          "validThrough": "2026-12-31T23:59:59Z",
+          "employmentType": "FULL_TIME",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": "Al-Madar Engineering Consultants",
+            "sameAs": "https://dakarlaton.com",
+            "logo": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=150&auto=format&fit=crop&q=80"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Jeddah",
+              "addressRegion": "Makkah Province",
+              "addressCountry": "SA"
+            }
+          },
+          "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "SAR",
+            "value": {
+              "@type": "QuantitativeValue",
+              "minValue": 14000,
+              "maxValue": 18000,
+              "unitText": "MONTH"
+            }
+          }
+        },
+        {
+          "@type": "JobPosting",
+          "@id": "https://dakarlaton.com/jobs?id=job-gcc-uiux-dubai",
+          "title": "Senior UI/UX & Design Systems Lead",
+          "description": "Design bilingual (Arabic & English) mobile fintech banking applications and cross-platform design systems for 500k+ active Gulf consumers.",
+          "datePosted": "2026-08-20",
+          "validThrough": "2026-12-31T23:59:59Z",
+          "employmentType": "FULL_TIME",
+          "hiringOrganization": {
+            "@type": "Organization",
+            "name": "FinTech Oasis GCC",
+            "sameAs": "https://dakarlaton.com",
+            "logo": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=150&auto=format&fit=crop&q=80"
+          },
+          "jobLocation": {
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Dubai",
+              "addressRegion": "Dubai",
+              "addressCountry": "AE"
+            }
+          },
+          "baseSalary": {
+            "@type": "MonetaryAmount",
+            "currency": "AED",
+            "value": {
+              "@type": "QuantitativeValue",
+              "minValue": 18000,
+              "maxValue": 26000,
+              "unitText": "MONTH"
+            }
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://dakarlaton.com/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Dakarlaton free for job seekers and freelance designers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! Dakarlaton is 100% free for job seekers and freelance designers. You can build your rich portfolio showcase, display case studies, apply to verified jobs, and receive direct inquiries from employers with zero commission taken from your earnings."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I post a job as an employer on Dakarlaton?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Click the Post a Job button in the top navigation bar. Once you create a secure employer account and complete email verification, fill in your role details, compensation range, and candidate expectations. Your listing will go live immediately on the job board."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the email verification and security system work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To protect our community against spam and fraudulent postings, all new accounts receive an instant email verification code upon signup. Verified accounts receive a verified security badge, priority placement in designer searches, and full access to post jobs and submit direct proposals."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long does it take to hear back after applying to a job in Saudi Arabia or UAE?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Most employers review applications within 2 to 5 business days. When you submit your portfolio through Dakarlaton, the employer receives your rich case study preview and direct contact links immediately."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I edit or remove my job listing after posting?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, as the job author or an authorized employer, you have full access from your account dashboard to edit the job details, mark the role as filled, or remove the listing at any time."
+              }
+            }
+          ]
         }
       ]
     }
     </script>
   </head>
   <body class="bg-[#FAF8F5] text-[#1C1917] antialiased">
-    <div id="root"></div>
+    <!-- Prerendered Semantic SEO Content (visible to bots and crawler scrapers prior to React hydration) -->
+    <div id="root">
+      <header style="padding: 1.5rem; border-bottom: 1px solid #E7E5E4; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: #5925DC;">Dakarlaton</div>
+        <nav style="display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 500;">
+          <a href="/jobs" style="color: #1C1917; text-decoration: none;">Find Jobs</a>
+          <a href="/designers" style="color: #1C1917; text-decoration: none;">Browse Talent</a>
+          <a href="/about" style="color: #1C1917; text-decoration: none;">About Us</a>
+          <a href="/contact" style="color: #1C1917; text-decoration: none;">Contact</a>
+        </nav>
+      </header>
+
+      <main style="max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;">
+        <section style="text-align: center; margin-bottom: 3rem;">
+          <h1 style="font-size: 2.25rem; font-weight: 800; color: #1C1917; line-height: 1.25; margin-bottom: 1rem;">
+            Dakarlaton — Premier Jobs & Careers in Saudi Arabia, UAE, Qatar & GCC
+          </h1>
+          <p style="font-size: 1.15rem; color: #57534E; max-width: 800px; margin: 0 auto 1.5rem;">
+            Connecting ambitious professionals with leading organizations across Riyadh, Jeddah, Dubai, Abu Dhabi, Doha, and the Gulf Cooperation Council. Explore verified opportunities in engineering, AutoCAD drafting, 3D BIM design, UI/UX systems, software development, operations, and leadership.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="/jobs" style="background: #5925DC; color: #fff; padding: 0.75rem 1.5rem; border-radius: 9999px; text-decoration: none; font-weight: 600;">Search 12,000+ Verified Jobs</a>
+            <a href="/designers" style="background: #fff; color: #1C1917; border: 1px solid #D6D3D1; padding: 0.75rem 1.5rem; border-radius: 9999px; text-decoration: none; font-weight: 600;">Hire Verified Talent</a>
+          </div>
+        </section>
+
+        <section style="margin-bottom: 3rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1C1917; margin-bottom: 1.25rem;">
+            Featured Career Opportunities in Riyadh & Dubai
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <article style="background: #fff; border: 1px solid #E7E5E4; border-radius: 0.75rem; padding: 1.5rem;">
+              <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                <a href="/jobs?id=job-autocad-riyadh" style="color: #1C1917; text-decoration: none;">AutoCAD Draftsman / Draftswoman | Riyadh</a>
+              </h3>
+              <p style="color: #5925DC; font-weight: 600; margin-bottom: 0.5rem;">MAS Future Group — Riyadh, Saudi Arabia</p>
+              <p style="color: #78716C; font-size: 0.95rem; margin-bottom: 0.75rem;">SAR 8,500 - SAR 12,000 / month • Full-time • On-site</p>
+              <p style="color: #44403C; font-size: 0.9rem; line-height: 1.5;">
+                Produce technical, architectural, and structural shop drawings for ongoing construction and Vision 2030 infrastructure projects in Riyadh.
+              </p>
+            </article>
+
+            <article style="background: #fff; border: 1px solid #E7E5E4; border-radius: 0.75rem; padding: 1.5rem;">
+              <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                <a href="/jobs?id=job-gcc-architectural-bim" style="color: #1C1917; text-decoration: none;">Senior Architectural & 3D BIM Designer</a>
+              </h3>
+              <p style="color: #5925DC; font-weight: 600; margin-bottom: 0.5rem;">Al-Madar Engineering Consultants — Jeddah / Riyadh, Saudi Arabia</p>
+              <p style="color: #78716C; font-size: 0.95rem; margin-bottom: 0.75rem;">SAR 14,000 - SAR 18,000 / month • Full-time • On-site</p>
+              <p style="color: #44403C; font-size: 0.9rem; line-height: 1.5;">
+                Lead 3D BIM model coordination, Autodesk Revit architectural detailing, and clash detection for high-profile hospitality and commercial towers.
+              </p>
+            </article>
+
+            <article style="background: #fff; border: 1px solid #E7E5E4; border-radius: 0.75rem; padding: 1.5rem;">
+              <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">
+                <a href="/jobs?id=job-gcc-uiux-dubai" style="color: #1C1917; text-decoration: none;">Senior UI/UX & Design Systems Lead</a>
+              </h3>
+              <p style="color: #5925DC; font-weight: 600; margin-bottom: 0.5rem;">FinTech Oasis GCC — Dubai, UAE (Hybrid)</p>
+              <p style="color: #78716C; font-size: 0.95rem; margin-bottom: 0.75rem;">AED 18,000 - AED 26,000 / month • Full-time • Hybrid</p>
+              <p style="color: #44403C; font-size: 0.9rem; line-height: 1.5;">
+                Design bilingual (Arabic & English) mobile fintech banking applications and cross-platform design systems for 500k+ active Gulf consumers.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section style="margin-bottom: 3rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1C1917; margin-bottom: 1.25rem;">
+            Explore High-Demand Job Categories in the Gulf Region
+          </h2>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+            <a href="/jobs?category=Engineering" style="background: #EFF6FF; color: #1D4ED8; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Engineering (2,450+ jobs)</a>
+            <a href="/jobs?category=Architecture" style="background: #F5F5F4; color: #44403C; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Architecture & 3D (1,580+ jobs)</a>
+            <a href="/jobs?category=Design" style="background: #F5F3FF; color: #5925DC; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Design & UI/UX (1,240+ jobs)</a>
+            <a href="/jobs?category=Technology" style="background: #EEF2FF; color: #4338CA; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Technology & Software (3,100+ jobs)</a>
+            <a href="/jobs?location=Riyadh" style="background: #FEF3C7; color: #B45309; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Riyadh Jobs</a>
+            <a href="/jobs?location=Dubai" style="background: #ECFDF5; color: #047857; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Dubai Jobs</a>
+            <a href="/jobs?location=Saudi%20Arabia" style="background: #F0FDF4; color: #15803D; padding: 0.5rem 1rem; border-radius: 9999px; text-decoration: none; font-size: 0.9rem; font-weight: 600;">Saudi Arabia Jobs</a>
+          </div>
+        </section>
+
+        <section style="margin-bottom: 3rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1C1917; margin-bottom: 1.25rem;">
+            Middle East Salary Guides & Recruitment Intelligence 2026
+          </h2>
+          <p style="color: #57534E; font-size: 1rem; margin-bottom: 1rem;">
+            Stay ahead with authoritative salary data, hiring trends, and technical talent insights across Vision 2030 giga-projects, UAE financial hubs, and nationalization programs.
+          </p>
+          <ul style="padding-left: 1.5rem; color: #44403C; line-height: 1.8;">
+            <li><strong>KSA Salary Guide 2026:</strong> Saudi Arabia's latest benchmark data for engineering, AutoCAD drafting, and tech roles across Riyadh and Neom.</li>
+            <li><strong>UAE Salary Guide 2026:</strong> Benchmark compensation packages across Dubai, Abu Dhabi, DIFC, and Silicon Oasis.</li>
+            <li><strong>Emiratisation & Saudization Trends:</strong> Compliance guides, training programs, and direct pathways for qualified GCC national talent.</li>
+          </ul>
+        </section>
+
+        <section style="background: #fff; border: 1px solid #E7E5E4; border-radius: 0.75rem; padding: 2rem; margin-bottom: 3rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 700; color: #1C1917; margin-bottom: 1rem;">
+            Frequently Asked Questions about Dakarlaton
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #1C1917; margin-bottom: 0.25rem;">Is Dakarlaton free for job seekers and freelance talent?</h3>
+              <p style="color: #57534E; font-size: 0.95rem; line-height: 1.5;">Yes! Dakarlaton is 100% free for job seekers. You can build a portfolio showcase, apply to verified jobs across Saudi Arabia and the UAE, and connect directly with hiring managers.</p>
+            </div>
+            <div>
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: #1C1917; margin-bottom: 0.25rem;">How can employers post job openings?</h3>
+              <p style="color: #57534E; font-size: 0.95rem; line-height: 1.5;">Employers can sign in, complete instant account verification, and post full-time, part-time, or contract listings to reach tens of thousands of active professionals in the GCC.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer style="background: #1C1917; color: #A8A29E; padding: 2.5rem 1.5rem; text-align: center; font-size: 0.9rem;">
+        <p style="margin-bottom: 0.5rem; color: #fff; font-weight: 600;">Dakarlaton — Connecting Ambition with Opportunity across the GCC</p>
+        <p style="margin-bottom: 1rem;">Saudi Arabia • United Arab Emirates • Qatar • Oman • Bahrain • Kuwait</p>
+        <p>Inquiries: <a href="mailto:j_tanim@hotmail.com" style="color: #A8A29E;">j_tanim@hotmail.com</a> | © 2026 Dakarlaton. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- Noscript fallback for search engine bots with disabled JS -->
+    <noscript>
+      <div style="padding: 2rem; max-width: 900px; margin: 0 auto; font-family: sans-serif; line-height: 1.6;">
+        <h1>Dakarlaton — Job Marketplace for Saudi Arabia, UAE & the GCC</h1>
+        <p>Explore career opportunities in Riyadh, Dubai, Jeddah, and Doha across engineering, design, architecture, technology, and operations. Visit <a href="https://dakarlaton.com/jobs">https://dakarlaton.com/jobs</a> for active listings.</p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

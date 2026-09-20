@@ -1,33 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Core Landing Pages -->
   <url>
     <loc>https://dakarlaton.com/</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Dakarlaton Jobs &amp; Talent Platform in Saudi Arabia and UAE</image:title>
+    </image:image>
   </url>
+
   <url>
     <loc>https://dakarlaton.com/jobs</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
+
   <url>
     <loc>https://dakarlaton.com/designers</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
+
   <url>
     <loc>https://dakarlaton.com/about</loc>
-    <lastmod>2026-08-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
   </url>
+
   <url>
     <loc>https://dakarlaton.com/contact</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Popular GCC Job Location Filters -->
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Riyadh</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Jeddah</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Dubai</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Saudi%20Arabia</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=UAE</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Qatar</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Kuwait</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Oman</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?location=Bahrain</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Popular Industry Categories -->
+  <url>
+    <loc>https://dakarlaton.com/jobs?category=Engineering</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?category=Architecture</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?category=Design</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?category=Technology</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Individual Active Job Postings -->
+  <url>
+    <loc>https://dakarlaton.com/jobs?id=job-autocad-riyadh</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1541888946425-d0fbb186156a?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>AutoCAD Draftsman Jobs in Riyadh Saudi Arabia</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?id=job-gcc-architectural-bim</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Senior Architectural and BIM Designer in Jeddah and Riyadh</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://dakarlaton.com/jobs?id=job-gcc-uiux-dubai</loc>
+    <lastmod>2026-09-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:title>Senior UI UX Design Systems Lead in Dubai UAE</image:title>
+    </image:image>
   </url>
 </urlset>
