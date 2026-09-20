@@ -98,6 +98,54 @@ const LOCAL_STORAGE_APPS_KEY = 'dakarlaton_applications';
 const LOCAL_STORAGE_DESIGNERS_KEY = 'dakarlaton_designers';
 const LOCAL_STORAGE_VERIFY_CODE_KEY = 'dakarlaton_verify_code';
 const LOCAL_STORAGE_SMS_CODE_KEY = 'dakarlaton_sms_code';
+const LOCAL_STORAGE_DELETED_JOBS_KEY = 'dakarlaton_deleted_jobs';
+
+// Robust recursive data sanitizer to eliminate undefined fields before sending to Firestore
+export const sanitizeForFirestore = <T extends Record<string, any>>(obj: T): Record<string, any> => {
+  const result: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === undefined) continue;
+    if (value === null) {
+      result[key] = null;
+    } else if (Array.isArray(value)) {
+      result[key] = value.map((item) =>
+        item !== null && typeof item === 'object' && !(item instanceof Date)
+          ? sanitizeForFirestore(item)
+          : item
+      );
+    } else if (typeof value === 'object' && !(value instanceof Date)) {
+      result[key] = sanitizeForFirestore(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+};
+
+const getDeletedJobIds = (): string[] => {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_DELETED_JOBS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
+
+const addDeletedJobId = (id: string) => {
+  try {
+    const ids = getDeletedJobIds();
+    if (!ids.includes(id)) {
+      localStorage.setItem(LOCAL_STORAGE_DELETED_JOBS_KEY, JSON.stringify([...ids, id]));
+    }
+  } catch {}
+};
+
+const removeDeletedJobId = (id: string) => {
+  try {
+    const ids = getDeletedJobIds().filter((i) => i !== id);
+    localStorage.setItem(LOCAL_STORAGE_DELETED_JOBS_KEY, JSON.stringify(ids));
+  } catch {}
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -238,12 +286,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onSnapshot(
       jobsRef,
       (snapshot) => {
+        const deletedIds = getDeletedJobIds();
+
         if (!snapshot.empty) {
           const fetchedJobs: JobListing[] = [];
           snapshot.forEach((docSnap) => {
             const data = docSnap.data() as JobListing;
-            if (isDeprecatedMockJob(data.id)) {
-              // Ignore deprecated sample job doc without performing unauthorized deletes
+            if (isDeprecatedMockJob(data.id) || deletedIds.includes(data.id)) {
+              // Ignore deprecated sample job doc or deleted job doc
               return;
             }
             // Normalize exact date and time
@@ -255,15 +305,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             data.postedTimestamp = ts;
             fetchedJobs.push(data);
           });
+
+          // MERGE WITH LOCALLY SAVED USER JOBS:
+          // Read cached jobs so any recently posted job created by user on the website is never wiped out
+          const jobMap = new Map<string, JobListing>();
+          fetchedJobs.forEach((j) => jobMap.set(j.id, j));
+
+          try {
+            const localSavedRaw = localStorage.getItem(LOCAL_STORAGE_JOBS_KEY);
+            if (localSavedRaw) {
+              const localParsed: JobListing[] = JSON.parse(localSavedRaw);
+              if (Array.isArray(localParsed)) {
+                localParsed.forEach((localJob) => {
+                  if (
+                    localJob?.id &&
+                    !deletedIds.includes(localJob.id) &&
+                    !isDeprecatedMockJob(localJob.id)
+                  ) {
+                    if (!jobMap.has(localJob.id)) {
+                      // Preserve the job on website and upload to Firestore database in background
+                      jobMap.set(localJob.id, localJob);
+                      setDoc(doc(db, 'jobs', localJob.id), sanitizeForFirestore(localJob), { merge: true }).catch((err) => {
+                        console.warn('Background sync of cached job to Firestore notice:', err);
+                      });
+                    }
+                  }
+                });
+              }
+            }
+          } catch (e) {
+            console.warn('Local storage job merge warning:', e);
+          }
+
+          const combinedList = Array.from(jobMap.values());
           // Deterministic sort: newest timestamp first, then stable ID tie-breaker
-          fetchedJobs.sort((a, b) => {
+          combinedList.sort((a, b) => {
             const diff = (b.postedTimestamp || 0) - (a.postedTimestamp || 0);
             if (diff !== 0) return diff;
             return (a.id || '').localeCompare(b.id || '');
           });
-          if (fetchedJobs.length > 0) {
-            saveJobs(fetchedJobs);
+
+          if (combinedList.length > 0) {
+            saveJobs(combinedList);
           }
+        } else {
+          // If Firestore is completely empty, seed initial jobs and any local user postings
+          seedInitialJobs();
         }
       },
       (error) => {
@@ -331,11 +418,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const seedInitialJobs = async () => {
     try {
       for (const job of INITIAL_JOBS) {
-        await setDoc(doc(db, 'jobs', job.id), job);
+        await setDoc(doc(db, 'jobs', job.id), sanitizeForFirestore(job), { merge: true });
       }
       for (const designer of INITIAL_DESIGNERS) {
-        await setDoc(doc(db, 'users', designer.id), designer);
+        await setDoc(doc(db, 'users', designer.id), sanitizeForFirestore(designer), { merge: true });
       }
+      console.log('Seeded catalog to Firestore');
     } catch (e) {
       console.warn('Auto-seeding Firestore notice:', e);
     }
@@ -1016,10 +1104,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       employerId: currentUserId || 'emp-default'
     };
 
+    removeDeletedJobId(newJob.id);
+
+    // 1. Immediately update state and website localStorage
+    const updatedJobs = [newJob, ...jobs.filter((j) => j.id !== newJob.id)];
+    saveJobs(updatedJobs);
+
+    // 2. Persist to Firestore database
     try {
-      await setDoc(doc(db, 'jobs', newJob.id), newJob);
+      const sanitized = sanitizeForFirestore(newJob);
+      await setDoc(doc(db, 'jobs', newJob.id), sanitized, { merge: true });
+      console.log('Job successfully saved to Firestore:', newJob.id, newJob.title);
     } catch (e) {
-      console.warn('Firestore postJob fallback:', e);
+      console.warn('Firestore postJob save notice (persisted in website cache):', e);
     }
 
     if (initialStatus === 'scheduled') {
@@ -1035,8 +1132,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSchedulerLogs(getStoredSchedulerLogs());
     }
 
-    const updatedJobs = [newJob, ...jobs.filter(j => j.id !== newJob.id)];
-    saveJobs(updatedJobs);
     return { success: true, job: newJob };
   };
 
@@ -1059,21 +1154,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updatedJob: JobListing = {
       ...targetJob,
       status: 'published',
-      scheduledAt: undefined,
       postedAt: `${formattedDate} at ${formattedTime}`,
       postedDate: formattedDate,
       postedTime: formattedTime,
       postedTimestamp: now.getTime()
     };
+    delete updatedJob.scheduledAt;
 
     try {
-      await updateDoc(doc(db, 'jobs', jobId), {
+      await updateDoc(doc(db, 'jobs', jobId), sanitizeForFirestore({
         status: 'published',
         postedAt: updatedJob.postedAt,
         postedDate: updatedJob.postedDate,
         postedTime: updatedJob.postedTime,
         postedTimestamp: updatedJob.postedTimestamp
-      });
+      }));
     } catch (err) {
       console.warn('Firestore publishJobNow notice:', err);
     }
@@ -1104,9 +1199,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     try {
-      await updateDoc(doc(db, 'jobs', jobId), {
+      await updateDoc(doc(db, 'jobs', jobId), sanitizeForFirestore({
         status: 'expired'
-      });
+      }));
     } catch (err) {
       console.warn('Firestore expireJobNow notice:', err);
     }
@@ -1144,7 +1239,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (updates.status !== undefined) firestoreUpdates.status = updates.status;
       if (updates.scheduledAt !== undefined) firestoreUpdates.scheduledAt = updates.scheduledAt;
       if (updates.expiresAt !== undefined) firestoreUpdates.expiresAt = updates.expiresAt;
-      await updateDoc(doc(db, 'jobs', jobId), firestoreUpdates);
+      await updateDoc(doc(db, 'jobs', jobId), sanitizeForFirestore(firestoreUpdates));
     } catch (err) {
       console.warn('Firestore updateJobSchedule notice:', err);
     }
@@ -1209,13 +1304,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
 
             try {
-              await updateDoc(doc(db, 'jobs', job.id), {
+              await updateDoc(doc(db, 'jobs', job.id), sanitizeForFirestore({
                 status: 'published',
                 postedAt: publishedJob.postedAt,
                 postedDate: publishedJob.postedDate,
                 postedTime: publishedJob.postedTime,
                 postedTimestamp: publishedJob.postedTimestamp
-              });
+              }));
             } catch (err) {
               console.warn('Firestore auto-publish notice:', err);
             }
@@ -1251,9 +1346,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             };
 
             try {
-              await updateDoc(doc(db, 'jobs', job.id), {
+              await updateDoc(doc(db, 'jobs', job.id), sanitizeForFirestore({
                 status: 'expired'
-              });
+              }));
             } catch (err) {
               console.warn('Firestore auto-expire notice:', err);
             }
@@ -1300,6 +1395,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const deleteJob = async (jobId: string) => {
+    addDeletedJobId(jobId);
     try {
       await deleteDoc(doc(db, 'jobs', jobId));
     } catch (e) {
@@ -1319,7 +1415,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     try {
-      await setDoc(doc(db, 'applications', newApp.id), newApp);
+      await setDoc(doc(db, 'applications', newApp.id), sanitizeForFirestore(newApp), { merge: true });
     } catch (e) {
       console.warn('Firestore applyToJob fallback:', e);
     }

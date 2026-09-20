@@ -123,7 +123,7 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
   onViewCreatedJob,
   onOpenManageListings,
 }) => {
-  const { user, postJob } = useAuth();
+  const { user, postJob, loginAsDemo, updateProfile } = useAuth();
 
   const [title, setTitle] = useState('');
   const [company, setCompany] = useState(user?.companyName || '');
@@ -600,6 +600,18 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 Sign In
               </button>
             </div>
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  loginAsDemo('employer');
+                }}
+                className="text-xs text-[#5925DC] hover:text-[#471cb3] font-semibold underline cursor-pointer"
+              >
+                ⚡ Fast Demo: Continue as Verified Employer
+              </button>
+            </div>
           </div>
         ) : !isFullyVerified ? (
           /* NOT VERIFIED GATE */
@@ -678,6 +690,18 @@ export const PostJobModal: React.FC<PostJobModalProps> = ({
                 className="w-full sm:w-auto text-stone-500 hover:text-stone-800 text-xs px-4 py-3 cursor-pointer"
               >
                 Cancel
+              </button>
+            </div>
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  updateProfile({ isVerified: true, emailVerified: true, phoneVerified: true });
+                }}
+                className="text-xs text-amber-700 hover:text-amber-900 font-semibold underline cursor-pointer"
+              >
+                ⚡ Fast Demo: Mark Account Verified Instantly
               </button>
             </div>
           </div>

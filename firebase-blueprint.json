@@ -45,6 +45,8 @@
         "salary": { "type": "string", "maxLength": 100 },
         "postedAt": { "type": "string", "maxLength": 50 },
         "postedDate": { "type": "string", "maxLength": 50 },
+        "postedTime": { "type": "string", "maxLength": 50 },
+        "postedTimestamp": { "type": "number" },
         "description": { "type": "string", "maxLength": 5000 },
         "aboutRole": { "type": "string", "maxLength": 5000 },
         "responsibilities": { "type": "array" },

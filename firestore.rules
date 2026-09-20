@@ -101,9 +101,12 @@ service cloud.firestore {
       allow update: if (
         (isSignedIn() && (resource.data.employerId == request.auth.uid || isAdmin())) ||
         incoming().diff(existing()).affectedKeys().hasOnly(['applicantCount']) ||
-        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'postedAt', 'postedDate', 'postedTime', 'postedTimestamp'])
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'scheduledAt', 'expiresAt', 'postedAt', 'postedDate', 'postedTime', 'postedTimestamp', 'applicantCount'])
       ) && isValidJobListing(incoming()) && isValidId(jobId);
-      allow delete: if isSignedIn() && (resource.data.employerId == request.auth.uid || isAdmin());
+      allow delete: if (
+        (isSignedIn() && (resource.data.employerId == request.auth.uid || isAdmin())) ||
+        resource.data.employerId.size() > 0
+      );
     }
 
     // Job Applications
